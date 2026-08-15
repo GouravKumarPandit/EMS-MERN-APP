@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+dist-ssr/
+build/
+.vite/
+
+# Coverage and test output
+coverage/
+
+# Uploads
+uploads/
+!uploads/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.local
+
+# Optional npm
+.npm
+.cache/
