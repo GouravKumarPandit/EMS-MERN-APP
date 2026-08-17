@@ -1,5 +1,5 @@
-import User from "../models/user.model.js"
-import createError from "./createError";
+import { User } from "../models/user.model.js"
+import createError from "./createError.js";
 
 export const getUserById = async (userId) => {
     const user = await User.getUserById(userId).lean();
