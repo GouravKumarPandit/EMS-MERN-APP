@@ -39,7 +39,7 @@ export const login = asyncHandler(async (req, res, next) => {
 
     return res.status(200).json({
         success: true,
-        message: "User logged-in successfully!",
+        message: "Logged in successfully!",
         data: user
     })
 });

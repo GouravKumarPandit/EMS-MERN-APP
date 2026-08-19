@@ -1,5 +1,7 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Routes, Route } from "react-router-dom"
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AllStaff from './pages/admin/AllStaff';
 import AllTasks from './pages/admin/AllTasks';
@@ -13,27 +15,27 @@ function App() {
 
 	return (
 		<>
-			<BrowserRouter>
-				<Routes>
-					{/* Public Routes */}
-					<Route
-						path="/login"
-						element={<Login />}
-					/>
+			<Routes>
+				{/* Public Routes */}
+				<Route
+					path="/login"
+					element={<Login />}
+				/>
 
-					{/* Protected/Application Layout */}
-					<Route element={<DashboardLayout />}>
-						<Route path="/" element={<AdminDashboard />} />
-						<Route path="/tasks" element={<AllTasks />} />
-						<Route path="/staffs" element={<AllStaff />} />
-						<Route path="/settings" element={<Settings />} />
-						<Route path="/change-password" element={<ChangePassword />} />
-						<Route path="/profile" element={<Profile />} />
-					</Route>
-				</Routes>
-			</BrowserRouter>
+				{/* Protected/Application Layout */}
+				<Route element={<DashboardLayout />}>
+					<Route path="/dashboard" element={<AdminDashboard />} />
+					<Route path="/tasks" element={<AllTasks />} />
+					<Route path="/staffs" element={<AllStaff />} />
+					<Route path="/settings" element={<Settings />} />
+					<Route path="/change-password" element={<ChangePassword />} />
+					<Route path="/profile" element={<Profile />} />
+				</Route>
+			</Routes>
+
+			<ToastContainer position="top-right" autoClose={5000} theme="dark" />
 		</>
-	)
+	);
 }
 
 export default App;
