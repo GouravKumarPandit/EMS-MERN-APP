@@ -16,7 +16,7 @@ function Profile({selectedStaff}) {
                     <div className="p-6">
                         {/* Profile */}
                         <div className="mb-6 flex items-center gap-4 rounded-xl border border-[#252525] bg-[#171717] p-5">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/15 text-xl font-bold text-red-400">
+                            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500/15 text-xl font-bold text-violet-400">
                                 {selectedStaff?.first_name?.charAt(0)}
                                 {selectedStaff?.last_name?.charAt(0)}
                             </div>

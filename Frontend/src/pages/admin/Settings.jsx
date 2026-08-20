@@ -21,10 +21,10 @@ const Settings = () => {
                 {/* Card Header */}
                 <div className="px-6 py-5 border-b border-neutral-800">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
                             <Building2
                                 size={20}
-                                className="text-red-500"
+                                className="text-violet-500"
                             />
                         </div>
 
@@ -58,7 +58,7 @@ const Settings = () => {
 
                     <button
                         type="button"
-                        className="flex items-center gap-2 px-5 py-2.5 bg-red-500 hover:bg-red-600 rounded-lg font-medium transition"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-700 rounded-lg font-medium transition"
                     >
                         <Save size={17} />
 

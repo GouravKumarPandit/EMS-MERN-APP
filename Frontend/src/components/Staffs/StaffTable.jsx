@@ -100,7 +100,7 @@ const StaffTable = ({ openModal }) => {
                                 {/* Staff */}
                                 <td className="px-5 py-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/15 text-sm font-bold text-red-400">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-500/15 text-sm font-bold text-violet-400">
                                             {staff.first_name.charAt(0)}
                                             {staff.last_name.charAt(0)}
                                         </div>
@@ -146,7 +146,7 @@ const StaffTable = ({ openModal }) => {
                                     <span
                                         className={`rounded-full px-3 py-1 text-xs font-medium ${
                                             staff.role === "admin"
-                                                ? "bg-red-500/15 text-red-400"
+                                                ? "bg-violet-500/15 text-violet-400"
                                                 : "bg-blue-500/15 text-blue-400"
                                         }`}
                                     >

@@ -39,7 +39,7 @@ function SettingForm() {
                         <div>
                             <label
                                 htmlFor="company-logo"
-                                className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1c1c1c] border border-neutral-700 hover:border-red-500 rounded-lg cursor-pointer transition"
+                                className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1c1c1c] border border-neutral-700 hover:border-violet-500 rounded-lg cursor-pointer transition"
                             >
                                 <Upload size={17} />
                                 <span className="text-sm">
@@ -79,7 +79,7 @@ function SettingForm() {
                             id="company-name"
                             type="text"
                             placeholder="Enter company name"
-                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-red-500 transition"
+                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
                         />
                     </div>
                 </div>
@@ -101,7 +101,7 @@ function SettingForm() {
                                 id="company-email"
                                 type="email"
                                 placeholder="company@example.com"
-                                className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-red-500 transition"
+                                className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
                             />
                         </div>
                     </div>
@@ -122,7 +122,7 @@ function SettingForm() {
                                 id="company-phone"
                                 type="tel"
                                 placeholder="+91 9876543210"
-                                className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-red-500 transition"
+                                className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
                             />
                         </div>
                     </div>

@@ -47,7 +47,7 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
                                     </label>
                                     <select
                                         defaultValue={selectedTask.status}
-                                        className="h-11 w-full rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-red-500"
+                                        className="h-11 w-full rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-violet-500"
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="accepted">Accepted</option>
@@ -62,7 +62,7 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
                                     </label>
                                     <select
                                         defaultValue={selectedTask.priority}
-                                        className="h-11 w-full rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-red-500"
+                                        className="h-11 w-full rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-violet-500"
                                     >
                                         <option value="low">Low</option>
                                         <option value="medium">Medium</option>
@@ -76,7 +76,7 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
                                     </label>
                                     <input
                                         type="date"
-                                        className="h-11 w-full rounded-lg border border-neutral-800 bg-black px-3 text-sm outline-none focus:border-red-500"
+                                        className="h-11 w-full rounded-lg border border-neutral-800 bg-black px-3 text-sm outline-none focus:border-violet-500"
                                     />
                                 </div>
 
@@ -87,7 +87,7 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
                                     <textarea
                                         rows={3}
                                         placeholder="Add a description for this status change..."
-                                        className="w-full resize-none rounded-lg border border-neutral-800 bg-black px-3 py-3 text-sm outline-none placeholder:text-neutral-600 focus:border-red-500"
+                                        className="w-full resize-none rounded-lg border border-neutral-800 bg-black px-3 py-3 text-sm outline-none placeholder:text-neutral-600 focus:border-violet-500"
                                     />
                                 </div>
                             </div>
@@ -135,7 +135,7 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
                                 >
                                     Cancel
                                 </button>
-                                <button className="flex items-center gap-2 rounded-lg bg-red-500 px-5 py-2.5 text-sm font-medium hover:bg-red-600">
+                                <button className="flex items-center gap-2 rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-medium hover:bg-violet-700">
                                     <RefreshCw size={16} />
                                     Update Status
                                 </button>

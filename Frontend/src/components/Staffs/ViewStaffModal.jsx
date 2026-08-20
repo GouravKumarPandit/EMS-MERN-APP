@@ -37,7 +37,7 @@ const ViewStaffModal = ({
 
                 <div className="p-6">
                     <div className="mb-6 flex items-center gap-4 rounded-xl border border-[#252525] bg-[#171717] p-5">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/15 text-xl font-bold text-red-400">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500/15 text-xl font-bold text-violet-400">
                             {selectedStaff.first_name.charAt(0)}
                             {selectedStaff.last_name.charAt(0)}
                         </div>
@@ -78,7 +78,7 @@ const ViewStaffModal = ({
                     {/* Close */}
                     <div className="mt-6 flex justify-end border-t border-[#252525] pt-5">
                         <Button
-                            buttonClass="rounded-lg bg-red-500 px-5 py-2.5 text-sm font-semibold hover:bg-red-600 transition"
+                            buttonClass="rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold hover:bg-violet-700 transition"
                             onClick={closeModal}
                         >
                             Close

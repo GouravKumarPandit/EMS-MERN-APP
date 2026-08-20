@@ -53,7 +53,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 								<div className="rounded-lg border border-neutral-800 bg-black p-4">
 									<CalendarDays
 										size={18}
-										className="mb-2 text-red-400"
+										className="mb-2 text-violet-400"
 									/>
 									<p className="text-xs text-neutral-600">
 										Due Date

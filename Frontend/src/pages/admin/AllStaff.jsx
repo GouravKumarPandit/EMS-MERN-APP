@@ -38,7 +38,7 @@ const AllStaff = () => {
 
                 <Button
                     onClick={() => openModal("create")}
-                    buttonClass="w-full md:w-auto px-5 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 transition font-semibold"
+                    buttonClass="w-full md:w-auto px-5 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 transition font-semibold"
                 >
                     + Create Staff
                 </Button>

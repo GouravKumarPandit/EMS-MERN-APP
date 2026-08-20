@@ -26,13 +26,13 @@ function TaskFilters() {
                     <input
                         type="text"
                         placeholder="Search task..."
-                        className="h-10 w-full rounded-lg border border-neutral-800 bg-black pl-10 pr-3 text-sm text-white outline-none placeholder:text-neutral-600 focus:border-red-500"
+                        className="h-10 w-full rounded-lg border border-neutral-800 bg-black pl-10 pr-3 text-sm text-white outline-none placeholder:text-neutral-600 focus:border-violet-500"
                     />
                 </div>
 
                 <div className="relative">
                     <select
-                        className="h-10 w-full appearance-none rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-red-500"
+                        className="h-10 w-full appearance-none rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-violet-500"
                     >
                         <option>All Status</option>
                         <option>Pending</option>
@@ -49,7 +49,7 @@ function TaskFilters() {
 
                 <div className="relative">
                     <select
-                        className="h-10 w-full appearance-none rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-red-500"
+                        className="h-10 w-full appearance-none rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-violet-500"
                     >
                         <option>All Priority</option>
                         <option>High</option>
@@ -65,7 +65,7 @@ function TaskFilters() {
 
                 <div className="relative">
                     <select
-                        className="h-10 w-full appearance-none rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-red-500"
+                        className="h-10 w-full appearance-none rounded-lg border border-neutral-800 bg-black px-3 text-sm text-neutral-400 outline-none focus:border-violet-500"
                     >
                         <option>All Staff</option>
                         <option>Gourav Pandit</option>

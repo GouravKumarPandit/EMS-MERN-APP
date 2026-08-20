@@ -80,7 +80,7 @@ const StaffTaskStats = () => {
                                 >
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 font-semibold">
+                                            <div className="w-9 h-9 rounded-full bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 font-semibold">
                                                 {staff.first_name.charAt(0)}
                                                 {staff.last_name.charAt(0)}
                                             </div>

@@ -27,7 +27,7 @@ function ChangePasswordForm() {
                             id="current-password"
                             type={showCurrent ? "text" : "password"}
                             placeholder="Enter current password"
-                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-red-500 transition"
+                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
                         />
                         <button
                             type="button"
@@ -59,7 +59,7 @@ function ChangePasswordForm() {
                             id="new-password"
                             type={showNew ? "text" : "password"}
                             placeholder="Enter new password"
-                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-red-500 transition"
+                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
                         />
                         <button
                             type="button"
@@ -91,7 +91,7 @@ function ChangePasswordForm() {
                             id="confirm-password"
                             type={showConfirm ? "text" : "password"}
                             placeholder="Confirm new password"
-                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-red-500 transition"
+                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
                         />
                         <button
                             type="button"

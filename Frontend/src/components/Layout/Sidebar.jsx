@@ -23,7 +23,7 @@ const Sidebar = () => {
             <nav className="flex flex-1 flex-col gap-2">
                 {/* Home */}
                 <Link to={"/"}
-                    className={`flex items-center gap-3 rounded-lg ${currentURI.pathname === "/" ? "bg-red-500" : "" } px-4 py-3 text-sm font-medium text-white transition hover:bg-red-600`}
+                    className={`flex items-center gap-3 rounded-lg ${currentURI.pathname === "/" ? "bg-violet-600" : "" } px-4 py-3 text-sm font-medium text-white transition hover:bg-violet-700`}
                 >
                     <Home size={20} />
                     <span>Home</span>
@@ -31,7 +31,7 @@ const Sidebar = () => {
 
                 {/* My All Tasks */}
                 <Link to={"/tasks"}
-                    className={`flex items-center gap-3 rounded-lg ${currentURI.pathname === "/tasks" ? "bg-red-500" : "" } px-4 py-3 text-sm font-medium text-neutral-400 transition hover:bg-red-600 hover:text-white`}
+                    className={`flex items-center gap-3 rounded-lg ${currentURI.pathname === "/tasks" ? "bg-violet-600" : "" } px-4 py-3 text-sm font-medium text-neutral-400 transition hover:bg-violet-700 hover:text-white`}
                 >
                     <ClipboardList size={20} />
                     <span>All Tasks</span>
@@ -39,7 +39,7 @@ const Sidebar = () => {
 
                 {/* Staffs */}
                 <Link to={"/staffs"}
-                    className={`flex items-center gap-3 rounded-lg px-4 ${currentURI.pathname === "/staffs" ? "bg-red-500" : "" } py-3 text-sm font-medium text-neutral-400 transition hover:bg-red-600 hover:text-white`}
+                    className={`flex items-center gap-3 rounded-lg px-4 ${currentURI.pathname === "/staffs" ? "bg-violet-600" : "" } py-3 text-sm font-medium text-neutral-400 transition hover:bg-violet-700 hover:text-white`}
                 >
                     <Users size={20} />
                     <span>Staffs</span>
@@ -47,7 +47,7 @@ const Sidebar = () => {
 
                 {/* Settings */}
                 <Link to={"/settings"}
-                    className={`flex items-center gap-3 rounded-lg px-4 ${currentURI.pathname === "/settings" ? "bg-red-500" : "" } py-3 text-sm font-medium text-neutral-400 transition hover:bg-red-600 hover:text-white`}
+                    className={`flex items-center gap-3 rounded-lg px-4 ${currentURI.pathname === "/settings" ? "bg-violet-600" : "" } py-3 text-sm font-medium text-neutral-400 transition hover:bg-violet-700 hover:text-white`}
                 >
                     <Settings size={20} />
                     <span>Settings</span>

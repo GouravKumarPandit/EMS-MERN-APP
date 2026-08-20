@@ -97,13 +97,13 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                                 <input
                                     type="number"
                                     value="91"
-                                    className="w-20 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-red-500"
+                                    className="w-20 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-violet-500"
                                 />
 
                                 <input
                                     type="number"
                                     placeholder="Phone number"
-                                    className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-[#191919] px-4 py-2.5 text-white outline-none placeholder:text-gray-600 focus:border-red-500"
+                                    className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-[#191919] px-4 py-2.5 text-white outline-none placeholder:text-gray-600 focus:border-violet-500"
                                 />
                             </div>
                         </div>

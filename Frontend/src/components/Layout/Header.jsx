@@ -32,7 +32,7 @@ const Header = () => {
                 <button onClick={() => setIsOpen(!isOpen)} className="group flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-neutral-900">
 
                     {/* Avatar */}
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-600 text-white">
                         <User size={20} />
                     </div>
 
@@ -62,7 +62,7 @@ const Header = () => {
 
                             <div className="flex items-center gap-3">
 
-                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-500 text-white">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-violet-600 text-white">
                                     <User size={21} />
                                 </div>
 

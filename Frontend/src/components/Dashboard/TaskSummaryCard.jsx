@@ -2,7 +2,7 @@ import Button from '../Ui/Button';
 
 function TaskSummaryCard({ task }) {
     return (
-        <div className="min-w-[300px] max-w-[300px] flex-shrink-0 rounded-xl border border-neutral-800 bg-[#151515] p-4 transition hover:border-red-500/50">
+        <div className="min-w-[300px] max-w-[300px] flex-shrink-0 rounded-xl border border-neutral-800 bg-[#151515] p-4 transition hover:border-violet-500/50">
             <div className="mb-4 flex items-center justify-between text-xs">
                 <span className="rounded-md bg-red-500/15 px-2 py-1 font-medium text-red-400">
                     High
@@ -25,7 +25,7 @@ function TaskSummaryCard({ task }) {
                     Task #001
                 </span>
 
-                <Button buttonClass="text-xs font-medium text-red-500 hover:text-red-400">
+                <Button buttonClass="text-xs font-medium text-violet-500 hover:text-violet-400">
                     View
                 </Button>
             </div>

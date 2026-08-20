@@ -12,7 +12,7 @@ const StaffFilters = () => {
                     <input
                         type="text"
                         placeholder="Search staff..."
-                        className="w-full rounded-lg border border-[#303030] bg-[#191919] py-2.5 pl-10 pr-4 text-sm text-white outline-none placeholder:text-gray-500 focus:border-red-500"
+                        className="w-full rounded-lg border border-[#303030] bg-[#191919] py-2.5 pl-10 pr-4 text-sm text-white outline-none placeholder:text-gray-500 focus:border-violet-500"
                     />
                 </div>
 
@@ -23,7 +23,7 @@ const StaffFilters = () => {
                     />
 
                     <select
-                        className="w-full appearance-none rounded-lg border border-[#303030] bg-[#191919] py-2.5 pl-10 pr-4 text-sm text-white outline-none focus:border-red-500"
+                        className="w-full appearance-none rounded-lg border border-[#303030] bg-[#191919] py-2.5 pl-10 pr-4 text-sm text-white outline-none focus:border-violet-500"
                     >
                         <option value="all">All Staff</option>
                         <option value="admin">Administrators</option>
