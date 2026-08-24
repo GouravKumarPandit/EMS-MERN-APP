@@ -5,6 +5,8 @@ const updateStaffValidation = [
         .trim()
         .notEmpty()
         .withMessage("First name is required.")
+        .matches(/^[A-Za-z ]+$/)
+        .withMessage("First name can contain only letters and spaces")
         .isLength({ max: 15 })
         .withMessage("First name must not exceed 15 characters."),
 
@@ -12,6 +14,8 @@ const updateStaffValidation = [
         .trim()
         .notEmpty()
         .withMessage("Last name is required.")
+        .matches(/^[A-Za-z ]+$/)
+        .withMessage("Last name can contain only letters and spaces")
         .isLength({ max: 15 })
         .withMessage("Last name must not exceed 15 characters."),
 

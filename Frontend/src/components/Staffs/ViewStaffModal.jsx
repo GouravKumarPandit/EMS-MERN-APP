@@ -1,18 +1,14 @@
 import { X } from "lucide-react";
 import TaskCountCard from "../Dashboard/TaskCountCard";
 import Button from "../Ui/Button";
+import { formatDateTime } from "../../utils/date";
 
-const ViewStaffModal = ({
-    modal,
-    selectedStaff,
-    closeModal,
-}) => {
-
-    if (modal !== "view" || !selectedStaff) {
+const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {    
+    if (modal !== "view") {
         return null;
     }
 
-    const fullName = `${selectedStaff.first_name} ${selectedStaff.last_name}`;
+    const fullName = `${selectedStaff?.staff?.first_name} ${selectedStaff?.staff?.last_name}`;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
@@ -38,8 +34,8 @@ const ViewStaffModal = ({
                 <div className="p-6">
                     <div className="mb-6 flex items-center gap-4 rounded-xl border border-[#252525] bg-[#171717] p-5">
                         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500/15 text-xl font-bold text-violet-400">
-                            {selectedStaff.first_name.charAt(0)}
-                            {selectedStaff.last_name.charAt(0)}
+                            {selectedStaff?.staff?.first_name.charAt(0)}
+                            {selectedStaff?.staff?.last_name.charAt(0)}
                         </div>
                         <div>
                             <h3 className="text-xl font-semibold">
@@ -47,31 +43,31 @@ const ViewStaffModal = ({
                             </h3>
 
                             <p className="text-sm text-gray-500">
-                                @{selectedStaff.username}
+                                @{selectedStaff?.staff?.username}
                             </p>
                         </div>
                     </div>
 
                     {/* Information */}
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <Info label="First Name" value={selectedStaff.first_name} />
-                        <Info label="Last Name" value={selectedStaff.last_name} />
-                        <Info label="Username" value={`@${selectedStaff.username}`} />
-                        <Info label="Email" value={selectedStaff.email} />
-                        <Info label="Phone" value={`+${selectedStaff.dialcode} ${selectedStaff.phone_number}`} />
-                        <Info label="Gender" value={selectedStaff.gender} />
-                        <Info label="Date of Birth" value={selectedStaff.dob} />
-                        <Info label="Role" value={selectedStaff.role} />
-                        <Info label="Created At" value={selectedStaff.createdAt} />
+                        <Info label="First Name" value={selectedStaff?.staff?.first_name} />
+                        <Info label="Last Name" value={selectedStaff?.staff?.last_name} />
+                        <Info label="Username" value={`@${selectedStaff?.staff?.username}`} />
+                        <Info label="Email" value={selectedStaff?.staff?.email} />
+                        <Info label="Phone" value={`+${selectedStaff?.staff?.dialcode} ${selectedStaff?.staff?.phone_number}`} />
+                        <Info label="Gender" value={selectedStaff?.staff?.gender} />
+                        <Info label="Date of Birth" value={selectedStaff?.staff?.dob} />
+                        <Info label="Role" value={selectedStaff?.staff?.role} />
+                        <Info label="Created At" value={formatDateTime(selectedStaff?.staff?.createdAt)} />
                     </div>
 
                     {/* <TaskStats /> */}
                     <h3 className="text-2xl font-bold mt-8">Staff Task Stats</h3>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                        <TaskCountCard taskName={"New Task"} taskCount="0" taskDetail="Tasks assigned to you" cardBg="bg-blue-500" hoverBg="hover:border-blue-500/60" />
-                        <TaskCountCard taskName={"Completed"} taskCount="3" taskDetail="Tasks completed" cardBg="bg-green-500" hoverBg="hover:border-green-500/60" />
-                        <TaskCountCard taskName={"Accepted"} taskCount="0" taskDetail="Tasks accepted" cardBg="bg-yellow-500" hoverBg="hover:border-yellow-500/60" />
-                        <TaskCountCard taskName={"Failed"} taskCount="1" taskDetail="Tasks failed" cardBg="bg-orange-500" hoverBg="hover:border-orange-500/60" />
+                        <TaskCountCard taskName={"Pending"} taskCount={selectedStaff?.taskStats?.pending} taskDetail="Tasks pending" cardBg="bg-blue-500" hoverBg="hover:border-blue-500/60" />
+                        <TaskCountCard taskName={"Completed"} taskCount={selectedStaff?.taskStats?.completed} taskDetail="Tasks completed" cardBg="bg-green-500" hoverBg="hover:border-green-500/60" />
+                        <TaskCountCard taskName={"Accepted"} taskCount={selectedStaff?.taskStats?.accepted} taskDetail="Tasks accepted" cardBg="bg-yellow-500" hoverBg="hover:border-yellow-500/60" />
+                        <TaskCountCard taskName={"Failed"} taskCount={selectedStaff?.taskStats?.failed} taskDetail="Tasks failed" cardBg="bg-orange-500" hoverBg="hover:border-orange-500/60" />
                     </div>
 
 

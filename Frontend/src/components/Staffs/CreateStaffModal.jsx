@@ -3,8 +3,34 @@ import Button from "../Ui/Button";
 import Input from "../Ui/Input";
 import CancelButton from "../Ui/CancelButton";
 import Select from "../Ui/Select";
+import { useState } from "react";
+import { createStaff } from "../../api/staff";
+import { toast } from "react-toastify";
 
-const CreateStaffModal = ({ modal, closeModal }) => {
+const CreateStaffModal = ({ modal, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData,  closeModal }) => {
+    const [submitLoader, setSubmitLoader] = useState(false);
+
+    const submitHandler = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await createStaff(createFormData);
+            if(response.data.success){
+                toast.success(response?.data?.message);
+            }
+            closeModal();
+        } catch (error) {
+            error.response.data.errors.map((error) => {
+                setCreateFormErrorData((prev) => ({
+                    ...prev,
+                    [error.path]: error.msg
+                }))
+            })
+            toast.error(error.response.data.message);
+        } finally{
+            setSubmitLoader(false);
+        }
+    }
 
     if (modal !== "create") {
         return null;
@@ -35,26 +61,28 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                 </div>
 
                 {/* Form */}
-                <form className="p-6">
+                <form className="p-6" onSubmit={submitHandler}>
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                         <Input
                             label="First Name" 
                             type="text"
                             placeholder="Enter first name"
-                            name="firstName"
+                            name="first_name"
                             required="required"
-                            // value={password}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.first_name}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.first_name}
                         />
 
                         <Input
                             label="Last Name" 
                             type="text"
                             placeholder="Enter last name"
-                            name="lastName"
+                            name="last_name"
                             required="required"
-                            // value={password}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.last_name}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.last_name}
                         />
 
                         <Input
@@ -63,8 +91,9 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                             placeholder="Enter username"
                             name="username"
                             required="required"
-                            // value={password}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.username}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.username}
                         />
 
                         <Input
@@ -73,8 +102,9 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                             placeholder="Enter email"
                             name="email"
                             required="required"
-                            // value={password}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.email}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.email}
                         />
 
                         <Input
@@ -83,8 +113,9 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                             placeholder="Enter password"
                             name="password"
                             required="required"
-                            // value={password}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.password}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.password}
                         />
 
                         {/* Phone */}
@@ -94,27 +125,39 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                             </label>
 
                             <div className="flex gap-2">
-                                <input
+                                <Input
                                     type="number"
                                     value="91"
+                                    name="dialcode"
                                     className="w-20 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    onChange={inputHandler}
                                 />
 
-                                <input
+                                <Input
                                     type="number"
                                     placeholder="Phone number"
-                                    className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-[#191919] px-4 py-2.5 text-white outline-none placeholder:text-gray-600 focus:border-violet-500"
+                                    name="phone_number"
+                                    value={createFormData.phone_number}
+                                    onChange={inputHandler}
+                                    errorMessage={createFormErrorData.phone_number}
+                                    className="w-62 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    // min="10"
+                                    // max="10"
                                 />
                             </div>
                         </div>
 
                         <Select
                             label="Gender"
+                            name="gender"
                             options={[
-                                { label: "male", value: "Male" },
-                                { label: "female", value: "Female" },
-                                { label: "others", value: "Others" }
+                                { label: "Male", value: "Male" },
+                                { label: "Female", value: "Female" },
+                                { label: "Others", value: "Others" }
                             ]}
+                            value={createFormData.gender}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.gender}
                         />
 
                         <Input
@@ -122,23 +165,41 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                             type="date"
                             placeholder="Enter date of birth"
                             name="dob"
-                            // value={password}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.dob}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.dob}
                         />
 
                         <Select
                             label="Role"
+                            name="role"
+                            value={createFormData.role}
+                            onChange={inputHandler}
                             options={[
-                                { label: "staff", value: "Staff" },
-                                { label: "admin", value: "Administrator" }
+                                { label: "Staff", value: "staff" },
+                                { label: "Admin", value: "administrator" }
                             ]}
+                            errorMessage={createFormErrorData.role}
                         />
                     </div>
 
                     {/* Buttons */}
                     <div className="mt-6 flex justify-end gap-3 border-t border-[#252525] pt-5">
                         <CancelButton type="button" onClick={closeModal}>Cancel</CancelButton>
-                        <Button type="submit">Create Staff</Button>
+                        <Button
+                            type="submit"
+                            disabled={submitLoader}
+                            buttonClass="flex items-center justify-center gap-2 rounded-xl py-3"
+                        >
+                            {
+                                submitLoader ? (
+                                    <>
+                                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                                        Creating Staff...
+                                    </>
+                                ) : "Create Staff"
+                            }
+                        </Button>
                     </div>
                 </form>
             </div>

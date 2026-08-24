@@ -5,6 +5,7 @@ import {
 	Clock3,
 	CheckCircle2,
 } from "lucide-react";
+import { formatDateTime } from "../../utils/date";
 
 function ViewTaskModel({ modal, selectedTask, closeModal }) {
 
@@ -16,7 +17,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 						<div className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
 							<div>
 								<p className="text-xs text-neutral-600">
-									{selectedTask.id}
+									{selectedTask.task_id}
 								</p>
 								<h2 className="mt-1 font-semibold">
 									{selectedTask.task}
@@ -45,7 +46,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 									Description
 								</p>
 								<p className="text-sm leading-6 text-neutral-400">
-									{selectedTask.description}
+									{selectedTask.task_description}
 								</p>
 							</div>
 
@@ -59,7 +60,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 										Due Date
 									</p>
 									<p className="mt-1 text-sm">
-										{selectedTask.dueDate}
+										{formatDateTime(selectedTask.due_date)}
 									</p>
 								</div>
 
@@ -72,7 +73,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 										Assigned Staff
 									</p>
 									<p className="mt-1 text-sm">
-										{selectedTask.assignedStaff}
+										{selectedTask.assigned_staff.first_name} {selectedTask.assigned_staff.last_name}
 									</p>
 								</div>
 
@@ -85,7 +86,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 										Created
 									</p>
 									<p className="mt-1 text-sm">
-										{selectedTask.createdAt}
+										{formatDateTime(selectedTask.createdAt)}
 									</p>
 								</div>
 							</div>
@@ -99,13 +100,13 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 								</p>
 							</div>
 
-							<div className="mt-6">
+							{/* <div className="mt-6">
 								<h3 className="mb-4 text-sm font-medium">
 									Status History
 								</h3>
 
 								<div className="space-y-3">
-									{selectedTask.statusHistory.map(
+									{selectedTask.activities.map(
 										(history, index) => (
 											<div
 												key={index}
@@ -121,21 +122,21 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 												<div>
 													<div className="flex flex-wrap items-center gap-2">
 														<span className="text-sm capitalize">
-															{history.status}
+															{history.task_type}
 														</span>
 														<span className="text-xs text-neutral-600">
-															{history.date}
+															{formatDateTime(history.createdAt)}
 														</span>
 													</div>
 													<p className="mt-1 text-xs text-neutral-500">
-														{history.description}
+														{history.task_activity}
 													</p>
 												</div>
 											</div>
 										)
 									)}
 								</div>
-							</div>
+							</div> */}
 						</div>
 					</div>
 				</div>

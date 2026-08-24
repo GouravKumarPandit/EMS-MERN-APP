@@ -7,9 +7,9 @@ const DashboardLayout = () => {
     return (
         <div className="min-h-screen bg-black text-white">
             <Sidebar />
-            <div className="ml-64 min-h-screen">
+            <div className="ml-64 min-h-screen flex flex-col">
                 <Header />
-                <main className="p-6">
+                <main className="flex-1 p-6">
                     <Outlet />
                 </main>
                 <Footer />

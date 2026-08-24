@@ -3,8 +3,34 @@ import Button from "../Ui/Button";
 import Input from "../Ui/Input";
 import CancelButton from "../Ui/CancelButton";
 import Select from "../Ui/Select";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import { updateStaff } from "../../api/staff";
 
-const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
+const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData, closeModal }) => {
+    const [submitLoader, setSubmitLoader] = useState(false);
+
+    const submitHandler = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await updateStaff(selectedStaff._id, createFormData);
+            if(response.data.success){
+                toast.success(response?.data?.message);
+            }
+            closeModal();
+        } catch (error) {
+            error.response.data.errors.map((error) => {
+                setCreateFormErrorData((prev) => ({
+                    ...prev,
+                    [error.path]: error.msg
+                }))
+            })
+            toast.error(error.response.data.message);
+        } finally{
+            setSubmitLoader(false);
+        }
+    }
 
     if (modal !== "edit" || !selectedStaff) {
         return null;
@@ -32,25 +58,27 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
                     </Button>
                 </div>
 
-                <form className="p-6">
+                <form className="p-6" onSubmit={submitHandler}>
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                         <Input
                             label="First Name" 
                             type="text"
                             placeholder="Enter first name"
-                            name="firstName"
+                            name="first_name"
                             required="required"
-                            defaultValue={selectedStaff.first_name}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.first_name}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.first_name}
                         />
                         <Input
                             label="Last Name" 
                             type="text"
                             placeholder="Enter last name"
-                            name="lastName"
+                            name="last_name"
                             required="required"
-                            defaultValue={selectedStaff.last_name}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.last_name}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.last_name}
                         />
 
                         <Input
@@ -61,7 +89,6 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
                             required="required"
                             value={selectedStaff.username}
                             readOnly
-                            // onChange={(e) => setPassword(e.target.value)}
                         />
 
                         <Input
@@ -70,8 +97,9 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
                             placeholder="Enter email"
                             name="email"
                             required="required"
-                            value={selectedStaff.email}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.email}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.email}
                         />
 
                         {/* Phone */}
@@ -81,28 +109,36 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
                             </label>
 
                             <div className="flex gap-2">
-                                <input
+                                <Input
                                     type="number"
-                                    defaultValue={selectedStaff.dialcode}
+                                    value={createFormData.dialcode}
+                                    name="dialcode"
                                     className="w-20 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    onChange={inputHandler}
                                 />
 
-                                <input
+                                <Input
                                     type="number"
-                                    defaultValue={selectedStaff.phone_number}
+                                    name="phone_number"
                                     className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-[#191919] px-4 py-2.5 text-white outline-none focus:border-violet-500"
+                                    value={createFormData.phone_number}
+                                    onChange={inputHandler}
+                                    errorMessage={createFormErrorData.phone_number}
                                 />
                             </div>
                         </div>
 
                         <Select
                             label="Gender"
+                            name="gender"
                             options={[
-                                { label: "male", value: "Male" },
-                                { label: "female", value: "Female" },
-                                { label: "others", value: "Others" }
+                                { label: "Male", value: "Male" },
+                                { label: "Female", value: "Female" },
+                                { label: "Others", value: "Others" }
                             ]}
-                            defaultValue={selectedStaff.gender}
+                            value={createFormData.gender}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.gender}
                         />
 
                         <Input
@@ -110,29 +146,44 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
                             type="date"
                             placeholder="Enter date of birth"
                             name="dob"
-                            defaultValue={selectedStaff.dob}
-                            // onChange={(e) => setPassword(e.target.value)}
+                            value={createFormData.dob}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.dob}
                         />
 
                         <Select
                             label="Role"
+                            name="role"
                             options={[
-                                { label: "staff", value: "Staff" },
-                                { label: "admin", value: "Administrator" }
+                                { label: "Staff", value: "staff" },
+                                { label: "Admin", value: "administrator" }
                             ]}
-                            defaultValue={selectedStaff.role}
+                            value={createFormData.role}
+                            onChange={inputHandler}
+                            errorMessage={createFormErrorData.role}
                         />
                     </div>
 
                     {/* Buttons */}
                     <div className="mt-6 flex justify-end gap-3 border-t border-[#252525] pt-5">
-                        <Button type="button" onClick={closeModal}>
+                        <CancelButton type="button" onClick={closeModal}>
                             Cancel
-                        </Button>
-
-                        <CancelButton type="submit">
-                            Save Changes
                         </CancelButton>
+
+                        <Button
+                            type="submit"
+                            disabled={submitLoader}
+                            buttonClass="flex items-center justify-center gap-2 rounded-xl py-3"
+                        >
+                            {
+                                submitLoader ? (
+                                    <>
+                                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                                        Updating Staff...
+                                    </>
+                                ) : "Save Changes"
+                            }
+                        </Button>
                     </div>
                 </form>
             </div>

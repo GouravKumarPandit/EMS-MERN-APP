@@ -8,6 +8,11 @@ const taskSchema = new mongoose.Schema(
             maxlength: 100,
             trim: true,
         },
+        task_id: {
+            type: String,
+            required: true,
+            trim: true
+        },
         task_description: {
             type: String,
             maxlength: 500,

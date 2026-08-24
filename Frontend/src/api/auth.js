@@ -9,7 +9,7 @@ export const logoutApi = () => {
     return api.post("/api/auth/logout");
 }
 
-export const profile = () => {
+export const profileApi = () => {
     return api.get("/api/auth/me");
 }
 

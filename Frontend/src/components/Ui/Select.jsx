@@ -1,4 +1,6 @@
-export default function Select({ label, options = [], divClass = "", selectClass = "", labelClass = "", ...props }) {
+import ValidationError from "./ValidationError";
+
+export default function Select({ label, options = [], divClass = "", selectClass = "", labelClass = "", errorMessage = "", ...props }) {
     return (
         <div className={divClass}>
             {label && <label className={`mb-2 block text-sm text-neutral-300 ${labelClass}`}>{label}</label>}
@@ -13,6 +15,9 @@ export default function Select({ label, options = [], divClass = "", selectClass
                     </option>
                 ))}
             </select>
+            {
+                errorMessage && <ValidationError error={errorMessage} /> 
+            }
         </div>
     )
 }

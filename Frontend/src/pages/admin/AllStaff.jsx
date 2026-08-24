@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StaffFilters from "../../components/Staffs/StaffFilters";
 import StaffTable from "../../components/Staffs/StaffTable";
 
@@ -7,20 +7,89 @@ import ViewStaffModal from "../../components/Staffs/ViewStaffModal";
 import EditStaffModal from "../../components/Staffs/EditStaffModal";
 import DeleteStaffModal from "../../components/Staffs/DeleteStaffModal";
 import Button from "../../components/Ui/Button";
+import { getAllStaff, getStaffById } from "../../api/staff";
 
 const AllStaff = () => {
     const [modal, setModal] = useState(null);
+    const [staffs, setStaffs] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState(null);
+    const [createFormData, setCreateFormData] = useState({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        dialcode: 91,
+        phone_number: "",
+        gender: "",
+        dob: "",
+        role: "",
+    });
+    const [createFormErrorData, setCreateFormErrorData] = useState({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        dialcode: 91,
+        phone_number: "",
+        gender: "",
+        dob: "",
+        role: "",
+    });
 
     const openModal = (type, staff = null) => {
         setSelectedStaff(staff);
         setModal(type);
+
+        if (type === "view") {
+            const getStaff = async (staffId) => {
+                const response = await getStaffById(staffId);
+                setSelectedStaff(response.data.data);
+            }
+            getStaff(staff._id);
+        }
+
+        if(type === "edit"){
+            setCreateFormData({
+                first_name: staff.first_name || "",
+                last_name: staff.last_name || "",
+                email: staff.email || "",
+                dialcode: staff.dialcode || 91,
+                phone_number: staff.phone_number || "",
+                gender: staff.gender || "",
+                dob: staff.dob || "",
+                role: staff.role || "",
+            })
+        }
     };
 
     const closeModal = () => {
         setModal(null);
         setSelectedStaff(null);
     };
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setCreateFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+
+        setCreateFormErrorData((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
+    }
+
+    useEffect(() => {
+        const loadStaff = async () => {
+            const response = await getAllStaff();
+            setStaffs(response.data.data);
+        }
+
+        loadStaff();
+    }, [modal])
 
     return (
         <div className="min-h-screen bg-black text-white p-4 md:p-6">
@@ -45,11 +114,21 @@ const AllStaff = () => {
             </div>
 
             <StaffFilters />
-            <StaffTable openModal={openModal}/>
+            <StaffTable openModal={openModal} staffs={staffs} />
 
-            <CreateStaffModal modal={modal} closeModal={closeModal} />
+            <CreateStaffModal 
+                modal={modal} 
+                createFormData={createFormData} inputHandler={inputHandler} 
+                createFormErrorData={createFormErrorData} setCreateFormErrorData={setCreateFormErrorData}
+                closeModal={closeModal} 
+            />
             <ViewStaffModal modal={modal} selectedStaff={selectedStaff} closeModal={closeModal} />
-            <EditStaffModal modal={modal} selectedStaff={selectedStaff} closeModal={closeModal} />
+            <EditStaffModal 
+                modal={modal} selectedStaff={selectedStaff} 
+                createFormData={createFormData} inputHandler={inputHandler} 
+                createFormErrorData={createFormErrorData} setCreateFormErrorData={setCreateFormErrorData}
+                closeModal={closeModal} 
+            />
             <DeleteStaffModal modal={modal} selectedStaff={selectedStaff} closeModal={closeModal} />
         </div>
     );

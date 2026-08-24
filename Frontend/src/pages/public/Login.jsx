@@ -25,10 +25,20 @@ function Login() {
     const navigate = useNavigate();
 
     const inputHandler = (event) => {
-        setLoginForm({
-            ...loginForm,
-            [event.target.name]: event.target.value
-        });
+        const { name, value } = event.target;
+
+        setLoginForm(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        if (name === "username") {
+            setUsernameError("");
+        }
+
+        if (name === "password") {
+            setPasswordError("");
+        }
     }
 
     const submitHandler = async (e) => {
@@ -36,9 +46,8 @@ function Login() {
         setLoading(true);
 
         try {
-            const data = await login(loginForm);
-            console.log(data)
-            toast.success(data?.message);
+            const response = await login(loginForm);
+            toast.success(response?.message);
             navigate("/dashboard");
         } catch (error) {
             if (error.response?.data?.message === "Username not found!") setUsernameError(error.response?.data?.message);
@@ -55,7 +64,7 @@ function Login() {
             setPasswordError("");
         }, 5000);
 
-        return () => clearInterval(timer);
+        return () => clearTimeout(timer);
     }, [usernameError, passwordError]);
 
     return (
@@ -127,7 +136,7 @@ function Login() {
                         </p>
                     </div>
 
-                    <form className="space-y-5" onSubmit={(e) => submitHandler(e)}>
+                    <form className="space-y-5" onSubmit={submitHandler}>
                         <Input
                             label="Username"
                             labelClass="mb-2 block text-sm font-medium text-gray-500"
@@ -137,7 +146,7 @@ function Login() {
                             placeholder="Enter your username"
                             name="username"
                             value={loginForm.username}
-                            onChange={(event) => inputHandler(event)}
+                            onChange={inputHandler}
                             errorMessage={usernameError}
                         />
 
@@ -150,7 +159,7 @@ function Login() {
                             placeholder="Enter your password"
                             name="password"
                             value={loginForm.password}
-                            onChange={(event) => inputHandler(event)}
+                            onChange={inputHandler}
                             errorMessage={passwordError}
                         />
 

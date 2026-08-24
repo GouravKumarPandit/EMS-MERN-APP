@@ -1,6 +1,8 @@
-import { X } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { formatDateTime } from "../../utils/date";
 
-function Profile({selectedStaff}) {
+function Profile() {
+    const { user: selectedStaff } = useAuth();
     const fullName = `${selectedStaff?.first_name} ${selectedStaff?.last_name}`;
 
     return (
@@ -42,7 +44,7 @@ function Profile({selectedStaff}) {
                             <Info label="Gender" value={selectedStaff?.gender} />
                             <Info label="Date of Birth" value={selectedStaff?.dob} />
                             <Info label="Role" value={selectedStaff?.role} />
-                            <Info label="Created At" value={selectedStaff?.createdAt} />
+                            <Info label="Created At" value={formatDateTime(selectedStaff?.createdAt)} />
                         </div>
                     </div>
                 </div>

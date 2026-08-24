@@ -4,63 +4,7 @@ import {
     Trash2,
 } from "lucide-react";
 
-const StaffTable = ({ openModal }) => {
-    // Dummy data
-    const staffs = [
-        {
-            _id: "1",
-            first_name: "Gourav",
-            last_name: "Pandit",
-            username: "gourav123",
-            email: "gourav@example.com",
-            dialcode: 91,
-            phone_number: 9876543210,
-            gender: "male",
-            dob: "1998-05-15",
-            role: "admin",
-            createdAt: "2026-08-10",
-        },
-        {
-            _id: "2",
-            first_name: "Rahul",
-            last_name: "Kumar",
-            username: "rahul123",
-            email: "rahul@example.com",
-            dialcode: 91,
-            phone_number: 9876543211,
-            gender: "male",
-            dob: "1997-08-20",
-            role: "staff",
-            createdAt: "2026-08-11",
-        },
-        {
-            _id: "3",
-            first_name: "Priya",
-            last_name: "Sharma",
-            username: "priya123",
-            email: "priya@example.com",
-            dialcode: 91,
-            phone_number: 9876543212,
-            gender: "female",
-            dob: "1999-02-12",
-            role: "staff",
-            createdAt: "2026-08-12",
-        },
-        {
-            _id: "4",
-            first_name: "Amit",
-            last_name: "Singh",
-            username: "amit123",
-            email: "amit@example.com",
-            dialcode: 91,
-            phone_number: 9876543213,
-            gender: "male",
-            dob: "1996-11-03",
-            role: "staff",
-            createdAt: "2026-08-13",
-        },
-    ];
-
+const StaffTable = ({ openModal, staffs }) => {
     const getFullName = (staff) => {
         return `${staff.first_name} ${staff.last_name}`;
     };
@@ -82,7 +26,7 @@ const StaffTable = ({ openModal }) => {
                     <thead className="bg-[#171717] text-xs uppercase tracking-wider text-gray-500">
                         <tr>
                             <th className="px-5 py-4">Staff</th>
-                            <th className="px-5 py-4">Username</th>
+                            {/* <th className="px-5 py-4">Username</th> */}
                             <th className="px-5 py-4">Email</th>
                             <th className="px-5 py-4">Phone</th>
                             <th className="px-5 py-4">Gender</th>
@@ -92,7 +36,7 @@ const StaffTable = ({ openModal }) => {
                     </thead>
 
                     <tbody className="divide-y divide-[#252525]">
-                        {staffs.map((staff) => (
+                        {staffs.length ? staffs.map((staff) => (
                             <tr
                                 key={staff._id}
                                 className="hover:bg-[#171717] transition"
@@ -108,17 +52,11 @@ const StaffTable = ({ openModal }) => {
                                             <p className="font-medium">
                                                 {getFullName(staff)}
                                             </p>
-
                                             <p className="text-xs text-gray-500">
-                                                {staff.email}
+                                                @{staff.username}
                                             </p>
                                         </div>
                                     </div>
-                                </td>
-
-                                {/* Username */}
-                                <td className="px-5 py-4 text-sm text-gray-300">
-                                    @{staff.username}
                                 </td>
 
                                 {/* Email */}
@@ -133,16 +71,13 @@ const StaffTable = ({ openModal }) => {
 
                                 {/* Gender */}
                                 <td className="px-5 py-4">
-
                                     <span className="capitalize text-sm text-gray-300">
                                         {staff.gender}
                                     </span>
-
                                 </td>
 
                                 {/* Role */}
                                 <td className="px-5 py-4">
-
                                     <span
                                         className={`rounded-full px-3 py-1 text-xs font-medium ${
                                             staff.role === "admin"
@@ -152,7 +87,6 @@ const StaffTable = ({ openModal }) => {
                                     >
                                         {staff.role}
                                     </span>
-
                                 </td>
 
                                 {/* Actions */}
@@ -193,7 +127,15 @@ const StaffTable = ({ openModal }) => {
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        )) : (
+                            <tr
+                                className="hover:bg-[#171717] transition"
+                            >
+                                <td colSpan="6" className="px-5 py-4 text-sm text-gray-400 text-center">
+                                    No staff found!
+                                </td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>

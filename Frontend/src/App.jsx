@@ -1,7 +1,7 @@
 import './App.css';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AllStaff from './pages/admin/AllStaff';
 import AllTasks from './pages/admin/AllTasks';
@@ -10,6 +10,8 @@ import ChangePassword from './pages/admin/ChangePassword';
 import Profile from './pages/admin/Profile';
 import DashboardLayout from './pages/admin/DashboardLayout';
 import Login from './pages/public/Login';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
+import AdminRoute from './components/Auth/AdminRoute';
 
 function App() {
 
@@ -17,20 +19,26 @@ function App() {
 		<>
 			<Routes>
 				{/* Public Routes */}
-				<Route
-					path="/login"
-					element={<Login />}
-				/>
+				<Route path="/login" element={<Login />} />
 
 				{/* Protected/Application Layout */}
-				<Route element={<DashboardLayout />}>
-					<Route path="/dashboard" element={<AdminDashboard />} />
-					<Route path="/tasks" element={<AllTasks />} />
-					<Route path="/staffs" element={<AllStaff />} />
-					<Route path="/settings" element={<Settings />} />
-					<Route path="/change-password" element={<ChangePassword />} />
-					<Route path="/profile" element={<Profile />} />
+				<Route element={<ProtectedRoute />}>
+					<Route element={<DashboardLayout />}>
+                        <Route path="/dashboard" element={<AdminDashboard />} />
+                        <Route path="/tasks" element={<AllTasks />} />
+                        <Route path="/change-password" element={<ChangePassword />} />
+                        <Route path="/profile" element={<Profile />} />
+
+                        {/* Admin Only */}
+                        <Route element={<AdminRoute />}>
+                            <Route path="/staffs" element={<AllStaff />} />
+                            <Route path="/settings" element={<Settings />} />
+                        </Route>
+                    </Route>
 				</Route>
+
+				{/* Unknown URL */}
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
 			</Routes>
 
 			<ToastContainer position="top-right" autoClose={5000} theme="dark" />

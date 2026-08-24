@@ -20,9 +20,10 @@ export const getAllTask = asyncHandler(async (req, res, next) => {
 
 export const createTask = asyncHandler(async (req, res, next) => {
     const { task, task_description, priority, status, status_description, due_date, assigned_staff } = req.body; 
+    const task_id = Date.now();
 
     const createTask = new Task({
-        task, task_description, priority, status, status_description, due_date, assigned_staff
+        task, task_id, task_description, priority, status, status_description, due_date, assigned_staff
     });
     await createTask.save();
 
@@ -58,7 +59,7 @@ export const getTaskById = asyncHandler(async (req, res, next) => {
     const taskId = req.params.id;
     if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
 
-    const task = await Task.findById(taskId).lean();
+    const task = await Task.findById(taskId).populate("assigned_staff", "first_name last_name email username").lean();
 
     if(!task) return next(createError('Task not found!', 404)); 
 
@@ -80,13 +81,14 @@ export const updateTask = asyncHandler(async (req, res, next) => {
 
     const { role, id: staffId } = req.user;
     const { task, task_description, priority, status, status_description, due_date, assigned_staff } = req.body; 
-
+    const task_id = Date.now();
+    
     const updateTask = await Task.findById(taskId);
     if(!updateTask) return next(createError("Task not found!", 404));
 
-    if(role !== "admin" && staffId.toString() !== updateTask.assigned_staff.toString()) return next(createError('Unauthorized action!', 403)); 
+    if(role !== "admin" && staffId.toString() !== updateTask?.assigned_staff.toString()) return next(createError('Unauthorized action!', 403)); 
     if (role !== "admin") {
-        if (assigned_staff && assigned_staff.toString() !== updateTask.assigned_staff.toString()) {
+        if (assigned_staff && assigned_staff.toString() !== updateTask?.assigned_staff.toString()) {
             return next(
                 createError(
                     "Staff cannot reassign tasks!",
@@ -102,7 +104,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
         task_activity: `Task updated by.`,
         updated_by: req.user.id
     }];
-    if(updateTask.assigned_staff.toString() !== assigned_staff.toString()){
+    if(updateTask?.assigned_staff?.toString() !== assigned_staff.toString()){
         const assignedStaff = await getUserFullNameById(assigned_staff);
         activities.push({
             task: updateTask._id,
@@ -113,7 +115,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             updated_by: req.user.id
         });
     }
-    if(updateTask.priority !== priority){
+    if(updateTask?.priority !== priority){
         activities.push({
             task: updateTask._id,
             task_type: "priority_changed",
@@ -123,7 +125,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             updated_by: req.user.id
         });
     }
-    if(updateTask.status !== status){
+    if(updateTask?.status !== status){
         activities.push({
             task: updateTask._id,
             task_type: "status_changed",
@@ -134,7 +136,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
         });
     }
 
-    const oldDueDate = updateTask.due_date
+    const oldDueDate = updateTask?.due_date
         ? new Date(updateTask.due_date).getTime()
         : null;
 
@@ -153,6 +155,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
     }
     
     updateTask.task = task;
+    updateTask.task_id = updateTask.task_id ? updateTask.task_id : task_id;
     updateTask.task_description = task_description;
     updateTask.priority = priority;
     updateTask.status = status;
