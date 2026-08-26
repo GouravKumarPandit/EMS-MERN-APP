@@ -4,6 +4,7 @@ import asyncHandler from "../utils/asyncHandler.js"
 import createError from "../utils/createError.js";
 import bcrypt from "bcrypt";
 import { Task } from "../models/task.model.js";
+import { TaskActivity } from "../models/taskActivity.model.js";
 
 export const dashboard = asyncHandler(async (req, res, next) => {
     const { role, id: staffId } = req.user;
@@ -260,6 +261,18 @@ export const deleteStaff = asyncHandler(async (req, res, next) => {
 
     const staff = await User.findById(staffId);
     if(!staff) return next(createError("Staff not found!", 404));
+
+    //Uninitialize all the task of the deleted staff. 
+    const tasks = await Task.updateMany(
+        {
+            assigned_staff: staff._id
+        },
+        {
+            $unset: {
+                assigned_staff: 1
+            }
+        }
+    );
 
     await staff.deleteOne();
 

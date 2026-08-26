@@ -118,7 +118,7 @@ const AllStaff = () => {
 
             <CreateStaffModal 
                 modal={modal} 
-                createFormData={createFormData} inputHandler={inputHandler} 
+                createFormData={createFormData} setCreateFormData={setCreateFormData} inputHandler={inputHandler} 
                 createFormErrorData={createFormErrorData} setCreateFormErrorData={setCreateFormErrorData}
                 closeModal={closeModal} 
             />

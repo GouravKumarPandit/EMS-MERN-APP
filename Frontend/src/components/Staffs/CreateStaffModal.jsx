@@ -7,7 +7,7 @@ import { useState } from "react";
 import { createStaff } from "../../api/staff";
 import { toast } from "react-toastify";
 
-const CreateStaffModal = ({ modal, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData,  closeModal }) => {
+const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandler, createFormErrorData, setCreateFormErrorData,  closeModal }) => {
     const [submitLoader, setSubmitLoader] = useState(false);
 
     const submitHandler = async (event) => {
@@ -18,6 +18,18 @@ const CreateStaffModal = ({ modal, createFormData, inputHandler, createFormError
             if(response.data.success){
                 toast.success(response?.data?.message);
             }
+            setCreateFormData({
+                first_name: "",
+                last_name: "",
+                username: "",
+                email: "",
+                password: "",
+                dialcode: 91,
+                phone_number: "",
+                gender: "",
+                dob: "",
+                role: "",
+            });
             closeModal();
         } catch (error) {
             error.response.data.errors.map((error) => {

@@ -56,7 +56,7 @@ const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {
                         <Info label="Email" value={selectedStaff?.staff?.email} />
                         <Info label="Phone" value={`+${selectedStaff?.staff?.dialcode} ${selectedStaff?.staff?.phone_number}`} />
                         <Info label="Gender" value={selectedStaff?.staff?.gender} />
-                        <Info label="Date of Birth" value={selectedStaff?.staff?.dob} />
+                        <Info label="Date of Birth" value={formatDateTime(selectedStaff?.staff?.dob)} />
                         <Info label="Role" value={selectedStaff?.staff?.role} />
                         <Info label="Created At" value={formatDateTime(selectedStaff?.staff?.createdAt)} />
                     </div>

@@ -6,6 +6,7 @@ import Select from "../Ui/Select";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { updateStaff } from "../../api/staff";
+import formatDateForInput from "../../utils/formatDateForInput";
 
 const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData, closeModal }) => {
     const [submitLoader, setSubmitLoader] = useState(false);
@@ -132,9 +133,9 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             label="Gender"
                             name="gender"
                             options={[
-                                { label: "Male", value: "Male" },
-                                { label: "Female", value: "Female" },
-                                { label: "Others", value: "Others" }
+                                { label: "Male", value: "male" },
+                                { label: "Female", value: "female" },
+                                { label: "Others", value: "others" }
                             ]}
                             value={createFormData.gender}
                             onChange={inputHandler}
@@ -146,7 +147,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             type="date"
                             placeholder="Enter date of birth"
                             name="dob"
-                            value={createFormData.dob}
+                            value={formatDateForInput(createFormData.dob)}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.dob}
                         />
@@ -156,7 +157,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             name="role"
                             options={[
                                 { label: "Staff", value: "staff" },
-                                { label: "Admin", value: "administrator" }
+                                { label: "Admin", value: "admin" }
                             ]}
                             value={createFormData.role}
                             onChange={inputHandler}

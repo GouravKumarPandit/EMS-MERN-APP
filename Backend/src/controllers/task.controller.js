@@ -32,8 +32,9 @@ export const createTask = asyncHandler(async (req, res, next) => {
         {
             task: createTask._id,
             task_type: "created",
-            task_activity: `Task created by ${createdBy}.`,
-            updated_by: req.user.id
+            task_activity: `Task created.`,
+            updated_by: req.user.id,
+            updated_by_name: `${createdBy}`
         }
     ];
     if(assigned_staff){
@@ -42,7 +43,8 @@ export const createTask = asyncHandler(async (req, res, next) => {
             task: createTask._id,
             task_type: "assigned",
             task_activity: `Task assigned to ${assignedStaff}.`,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${createdBy}`
         });
     }
 
@@ -98,11 +100,13 @@ export const updateTask = asyncHandler(async (req, res, next) => {
         }
     }
 
+    const loggedInUser = await getUserFullNameById(req.user.id);
     const activities = [{
         task: updateTask._id,
         task_type: "updated",
-        task_activity: `Task updated by.`,
-        updated_by: req.user.id
+        task_activity: `Task updated.`,
+        updated_by: req.user.id,
+        updated_by_name: `${loggedInUser}`
     }];
     if(updateTask?.assigned_staff?.toString() !== assigned_staff.toString()){
         const assignedStaff = await getUserFullNameById(assigned_staff);
@@ -112,7 +116,8 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             task_activity: `Task assigned to ${assignedStaff}.`,
             old_value: updateTask.assigned_staff,
             new_value: assigned_staff,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
         });
     }
     if(updateTask?.priority !== priority){
@@ -122,7 +127,8 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             task_activity: `Task priority changed from ${updateTask.priority} to ${priority}.`,
             old_value: updateTask.priority,
             new_value: priority,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
         });
     }
     if(updateTask?.status !== status){
@@ -132,7 +138,8 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             task_activity: `Task status changed from ${updateTask.status} to ${status}.`,
             old_value: updateTask.status,
             new_value: status,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
         });
     }
 
@@ -148,9 +155,9 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             task: updateTask._id,
             task_type: "due_date_changed",
             task_activity: `Task due date changed to ${due_date}.`,
-            updated_by: req.user.id,
             new_value: due_date,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
         });
     }
     
@@ -186,6 +193,7 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
     if(role !== "admin" && staffId.toString() !== task.assigned_staff.toString()) return next(createError('Unauthorized action!', 403)); 
 
     const activities = [];
+    const loggedInUser = await getUserFullNameById(req.user.id);
     if(task.priority !== priority){
         activities.push({
             task: task._id,
@@ -193,7 +201,8 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
             task_activity: `Task priority changed from ${task.priority} to ${priority}.`,
             old_value: task.priority,
             new_value: priority,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
         });
     }
     if(task.status !== status){
@@ -203,7 +212,8 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
             task_activity: `Task status changed from ${task.status} to ${status}.`,
             old_value: task.status,
             new_value: status,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
         });
     }
 
@@ -219,9 +229,9 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
             task: task._id,
             task_type: "due_date_changed",
             task_activity: `Task due date changed to ${due_date}.`,
-            updated_by: req.user.id,
             new_value: due_date,
-            updated_by: req.user.id
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
         });
     }    
     
@@ -251,11 +261,13 @@ export const deleteTask = asyncHandler(async (req, res, next) => {
 
     if(role !== "admin" && staffId.toString() !== task.assigned_staff) return next(createError('Unauthorized action!', 403)); 
 
+    const loggedInUser = await getUserFullNameById(req.user.id);
     const taskActivities = await TaskActivity.insertOne({
         task: task._id,
         task_type: "deleted",
         task_activity: `Task deleted.`,
-        updated_by: req.user.id
+        updated_by: req.user.id,
+        updated_by_name: `${loggedInUser}`
     });
 
     await task.deleteOne();

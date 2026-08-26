@@ -1,13 +1,57 @@
-import { LockKeyhole, Eye, EyeOff } from "lucide-react";
+import { LockKeyhole, Eye, EyeOff, Save, X } from "lucide-react";
 import { useState } from "react";
+import Button from "../Ui/Button";
+import CancelButton from "../Ui/CancelButton";
+import { changePassword } from "../../api/staff";
+import { toast } from "react-toastify";
+import Input from "../Ui/Input";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function ChangePasswordForm() {
+    const { user } = useAuth();
+    const [submitLoader, setSubmitLoader] = useState(false);
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+    })
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const submitHandler = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await changePassword(user._id, formData);
+            if(response.data.success){
+                toast.success(response?.data?.message);
+            }
+            setFormData({
+                currentPassword: "",
+                newPassword: "",
+                confirmPassword: "",
+            });
+        } catch (error) {
+            console.log("ERROR Response >> ", error.response.data.message);
+            toast.error(error.response.data.message);
+        } finally{
+            setSubmitLoader(false);
+        }
+    }
 
     return (
-        <>
+        <form onSubmit={submitHandler}>
             <div className="p-6 space-y-6">
                 {/* Current Password */}
                 <div>
@@ -23,11 +67,14 @@ function ChangePasswordForm() {
                             size={18}
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
                         />
-                        <input
+                        <Input
                             id="current-password"
                             type={showCurrent ? "text" : "password"}
                             placeholder="Enter current password"
                             className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
+                            name="currentPassword"
+                            value={formData.currentPassword}
+                            onChange={inputHandler}
                         />
                         <button
                             type="button"
@@ -55,11 +102,14 @@ function ChangePasswordForm() {
                             size={18}
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
                         />
-                        <input
+                        <Input
                             id="new-password"
                             type={showNew ? "text" : "password"}
                             placeholder="Enter new password"
                             className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
+                            name="newPassword"
+                            value={formData.newPassword}
+                            onChange={inputHandler}
                         />
                         <button
                             type="button"
@@ -87,11 +137,14 @@ function ChangePasswordForm() {
                             size={18}
                             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
                         />
-                        <input
+                        <Input
                             id="confirm-password"
                             type={showConfirm ? "text" : "password"}
                             placeholder="Confirm new password"
                             className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={inputHandler}
                         />
                         <button
                             type="button"
@@ -119,7 +172,34 @@ function ChangePasswordForm() {
                     </ul>
                 </div>
             </div>
-        </>
+
+            <div className="px-6 py-4 border-t border-neutral-800 flex justify-end gap-3">
+                <Button
+                    type="submit"
+                    disabled={submitLoader}
+                    buttonClass="flex items-center gap-2"
+                >
+                    <Save size={17} />
+                    {
+                        submitLoader ? (
+                            <>
+                                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                                Saving...
+                            </>
+                        ) : "Change Password"
+                    }
+                </Button>
+
+                <CancelButton
+                    type="button"
+                    onClick={() => (navigate("/dashboard"))}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-700 hover:bg-[#1c1c1c] transition"
+                >
+                    <X size={17} />
+                    Cancel
+                </CancelButton>
+            </div>
+        </form>
     )
 }
 

@@ -36,7 +36,11 @@ const TaskActivitySchema = new mongoose.Schema({
     updated_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: false
+    },
+    updated_by_name: {
+        type: String,
+        required: false
     }
 }, { timestamps: true });
 

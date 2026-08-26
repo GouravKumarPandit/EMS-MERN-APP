@@ -62,7 +62,7 @@ const createStaffValidation = [
     
     body("dob")
         .optional()
-        .isDate()
+        .isISO8601({ strict: true })
         .withMessage("Date of birth must be a valid date."),
 
     body("role")

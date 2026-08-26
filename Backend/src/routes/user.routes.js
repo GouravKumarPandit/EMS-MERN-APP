@@ -1,7 +1,7 @@
 import express from "express";
 import { dashboard, getAllStaff, createStaff, getStaffById, updateStaff, deleteStaff, changePassword } from "../controllers/user.controller.js";
 import { updateSettings } from "../controllers/settings.controller.js";
-import isLoggedIn from "../middleware/isLoggedIn.middleware.js"
+import isLoggedIn from "../middleware/isLoggedIn.middleware.js";
 import createStaffValidation from "../validators/createStaff.validator.js";
 import updateStaffValidation from "../validators/updateStaff.validator.js";
 import validate from "../middleware/validation.middleware.js";
