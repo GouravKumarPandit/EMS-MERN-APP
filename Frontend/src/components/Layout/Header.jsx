@@ -42,7 +42,7 @@ const Header = () => {
                             {user.first_name} {user.last_name}
                         </p>
 
-                        <p className="text-xs text-neutral-500">
+                        <p className="text-xs text-neutral-400">
                             {
                                 user.role === "admin" ? "Administrator" : "Staff"
                             }
@@ -51,7 +51,7 @@ const Header = () => {
 
                     <ChevronDown
                         size={18}
-                        className="text-neutral-500 transition group-hover:text-white"
+                        className="text-neutral-400 transition group-hover:text-white"
                     />
                 </button>
                 
@@ -67,7 +67,7 @@ const Header = () => {
                                         {user.first_name} {user.last_name}
                                     </p>
 
-                                    <p className="text-xs text-neutral-500">
+                                    <p className="text-xs text-neutral-400">
                                         {
                                             user.role === "admin" ? "Administrator" : "Staff"
                                         }

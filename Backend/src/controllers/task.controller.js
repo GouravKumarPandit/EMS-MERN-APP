@@ -23,7 +23,12 @@ export const createTask = asyncHandler(async (req, res, next) => {
     const task_id = Date.now();
 
     const createTask = new Task({
-        task, task_id, task_description, priority, status, status_description, due_date, assigned_staff
+        task, task_id, task_description, 
+        priority: priority ? priority : "low", 
+        status: status ? status : "pending", 
+        status_description, 
+        due_date: due_date ? due_date : "", 
+        assigned_staff: assigned_staff ? assigned_staff : null
     });
     await createTask.save();
 
@@ -65,7 +70,7 @@ export const getTaskById = asyncHandler(async (req, res, next) => {
 
     if(!task) return next(createError('Task not found!', 404)); 
 
-    const taskActivity = await TaskActivity.find({ task: taskId }).lean();
+    const taskActivity = await TaskActivity.find({ task: taskId }).populate("updated_by", "first_name last_name").lean();
 
     return res.status(200).json({
         success: true,
@@ -108,7 +113,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
         updated_by: req.user.id,
         updated_by_name: `${loggedInUser}`
     }];
-    if(updateTask?.assigned_staff?.toString() !== assigned_staff.toString()){
+    if(assigned_staff && updateTask?.assigned_staff?.toString() !== assigned_staff.toString()){
         const assignedStaff = await getUserFullNameById(assigned_staff);
         activities.push({
             task: updateTask._id,
@@ -166,9 +171,9 @@ export const updateTask = asyncHandler(async (req, res, next) => {
     updateTask.task_description = task_description;
     updateTask.priority = priority;
     updateTask.status = status;
-    updateTask.status_description = status_description;
-    updateTask.due_date = due_date;
-    updateTask.assigned_staff = assigned_staff;
+    updateTask.status_description = status_description ? status_description : null;
+    updateTask.due_date = due_date ? due_date : null;
+    updateTask.assigned_staff = assigned_staff ? assigned_staff : null;
     await updateTask.save();
     
     const taskActivities = await TaskActivity.insertMany(activities);

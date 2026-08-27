@@ -30,6 +30,18 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                 dob: "",
                 role: "",
             });
+            setCreateFormErrorData({
+                first_name: "",
+                last_name: "",
+                username: "",
+                email: "",
+                password: "",
+                dialcode: 91,
+                phone_number: "",
+                gender: "",
+                dob: "",
+                role: "",
+            });
             closeModal();
         } catch (error) {
             error.response.data.errors.map((error) => {
@@ -80,7 +92,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                             type="text"
                             placeholder="Enter first name"
                             name="first_name"
-                            required="required"
+                            required
                             value={createFormData.first_name}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.first_name}
@@ -91,7 +103,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                             type="text"
                             placeholder="Enter last name"
                             name="last_name"
-                            required="required"
+                            required
                             value={createFormData.last_name}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.last_name}
@@ -102,7 +114,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                             type="text"
                             placeholder="Enter username"
                             name="username"
-                            required="required"
+                            required
                             value={createFormData.username}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.username}
@@ -113,7 +125,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                             type="email"
                             placeholder="Enter email"
                             name="email"
-                            required="required"
+                            required
                             value={createFormData.email}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.email}
@@ -124,7 +136,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                             type="password"
                             placeholder="Enter password"
                             name="password"
-                            required="required"
+                            required
                             value={createFormData.password}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.password}
@@ -141,7 +153,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                                     type="number"
                                     value="91"
                                     name="dialcode"
-                                    className="w-20 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="w-20 rounded-lg border border-[#303030] bg-black px-3 py-2.5 text-white outline-none focus:border-violet-500"
                                     onChange={inputHandler}
                                 />
 
@@ -152,7 +164,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                                     value={createFormData.phone_number}
                                     onChange={inputHandler}
                                     errorMessage={createFormErrorData.phone_number}
-                                    className="w-62 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="w-62 rounded-lg border border-[#303030] bg-black px-3 py-2.5 text-white outline-none focus:border-violet-500"
                                     // min="10"
                                     // max="10"
                                 />
@@ -185,6 +197,7 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
                         <Select
                             label="Role"
                             name="role"
+                            required
                             value={createFormData.role}
                             onChange={inputHandler}
                             options={[

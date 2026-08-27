@@ -21,12 +21,12 @@ function TaskFilters() {
                 <div className="relative">
                     <Search
                         size={17}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
                     />
                     <input
                         type="text"
                         placeholder="Search task..."
-                        className="h-10 w-full rounded-lg border border-neutral-800 bg-black pl-10 pr-3 text-sm text-white outline-none placeholder:text-neutral-600 focus:border-violet-500"
+                        className="h-10 w-full rounded-lg border border-neutral-800 bg-black pl-10 pr-3 text-sm text-white outline-none placeholder:text-neutral-400 focus:border-violet-500"
                     />
                 </div>
 
@@ -43,7 +43,7 @@ function TaskFilters() {
 
                     <ChevronDown
                         size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500"
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400"
                     />
                 </div>
 
@@ -59,7 +59,7 @@ function TaskFilters() {
 
                     <ChevronDown
                         size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500"
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400"
                     />
                 </div>
 
@@ -76,7 +76,7 @@ function TaskFilters() {
 
                     <ChevronDown
                         size={16}
-                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500"
+                        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400"
                     />
                 </div>
             </div>

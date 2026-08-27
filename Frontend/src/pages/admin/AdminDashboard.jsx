@@ -66,7 +66,7 @@ function AdminDashboard() {
                                 My Tasks
                             </h2>
 
-                            <p className="mt-1 text-sm text-neutral-500">
+                            <p className="mt-1 text-sm text-neutral-400">
                                 Recently assigned tasks
                             </p>
                         </div>

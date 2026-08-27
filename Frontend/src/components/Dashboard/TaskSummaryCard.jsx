@@ -21,7 +21,7 @@ function TaskSummaryCard({ task }) {
                         task?.priority ? task?.priority : "None"
                     }
                 </span>
-                <span className="text-neutral-500">
+                <span className="text-neutral-400">
                     {
                         task?.due_date ? formatDateTime(task?.due_date) : formatDateTime(task?.createdAt)
                     }
@@ -32,12 +32,12 @@ function TaskSummaryCard({ task }) {
                 { task?.task }
             </h3>
 
-            <p className="mt-2 line-clamp-2 text-sm leading-5 text-neutral-500">
+            <p className="mt-2 line-clamp-2 text-sm leading-5 text-neutral-400">
                 { task?.task_description }
             </p>
 
             <div className="mt-5 flex items-center justify-between border-t border-neutral-800 pt-3">
-                <span className="text-xs text-neutral-600">
+                <span className="text-xs text-neutral-400">
                     Task #{ task?.task_id }
                 </span>
 

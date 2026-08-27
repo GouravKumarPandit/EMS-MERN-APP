@@ -21,7 +21,7 @@ const changeTaskStatusValidation = [
     body("due_date")
         .optional()
         .trim()
-        .isDate()
+        .isISO8601({ strict: true })
         .withMessage("Due date must be date"),
 ];
 

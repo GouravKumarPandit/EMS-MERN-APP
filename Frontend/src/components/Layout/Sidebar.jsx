@@ -58,7 +58,7 @@ const Sidebar = () => {
             </nav>
 
             <div className="border-t border-neutral-800 pt-4">
-                <p className="px-3 text-xs text-neutral-600">
+                <p className="px-3 text-xs text-neutral-400">
                     EMS Dashboard
                 </p>
             </div>

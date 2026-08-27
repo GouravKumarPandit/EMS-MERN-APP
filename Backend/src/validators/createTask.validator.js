@@ -9,29 +9,29 @@ const createTaskValidation = [
         .withMessage("Task must be maximum 100 characters long."),
 
     body("task_description")
-        .optional()
+        .optional({ values: "falsy" })
         .trim()
         .isLength({ max: 500 })
         .withMessage("Task description must be maximum 500 characters long."),
 
     body("priority")
-        .optional()
+        .optional({ values: "falsy" })
         .trim()
         .isIn(["high", "medium", "low"])
         .withMessage("Priority must be either 'high' or 'medium' or 'low'."),
 
     body("status")
-        .optional()
+        .optional({ values: "falsy" })
         .trim()
         .isIn(["pending", "accepted", "completed", "failed"])
         .withMessage("Status must be either 'pending' or 'accepted' or 'completed' or 'failed'."),
 
     body("status_description")
-        .optional()
+        .optional({ values: "falsy" })
         .trim(),
 
     body("due_date")
-        .optional()
+        .optional({ values: "falsy" })
         .trim()
         .isDate()
         .withMessage("Due date must be date"),

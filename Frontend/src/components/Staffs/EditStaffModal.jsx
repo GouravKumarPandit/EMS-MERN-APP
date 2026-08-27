@@ -66,7 +66,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             type="text"
                             placeholder="Enter first name"
                             name="first_name"
-                            required="required"
+                            required
                             value={createFormData.first_name}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.first_name}
@@ -76,7 +76,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             type="text"
                             placeholder="Enter last name"
                             name="last_name"
-                            required="required"
+                            required
                             value={createFormData.last_name}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.last_name}
@@ -87,7 +87,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             type="text"
                             placeholder="Enter username"
                             name="username"
-                            required="required"
+                            required
                             value={selectedStaff.username}
                             readOnly
                         />
@@ -97,7 +97,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             type="email"
                             placeholder="Enter email"
                             name="email"
-                            required="required"
+                            required
                             value={createFormData.email}
                             onChange={inputHandler}
                             errorMessage={createFormErrorData.email}
@@ -114,14 +114,14 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                                     type="number"
                                     value={createFormData.dialcode}
                                     name="dialcode"
-                                    className="w-20 rounded-lg border border-[#303030] bg-[#191919] px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="w-20 rounded-lg border border-[#303030] bg-black px-3 py-2.5 text-white outline-none focus:border-violet-500"
                                     onChange={inputHandler}
                                 />
 
                                 <Input
                                     type="number"
                                     name="phone_number"
-                                    className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-[#191919] px-4 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-black px-4 py-2.5 text-white outline-none focus:border-violet-500"
                                     value={createFormData.phone_number}
                                     onChange={inputHandler}
                                     errorMessage={createFormErrorData.phone_number}
@@ -155,6 +155,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                         <Select
                             label="Role"
                             name="role"
+                            required
                             options={[
                                 { label: "Staff", value: "staff" },
                                 { label: "Admin", value: "admin" }

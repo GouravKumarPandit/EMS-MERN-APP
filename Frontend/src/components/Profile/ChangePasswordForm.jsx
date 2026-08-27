@@ -60,6 +60,7 @@ function ChangePasswordForm() {
                         className="block text-sm font-medium mb-2"
                     >
                         Current Password
+                        <span className="ml-1 text-red-500">*</span>
                     </label>
 
                     <div className="relative">
@@ -96,6 +97,7 @@ function ChangePasswordForm() {
                         className="block text-sm font-medium mb-2"
                     >
                         New Password
+                        <span className="ml-1 text-red-500">*</span>
                     </label>
                     <div className="relative">
                         <LockKeyhole
@@ -131,6 +133,7 @@ function ChangePasswordForm() {
                         className="block text-sm font-medium mb-2"
                     >
                         Confirm Password
+                        <span className="ml-1 text-red-500">*</span>
                     </label>
                     <div className="relative">
                         <LockKeyhole

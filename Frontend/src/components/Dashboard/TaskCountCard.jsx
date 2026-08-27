@@ -13,7 +13,7 @@ function TaskCountCard({ taskName, taskCount, taskDetail, cardBg, hoverBg }) {
                 {taskCount}
             </h2>
 
-            <p className="mt-1 text-xs text-neutral-500">
+            <p className="mt-1 text-xs text-neutral-400">
                 {taskDetail}
             </p>
         </div>

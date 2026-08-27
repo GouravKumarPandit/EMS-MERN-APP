@@ -8,6 +8,7 @@ import EditStaffModal from "../../components/Staffs/EditStaffModal";
 import DeleteStaffModal from "../../components/Staffs/DeleteStaffModal";
 import Button from "../../components/Ui/Button";
 import { getAllStaff, getStaffById } from "../../api/staff";
+import { toast } from "react-toastify";
 
 const AllStaff = () => {
     const [modal, setModal] = useState(null);
@@ -47,7 +48,7 @@ const AllStaff = () => {
                 const response = await getStaffById(staffId);
                 setSelectedStaff(response.data.data);
             }
-            getStaff(staff._id);
+            getStaff(staff?._id);
         }
 
         if(type === "edit"){
@@ -67,6 +68,31 @@ const AllStaff = () => {
     const closeModal = () => {
         setModal(null);
         setSelectedStaff(null);
+
+        setCreateFormData({
+            first_name: "",
+            last_name: "",
+            username: "",
+            email: "",
+            password: "",
+            dialcode: 91,
+            phone_number: "",
+            gender: "",
+            dob: "",
+            role: "",
+        });
+        setCreateFormErrorData({
+            first_name: "",
+            last_name: "",
+            username: "",
+            email: "",
+            password: "",
+            dialcode: 91,
+            phone_number: "",
+            gender: "",
+            dob: "",
+            role: "",
+        });
     };
 
     const inputHandler = (event) => {
@@ -85,7 +111,8 @@ const AllStaff = () => {
     useEffect(() => {
         const loadStaff = async () => {
             const response = await getAllStaff();
-            setStaffs(response.data.data);
+            if(response.data.success) setStaffs(response.data.data);
+            else toast.error("Something went wrong!");
         }
 
         loadStaff();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskFilters from "../../components/Tasks/TaskFilters";
 import TaskTable from "../../components/Tasks/TaskTable";
 import CreateTaskModel from "../../components/Tasks/CreateTaskModel";
@@ -7,121 +7,113 @@ import EditTaskModel from "../../components/Tasks/EditTaskModel";
 import ChangeStatusModel from "../../components/Tasks/ChangeStatusModel";
 import DeleteTaskModel from "../../components/Tasks/DeleteTaskModel";
 import { Plus } from "lucide-react";
+import { getAllTask, getTaskById } from "../../api/task";
+import { toast } from "react-toastify";
+import { getAllStaff } from "../../api/staff";
 
 const AllTasks = () => {
-    // Samole Data 
-    const tasks = [
-        {
-            id: "TASK-001",
-            task: "Complete employee documentation",
-            description:
-                "Complete and verify all employee documentation before the deadline.",
-            priority: "high",
-            status: "pending",
-            dueDate: "20 Aug 2026",
-            assignedStaff: "Gourav Pandit",
-            createdAt: "14 Aug 2026",
-            statusDescription: "Task is waiting for staff acceptance.",
-            statusHistory: [
-                {
-                    status: "pending",
-                    description: "Task created.",
-                    date: "14 Aug 2026, 10:30 AM",
-                },
-            ],
-        },
-
-        {
-            id: "TASK-002",
-            task: "Update employee records",
-            description:
-                "Update employee records with the latest employee information.",
-            priority: "medium",
-            status: "accepted",
-            dueDate: "22 Aug 2026",
-            assignedStaff: "Rahul Sharma",
-            createdAt: "13 Aug 2026",
-            statusDescription: "Task accepted by staff.",
-            statusHistory: [
-                {
-                    status: "pending",
-                    description: "Task created.",
-                    date: "13 Aug 2026, 09:15 AM",
-                },
-                {
-                    status: "accepted",
-                    description: "Task accepted by Rahul Sharma.",
-                    date: "13 Aug 2026, 11:20 AM",
-                },
-            ],
-        },
-
-        {
-            id: "TASK-003",
-            task: "Prepare monthly report",
-            description:
-                "Prepare the monthly employee performance report.",
-            priority: "low",
-            status: "completed",
-            dueDate: "18 Aug 2026",
-            assignedStaff: "Amit Kumar",
-            createdAt: "10 Aug 2026",
-            statusDescription: "Report successfully completed.",
-            statusHistory: [
-                {
-                    status: "pending",
-                    description: "Task created.",
-                    date: "10 Aug 2026, 09:00 AM",
-                },
-                {
-                    status: "accepted",
-                    description: "Task accepted.",
-                    date: "10 Aug 2026, 10:00 AM",
-                },
-                {
-                    status: "completed",
-                    description: "Task completed successfully.",
-                    date: "17 Aug 2026, 04:30 PM",
-                },
-            ],
-        },
-
-        {
-            id: "TASK-004",
-            task: "Fix attendance records",
-            description:
-                "Check and fix incorrect attendance records.",
-            priority: "high",
-            status: "failed",
-            dueDate: "15 Aug 2026",
-            assignedStaff: "Priya Singh",
-            createdAt: "8 Aug 2026",
-            statusDescription: "Task could not be completed.",
-            statusHistory: [
-                {
-                    status: "pending",
-                    description: "Task created.",
-                    date: "8 Aug 2026, 10:00 AM",
-                },
-                {
-                    status: "failed",
-                    description: "Task failed because of incomplete data.",
-                    date: "14 Aug 2026, 05:30 PM",
-                },
-            ],
-        },
-    ];
-
+    const [tasks, setTasks] = useState([]);
+    const [staffs, setStaffs] = useState([]);
     const [modal, setModal] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [createFormData, setCreateFormData] = useState({
+        task: "",
+        task_description: "",
+        priority: "",
+        status: "",
+        status_description: "",
+        due_date: "",
+        assigned_staff: ""
+    });
+    const [createFormErrorData, setCreateFormErrorData] = useState({
+        task: "",
+        task_description: "",
+        priority: "",
+        status: "",
+        status_description: "",
+        due_date: "",
+        assigned_staff: ""
+    });
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setCreateFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+
+        setCreateFormErrorData((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
+    }
+
     const openModal = (type, task = null) => {
         setSelectedTask(task);
         setModal(type);
+
+        if (type === "view" || type === "status") {
+            const getTask = async (taskId) => {
+                const response = await getTaskById(taskId);
+                setSelectedTask(response.data.data);
+            }
+            getTask(task?._id);
+        }
+
+        if(type === "edit" || type === "status"){
+            setCreateFormData({
+                task: task?.task || "",
+                task_description: task?.task_description || "",
+                priority: task?.priority || "",
+                status: task?.status || "",
+                status_description: task?.status_description || "",
+                due_date: task?.due_date || "",
+                assigned_staff: task?.assigned_staff?._id || ""
+            });
+        }
     };
     const closeModal = () => {
         setModal(null);
         setSelectedTask(null);
+        setCreateFormErrorData({
+            task: "",
+            task_description: "",
+            priority: "",
+            status: "",
+            status_description: "",
+            due_date: "",
+            assigned_staff: ""
+        });
+        setCreateFormData({
+            task: "",
+            task_description: "",
+            priority: "",
+            status: "",
+            status_description: "",
+            due_date: "",
+            assigned_staff: ""
+        });
     };
+
+    useEffect(() => {
+        const loadTasks = async () => {
+            const response = await getAllTask();
+            if(response.data.success) setTasks(response.data.data);
+            else toast.error("Something went wrong!");
+        }
+
+        loadTasks();
+    }, [modal])
+
+    useEffect(() => {
+        const loadStaff = async () => {
+            const response = await getAllStaff();
+            if(response.data.success) setStaffs(response.data.data);
+            else toast.error("Something went wrong!");
+        }
+
+        loadStaff();
+    }, [modal])
 
 	return (
 		<div className="min-h-screen bg-black text-white">
@@ -131,7 +123,7 @@ const AllTasks = () => {
 						All Tasks
 					</h1>
 
-					<p className="mt-1 text-sm text-neutral-500">
+					<p className="mt-1 text-sm text-neutral-400">
 						Manage and monitor all employee tasks.
 					</p>
 				</div>
@@ -146,10 +138,23 @@ const AllTasks = () => {
 			</div>	
 			<TaskFilters />
 			<TaskTable tasks={tasks} openModal={openModal} />
-			<CreateTaskModel modal={modal} closeModal={closeModal} />
+			<CreateTaskModel 
+                modal={modal} closeModal={closeModal} staffs={staffs}
+                createFormData={createFormData} setCreateFormData={setCreateFormData} inputHandler={inputHandler} 
+                createFormErrorData={createFormErrorData} setCreateFormErrorData={setCreateFormErrorData}    
+            />
 			<ViewTaskModel modal={modal} selectedTask={selectedTask} closeModal={closeModal} />
-            <EditTaskModel modal={modal} selectedTask={selectedTask} closeModal={closeModal} />
-            <ChangeStatusModel modal={modal} selectedTask={selectedTask} closeModal={closeModal} />
+            <EditTaskModel 
+                modal={modal} selectedTask={selectedTask} closeModal={closeModal}
+                staffs={staffs}
+                createFormData={createFormData} inputHandler={inputHandler} 
+                createFormErrorData={createFormErrorData} setCreateFormErrorData={setCreateFormErrorData}
+            />
+            <ChangeStatusModel 
+                modal={modal} selectedTask={selectedTask} closeModal={closeModal}
+                createFormData={createFormData} inputHandler={inputHandler} 
+                createFormErrorData={createFormErrorData} setCreateFormErrorData={setCreateFormErrorData}
+            />
             <DeleteTaskModel modal={modal} selectedTask={selectedTask} closeModal={closeModal} />
 		</div>
 	);
