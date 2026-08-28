@@ -9,7 +9,6 @@ import { formatDateTime } from "../../utils/date";
 import NoData from "../Ui/NoData";
 
 function ViewTaskModel({ modal, selectedTask, closeModal }) {
-	console.log("Clicking >> ", selectedTask);
 
     return (
         <>
@@ -35,21 +34,21 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 
 						<div className="max-h-[75vh] overflow-y-auto p-6">
 							<div className="mb-5 flex gap-2">
-								<span className={`rounded-md border px-3 py-1 text-xs capitalize ${selectedTask?.task?.priority === "high"
-                                    ? "border-red-500/20 bg-red-500/10 text-red-400"
-                                    : selectedTask?.task?.priority === "medium"
-                                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
-                                        : selectedTask?.task?.priority === "low"
-                                            ?"border-green-500/20 bg-green-500/10 text-green-400"
-                                            : "border-red-500/20 bg-red-500/10 text-red-400"
-                                    }`}>
-									{selectedTask?.task?.status ? selectedTask?.task?.status : "None"}
-								</span>
 								<span className={`rounded-md border px-3 py-1 text-xs capitalize ${selectedTask?.task?.status === "pending"
                                     ? "border-blue-500/20 bg-blue-500/10 text-blue-400"
                                     : selectedTask?.task?.status === "accepted"
                                         ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
                                         : selectedTask?.task?.status === "completed"
+                                            ?"border-green-500/20 bg-green-500/10 text-green-400"
+                                            : "border-red-500/20 bg-red-500/10 text-red-400"
+                                    }`}>
+									{selectedTask?.task?.status ? selectedTask?.task?.status : "None"}
+								</span>
+								<span className={`rounded-md border px-3 py-1 text-xs capitalize ${selectedTask?.task?.priority === "high"
+                                    ? "border-red-500/20 bg-red-500/10 text-red-400"
+                                    : selectedTask?.task?.priority === "medium"
+                                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
+                                        : selectedTask?.task?.priority === "low"
                                             ? "border-green-500/20 bg-green-500/10 text-green-400"
                                             : "border-red-500/20 bg-red-500/10 text-red-400"
                                     }`}>

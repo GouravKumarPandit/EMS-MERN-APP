@@ -6,13 +6,14 @@ import {
     LockKeyhole,
     LogOut,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
     const handleLogout = async () => {
         await logout();
@@ -77,15 +78,21 @@ const Header = () => {
                         </div>
 
                         <div className="p-2">
-                            <Link to={"/profile"} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-neutral-300 transition hover:bg-neutral-900 hover:text-white">
+                            <button onClick={() => {
+                                setIsOpen(false);
+                                navigate("/profile");
+                            }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-neutral-300 transition hover:bg-neutral-900 hover:text-white">
                                 <UserCircle size={18} />
                                 <span>Profile</span>
-                            </Link>
+                            </button>
 
-                            <Link to={"/change-password"} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-neutral-300 transition hover:bg-neutral-900 hover:text-white">
+                            <button onClick={() => {
+                                setIsOpen(false);
+                                navigate("/change-password");
+                            }} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-neutral-300 transition hover:bg-neutral-900 hover:text-white">
                                 <LockKeyhole size={18} />
                                 <span>Change Password</span>
-                            </Link>
+                            </button>
 
                             <div className="my-2 border-t border-neutral-800" />
 

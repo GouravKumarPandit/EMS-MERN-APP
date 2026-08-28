@@ -3,7 +3,7 @@ import TaskCountCard from "../Dashboard/TaskCountCard";
 import Button from "../Ui/Button";
 import { formatDateTime } from "../../utils/date";
 
-const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {    
+const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {   
     if (modal !== "view") {
         return null;
     }

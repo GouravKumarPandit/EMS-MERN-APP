@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 function AdminDashboard() {
     const [loader, setLoader] = useState(false);
     const [loginStaffTaskData, setLoginStaffTaskData] = useState({});
-    const [allTaskCount, setAllTaskCount] = useState({});
+    const [allStaffTaskCount, setAllStaffTaskCount] = useState({});
     const navigate = useNavigate();
 
     const handleViewAll = () => {
@@ -26,7 +26,7 @@ function AdminDashboard() {
                 if(response.data.success) {
                     const { loggedInStaffTask, staffTaskCount } = response.data.data;
                     setLoginStaffTaskData(loggedInStaffTask);
-                    setAllTaskCount(staffTaskCount);
+                    setAllStaffTaskCount(staffTaskCount);
                 }
 
             } catch (error) {
@@ -52,7 +52,7 @@ function AdminDashboard() {
                     </h2>
                 </div>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                    <TaskCountCard taskName={"New Task"} taskCount={loginStaffTaskData?.taskCount?.pending} taskDetail="Tasks assigned to you" cardBg="bg-blue-500" hoverBg="hover:border-blue-500/60" />
+                    <TaskCountCard taskName={"Pending"} taskCount={loginStaffTaskData?.taskCount?.pending} taskDetail="Tasks assigned to you" cardBg="bg-blue-500" hoverBg="hover:border-blue-500/60" />
                     <TaskCountCard taskName={"Accepted"} taskCount={loginStaffTaskData?.taskCount?.accepted} taskDetail="Tasks accepted" cardBg="bg-yellow-500" hoverBg="hover:border-yellow-500/60" />
                     <TaskCountCard taskName={"Completed"} taskCount={loginStaffTaskData?.taskCount?.completed} taskDetail="Tasks completed" cardBg="bg-green-500" hoverBg="hover:border-green-500/60" />
                     <TaskCountCard taskName={"Failed"} taskCount={loginStaffTaskData?.taskCount?.failed} taskDetail="Tasks failed" cardBg="bg-orange-500" hoverBg="hover:border-orange-500/60" />
@@ -89,9 +89,8 @@ function AdminDashboard() {
                     </div>
                 </div>
                 {
-                    // allTaskCount?.
+                    allStaffTaskCount.length > 0 ? <StaffTaskStats staffStats={allStaffTaskCount} /> : <NoData message={"No staff stats found!"} />
                 }
-                <StaffTaskStats />
             </div >
         </>
     )

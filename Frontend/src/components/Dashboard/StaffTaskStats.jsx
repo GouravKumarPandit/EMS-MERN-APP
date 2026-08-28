@@ -1,51 +1,6 @@
-const StaffTaskStats = () => {
-    const staffStats = [
-        {
-            id: 1,
-            first_name: "Gourav",
-            last_name: "Pandit",
-            pending: 4,
-            accepted: 2,
-            completed: 8,
-            failed: 1,
-        },
-        {
-            id: 2,
-            first_name: "Rahul",
-            last_name: "Kumar",
-            pending: 3,
-            accepted: 5,
-            completed: 6,
-            failed: 0,
-        },
-        {
-            id: 3,
-            first_name: "Amit",
-            last_name: "Sharma",
-            pending: 1,
-            accepted: 4,
-            completed: 10,
-            failed: 2,
-        },
-        {
-            id: 4,
-            first_name: "Priya",
-            last_name: "Singh",
-            pending: 5,
-            accepted: 1,
-            completed: 7,
-            failed: 1,
-        },
-        {
-            id: 5,
-            first_name: "Ankit",
-            last_name: "Verma",
-            pending: 2,
-            accepted: 3,
-            completed: 5,
-            failed: 0,
-        },
-    ];
+import { useState } from "react";
+
+const staffStatsStats = ({ staffStats }) => {
 
     return (
         <div className="mt-8">
@@ -75,7 +30,7 @@ const StaffTaskStats = () => {
                         <tbody className="divide-y divide-neutral-800">
                             {staffStats.map((staff) => (
                                 <tr
-                                    key={staff.id}
+                                    key={staff._id}
                                     className="hover:bg-[#181818] transition"
                                 >
                                     <td className="px-6 py-4">
@@ -129,4 +84,4 @@ const StaffTaskStats = () => {
     );
 };
 
-export default StaffTaskStats;
+export default staffStatsStats;

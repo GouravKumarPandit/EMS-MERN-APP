@@ -2,12 +2,22 @@ import Button from '../Ui/Button';
 import { formatDateTime } from '../../utils/date'
 import ViewTaskModel from '../Tasks/ViewTaskModel';
 import { useState } from 'react';
-import { Eye } from 'lucide-react';
+import { getTaskById } from '../../api/task';
 
 function TaskSummaryCard({ task }) {
     const [modal, setModal] = useState(null);
+    const [selectedTask, setSelectedTask] = useState(null);
     const openModal = (type) => {
         setModal(type);
+
+        
+        if (type === "view") {
+            const getTask = async (taskId) => {
+                const response = await getTaskById(taskId);
+                setSelectedTask(response.data.data);
+            }
+            getTask(task?._id);
+        }
     };
     const closeModal = () => {
         setModal(null);
@@ -16,10 +26,15 @@ function TaskSummaryCard({ task }) {
     return (
         <div className="min-w-[300px] max-w-[300px] flex-shrink-0 rounded-xl border border-neutral-800 bg-[#151515] p-4 transition hover:border-violet-500/50">
             <div className="mb-4 flex items-center justify-between text-xs">
-                <span className="rounded-md bg-red-500/15 px-2 py-1 font-medium text-red-400">
-                    {
-                        task?.priority ? task?.priority : "None"
-                    }
+                <span className={`rounded-md border px-3 py-1 text-xs capitalize ${task?.priority === "high"
+                    ? "border-red-500/20 bg-red-500/10 text-red-400"
+                    : task?.priority === "medium"
+                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
+                        : task?.priority === "low"
+                            ? "border-green-500/20 bg-green-500/10 text-green-400"
+                            : "border-red-500/20 bg-red-500/10 text-red-400"
+                    }`}>
+                    {task?.priority ? task?.priority : "None"}
                 </span>
                 <span className="text-neutral-400">
                     {
@@ -50,7 +65,7 @@ function TaskSummaryCard({ task }) {
                 </Button>
             </div>
 
-            <ViewTaskModel modal={modal} selectedTask={task} closeModal={closeModal} />
+            <ViewTaskModel modal={modal} selectedTask={selectedTask} closeModal={closeModal} />
         </div>
     )
 }
