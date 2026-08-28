@@ -1,5 +1,9 @@
 import api from "./apiConfigure";
 
+export const settings = () => {
+    return api.get("/api/settings");
+}
+
 export const updateSettings = (formData) => {
-    return api.post("/api/staff/update-settings", formData);
+    return api.post("/api/settings/update-settings", formData);
 }

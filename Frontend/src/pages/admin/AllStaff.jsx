@@ -110,9 +110,12 @@ const AllStaff = () => {
 
     useEffect(() => {
         const loadStaff = async () => {
-            const response = await getAllStaff();
-            if(response.data.success) setStaffs(response.data.data);
-            else toast.error("Something went wrong!");
+            try {
+                const response = await getAllStaff();
+                setStaffs(response.data.data);
+            } catch (error) {
+                toast.error(error.response.data.message);
+            }
         }
 
         loadStaff();

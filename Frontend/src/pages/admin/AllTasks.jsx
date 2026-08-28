@@ -97,9 +97,12 @@ const AllTasks = () => {
 
     useEffect(() => {
         const loadTasks = async () => {
-            const response = await getAllTask();
-            if(response.data.success) setTasks(response.data.data);
-            else toast.error("Something went wrong!");
+            try {
+                const response = await getAllTask();
+                setTasks(response.data.data);
+            } catch (error) {
+                toast.error(error.response.data.message);
+            }
         }
 
         loadTasks();
@@ -107,9 +110,12 @@ const AllTasks = () => {
 
     useEffect(() => {
         const loadStaff = async () => {
-            const response = await getAllStaff();
-            if(response.data.success) setStaffs(response.data.data);
-            else toast.error("Something went wrong!");
+            try {
+                const response = await getAllStaff();
+                setStaffs(response.data.data);
+            } catch (error) {
+                toast.error(error.response.data.message);
+            }
         }
 
         loadStaff();

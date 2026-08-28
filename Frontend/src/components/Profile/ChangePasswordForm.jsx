@@ -43,7 +43,6 @@ function ChangePasswordForm() {
                 confirmPassword: "",
             });
         } catch (error) {
-            console.log("ERROR Response >> ", error.response.data.message);
             toast.error(error.response.data.message);
         } finally{
             setSubmitLoader(false);

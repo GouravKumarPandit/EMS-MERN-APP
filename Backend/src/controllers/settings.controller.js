@@ -1,6 +1,15 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import { Setting } from "../models/settings.model.js";
 
+export const fetchSetting = asyncHandler(async (req, res, next) => {
+    const setting = await Setting.find().lean();
+
+    return res.status(200).json({
+        success: true,
+        data: setting
+    });
+});
+
 export const updateSettings = asyncHandler(async (req, res, next) => {
     const { company_name, company_email, company_phone } = req.body;
 

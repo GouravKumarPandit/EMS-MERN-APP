@@ -8,7 +8,6 @@ import validate from "../middleware/validation.middleware.js";
 
 const router = express.Router();
 
-// router.get("/create", taskController.createTask);
 router.get("/", isLoggedIn, getAllTask);
 router.post("/", isLoggedIn, createTaskValidation, validate, createTask);
 router.get("/:id", isLoggedIn, getTaskById);
