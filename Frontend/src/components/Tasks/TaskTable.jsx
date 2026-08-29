@@ -7,6 +7,7 @@ import {
     User
 } from "lucide-react";
 import { formatDateTime } from "../../utils/date";
+import NoData from "../Ui/NoData";
 
 function TaskTable({ tasks, openModal }) {
     return (
@@ -21,7 +22,7 @@ function TaskTable({ tasks, openModal }) {
                     <span>Actions</span>
                 </div>
 
-                {tasks.map((task) => (
+                {tasks.length > 0 ? (tasks.map((task) => (
                     <div
                         key={task.task_id}
                         className="grid grid-cols-1 gap-4 border-b border-neutral-800 px-5 py-5 last:border-b-0 lg:grid-cols-[1.5fr_2fr_1fr_1fr_1fr_1.5fr] lg:items-center"
@@ -116,7 +117,7 @@ function TaskTable({ tasks, openModal }) {
                             </button>
                         </div>
                     </div>
-                ))}
+                ))) : <NoData message={"No Task Found!"} />}
             </div>
         </>
     )

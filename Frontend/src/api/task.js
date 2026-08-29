@@ -1,7 +1,14 @@
 import api from "./apiConfigure";
 
-export const getAllTask = () => {
-    return api.get("/api/tasks");
+export const getAllTask = (search = "", status = "", priority = "", staff = "") => {
+    return api.get("/api/tasks", {
+        params: {
+            search,
+            status,
+            priority, 
+            staff
+        }
+    });
 }
 
 export const createTask = (formData) => {

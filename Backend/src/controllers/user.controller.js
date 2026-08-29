@@ -4,14 +4,13 @@ import asyncHandler from "../utils/asyncHandler.js"
 import createError from "../utils/createError.js";
 import bcrypt from "bcrypt";
 import { Task } from "../models/task.model.js";
-import { TaskActivity } from "../models/taskActivity.model.js";
 
 export const dashboard = asyncHandler(async (req, res, next) => {
     const { role, id: staffId } = req.user;
 
     const taskCount = await Task.aggregate([
         {
-            $match: { assigned_staff: staffId }
+            $match: { assigned_staff: new mongoose.Types.ObjectId(staffId) }
         },
         {
             $group: {
@@ -34,105 +33,95 @@ export const dashboard = asyncHandler(async (req, res, next) => {
         }
     });
 
-    const recentTasks = await Task.find({ assigned_staff: staffId })
+    const recentTasks = await Task.find({ 
+            assigned_staff: new mongoose.Types.ObjectId(staffId),
+            status: {
+                $ne: "completed"
+            }
+        })
         .sort({ due_date: 1 })
         .limit(5)
         .populate("assigned_staff", "first_name last_name")
         .lean();
 
-    let staffTaskStats = {};
+    let staffTaskStats = [];
     if(role === "admin"){
-        const staffTaskStats = await Task.aggregate([{
-                $group: {
-                    _id: {
-                        staff: "$assigned_staff",
-                        status: "$status"
-                    },
-                    count: {
-                        $sum: 1
-                    }
-                }
-            },
-
-            {
-                $group: {
-                    _id: "$_id.staff",
-
-                    pending: {
-                        $sum: {
-                            $cond: [
-                                { $eq: ["$_id.status", "pending"] },
-                                "$count",
-                                0
-                            ]
-                        }
-                    },
-
-                    accepted: {
-                        $sum: {
-                            $cond: [
-                                { $eq: ["$_id.status", "accepted"] },
-                                "$count",
-                                0
-                            ]
-                        }
-                    },
-
-                    completed: {
-                        $sum: {
-                            $cond: [
-                                { $eq: ["$_id.status", "completed"] },
-                                "$count",
-                                0
-                            ]
-                        }
-                    },
-
-                    failed: {
-                        $sum: {
-                            $cond: [
-                                { $eq: ["$_id.status", "failed"] },
-                                "$count",
-                                0
-                            ]
-                        }
-                    }
-                }
-            },
+        staffTaskStats = await User.aggregate([
+            // If you have a role field and only want staff
+            // {
+            //     $match: {
+            //         role: "staff"
+            //     }
+            // },
 
             {
                 $lookup: {
-                    from: "users",
+                    from: "tasks",
                     localField: "_id",
-                    foreignField: "_id",
-                    as: "staff"
+                    foreignField: "assigned_staff",
+                    as: "tasks"
                 }
-            },
-
-            {
-                $unwind: "$staff"
             },
 
             {
                 $project: {
                     _id: 0,
-
                     staff_id: "$_id",
+                    first_name: 1,
+                    last_name: 1,
+                    username: 1,
+                    email: 1,
 
-                    first_name: "$staff.first_name",
-                    last_name: "$staff.last_name",
-                    username: "$staff.username",
-                    email: "$staff.email",
+                    pending: {
+                        $size: {
+                            $filter: {
+                                input: "$tasks",
+                                as: "task",
+                                cond: {
+                                    $eq: ["$$task.status", "pending"]
+                                }
+                            }
+                        }
+                    },
 
-                    pending: 1,
-                    accepted: 1,
-                    completed: 1,
-                    failed: 1
+                    accepted: {
+                        $size: {
+                            $filter: {
+                                input: "$tasks",
+                                as: "task",
+                                cond: {
+                                    $eq: ["$$task.status", "accepted"]
+                                }
+                            }
+                        }
+                    },
+
+                    completed: {
+                        $size: {
+                            $filter: {
+                                input: "$tasks",
+                                as: "task",
+                                cond: {
+                                    $eq: ["$$task.status", "completed"]
+                                }
+                            }
+                        }
+                    },
+
+                    failed: {
+                        $size: {
+                            $filter: {
+                                input: "$tasks",
+                                as: "task",
+                                cond: {
+                                    $eq: ["$$task.status", "failed"]
+                                }
+                            }
+                        }
+                    }
                 }
             }
         ]);
-    } else {
-        const staffTasksCount = []
     }
 
     return res.status(200).json({
@@ -148,7 +137,26 @@ export const dashboard = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllStaff = asyncHandler(async (req, res, next) => {
-    const staffs = await User.find().lean();
+    const { search, role, gender } = req.query;
+    const query = {};
+    if(search){
+        query.$or = [
+            { first_name: { $regex: search, $options: "i" } },
+            { last_name: { $regex: search, $options: "i" } },
+            { email: { $regex: search, $options: "i" } },
+            { username: { $regex: search, $options: "i" } }
+        ];
+    }
+
+    if (role) {
+        query.role = role;
+    }
+
+    if (gender) {
+        query.gender = gender;
+    }
+
+    const staffs = await User.find(query).lean();
 
     return res.status(200).json({
         success: true,
@@ -189,7 +197,7 @@ export const getStaffById = asyncHandler(async (req, res, next) => {
 
     const taskCount = await Task.aggregate([
         {
-            $match: { assigned_staff: staffId }
+            $match: { assigned_staff: new mongoose.Types.ObjectId(staffId) }
         },
         {
             $group: {

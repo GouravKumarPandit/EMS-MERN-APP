@@ -15,6 +15,12 @@ const AllTasks = () => {
     const [tasks, setTasks] = useState([]);
     const [staffs, setStaffs] = useState([]);
     const [modal, setModal] = useState(null);
+    const [filters, setFilters] = useState({
+        search: "",
+        status: "",
+        priority: "",
+        staff: ""
+    });
     const [selectedTask, setSelectedTask] = useState(null);
     const [createFormData, setCreateFormData] = useState({
         task: "",
@@ -95,10 +101,21 @@ const AllTasks = () => {
         });
     };
 
+    const filterInputHandler = (event) => {
+        const { name, value } = event.target;
+        setFilters((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
     useEffect(() => {
         const loadTasks = async () => {
+            console.log("Search:", filters.search);
+            console.log("Status:", filters.status);
+            console.log("Priority:", filters.priority);
             try {
-                const response = await getAllTask();
+                const response = await getAllTask(filters.search, filters.status, filters.priority, filters.staff);
                 setTasks(response.data.data);
             } catch (error) {
                 toast.error(error.response.data.message);
@@ -106,7 +123,7 @@ const AllTasks = () => {
         }
 
         loadTasks();
-    }, [modal])
+    }, [modal, filters.search, filters.status, filters.priority, filters.staff])
 
     useEffect(() => {
         const loadStaff = async () => {
@@ -142,7 +159,7 @@ const AllTasks = () => {
 					Create Task
 				</button>
 			</div>	
-			<TaskFilters />
+			<TaskFilters filters={filters} filterInputHandler={filterInputHandler} staffs={staffs} />
 			<TaskTable tasks={tasks} openModal={openModal} />
 			<CreateTaskModel 
                 modal={modal} closeModal={closeModal} staffs={staffs}

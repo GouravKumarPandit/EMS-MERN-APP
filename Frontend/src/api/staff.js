@@ -4,9 +4,15 @@ export const dashboard = () => {
     return api.get("/api/staff/dashboard");
 }
 
-export const getAllStaff = () => {
-    return api.get("/api/staff");
-}
+export const getAllStaff = (search = "", role = "", gender = "") => {
+    return api.get("/api/staff", {
+        params: {
+            search,
+            role,
+            gender
+        }
+    });
+};
 
 export const createStaff = (formData) => {
     return api.post("/api/staff", formData);

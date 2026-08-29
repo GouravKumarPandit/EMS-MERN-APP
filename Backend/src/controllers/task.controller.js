@@ -7,10 +7,23 @@ import { getUserById, getUserFullNameById } from "../utils/helper.js";
 
 export const getAllTask = asyncHandler(async (req, res, next) => {
     const { role, id: staffId } = req.user;
+    const { search, status, priority, staff } = req.query;
 
-    const filter = role === "admin" ? {} : { assigned_staff: staffId };
+    const query = {};
+    if(search){
+        query.$or = [
+            { task: { $regex: search, $options: "i" } },
+            { task_description: { $regex: search, $options: "i" } },
+            { task_id: { $regex: search, $options: "i" } },
+        ]
+    }
 
-    const tasks = await Task.find(filter).populate("assigned_staff", "first_name last_name email username").lean();
+    if(status) query.status = status;
+    if(priority) query.priority = priority;
+    if(staff) query.assigned_staff = new mongoose.Types.ObjectId(staff);
+    if(role !== "admin") query.assigned_staff = new mongoose.Types.ObjectId(staffId);
+
+    const tasks = await Task.find(query).populate("assigned_staff", "first_name last_name email username").lean();
 
     return res.status(200).json({
         success: true,

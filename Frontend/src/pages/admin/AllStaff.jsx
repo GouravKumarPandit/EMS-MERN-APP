@@ -14,6 +14,9 @@ const AllStaff = () => {
     const [modal, setModal] = useState(null);
     const [staffs, setStaffs] = useState([]);
     const [selectedStaff, setSelectedStaff] = useState(null);
+    const [search, setSearch] = useState("");
+    const [role, setRole] = useState("");
+    const [gender, setGender] = useState("");
     const [createFormData, setCreateFormData] = useState({
         first_name: "",
         last_name: "",
@@ -111,7 +114,7 @@ const AllStaff = () => {
     useEffect(() => {
         const loadStaff = async () => {
             try {
-                const response = await getAllStaff();
+                const response = await getAllStaff(search, role, gender);
                 setStaffs(response.data.data);
             } catch (error) {
                 toast.error(error.response.data.message);
@@ -119,7 +122,7 @@ const AllStaff = () => {
         }
 
         loadStaff();
-    }, [modal])
+    }, [modal, search, role, gender])
 
     return (
         <div className="min-h-screen bg-black text-white p-4 md:p-6">
@@ -143,7 +146,11 @@ const AllStaff = () => {
                 </Button>
             </div>
 
-            <StaffFilters />
+            <StaffFilters 
+                search={search} setSearch={setSearch}
+                role={role} setRole={setRole}
+                gender={gender} setGender={setGender}
+            />
             <StaffTable openModal={openModal} staffs={staffs} />
 
             <CreateStaffModal 
