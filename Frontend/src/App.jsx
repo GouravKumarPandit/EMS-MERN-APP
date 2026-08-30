@@ -12,6 +12,7 @@ import DashboardLayout from './pages/admin/DashboardLayout';
 import Login from './pages/public/Login';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import AdminRoute from './components/Auth/AdminRoute';
+import AllNotes from './pages/admin/AllNotes';
 
 function App() {
 
@@ -26,6 +27,8 @@ function App() {
 					<Route element={<DashboardLayout />}>
                         <Route path="/dashboard" element={<AdminDashboard />} />
                         <Route path="/tasks" element={<AllTasks />} />
+                        <Route path="/notes" element={<AllNotes />} />
+
                         <Route path="/change-password" element={<ChangePassword />} />
                         <Route path="/profile" element={<Profile />} />
 

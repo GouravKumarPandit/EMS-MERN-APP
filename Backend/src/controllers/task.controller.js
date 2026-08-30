@@ -3,7 +3,7 @@ import { Task } from "../models/task.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import createError from "../utils/createError.js";
 import { TaskActivity } from "../models/taskActivity.model.js";
-import { getUserById, getUserFullNameById } from "../utils/helper.js";
+import { getUserFullNameById } from "../utils/helper.js";
 
 export const getAllTask = asyncHandler(async (req, res, next) => {
     const { role, id: staffId } = req.user;

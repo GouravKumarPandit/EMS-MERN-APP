@@ -6,10 +6,10 @@ import ViewTaskModel from "../../components/Tasks/ViewTaskModel";
 import EditTaskModel from "../../components/Tasks/EditTaskModel";
 import ChangeStatusModel from "../../components/Tasks/ChangeStatusModel";
 import DeleteTaskModel from "../../components/Tasks/DeleteTaskModel";
-import { Plus } from "lucide-react";
 import { getAllTask, getTaskById } from "../../api/task";
 import { toast } from "react-toastify";
 import { getAllStaff } from "../../api/staff";
+import CardHeader from "../../components/Layout/CardHeader";
 
 const AllTasks = () => {
     const [tasks, setTasks] = useState([]);
@@ -111,9 +111,6 @@ const AllTasks = () => {
 
     useEffect(() => {
         const loadTasks = async () => {
-            console.log("Search:", filters.search);
-            console.log("Status:", filters.status);
-            console.log("Priority:", filters.priority);
             try {
                 const response = await getAllTask(filters.search, filters.status, filters.priority, filters.staff);
                 setTasks(response.data.data);
@@ -139,26 +136,13 @@ const AllTasks = () => {
     }, [modal])
 
 	return (
-		<div className="min-h-screen bg-black text-white">
-            <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-				<div>
-					<h1 className="text-2xl font-semibold">
-						All Tasks
-					</h1>
-
-					<p className="mt-1 text-sm text-neutral-400">
-						Manage and monitor all employee tasks.
-					</p>
-				</div>
-
-				<button
-					onClick={() => openModal("create")}
-					className="flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium transition hover:bg-violet-700"
-				>
-					<Plus size={18} />
-					Create Task
-				</button>
-			</div>	
+		<div className="min-h-screen bg-black text-white p-4 md:p-6">
+            <CardHeader 
+                cardHeading="All Tasks" 
+                headingDescription="Manage and monitor all employee tasks." 
+                buttonText="+ Create Task" 
+                onClick={() => openModal("create")}
+            />
 			<TaskFilters filters={filters} filterInputHandler={filterInputHandler} staffs={staffs} />
 			<TaskTable tasks={tasks} openModal={openModal} />
 			<CreateTaskModel 

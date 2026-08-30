@@ -27,6 +27,12 @@ const sidebarOptions = [
     },
     {
         id: "4",
+        link: "/notes",
+        label: "Your Notes",
+        icon: <ClipboardList size={20} />
+    },
+    {
+        id: "5",
         link: "/settings",
         label: "Settings",
         icon: <Settings size={20} />

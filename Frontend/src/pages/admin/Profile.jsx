@@ -42,7 +42,7 @@ function Profile() {
                             <Info label="Email" value={selectedStaff?.email} />
                             <Info label="Phone" value={`+${selectedStaff?.dialcode} ${selectedStaff?.phone_number}`} />
                             <Info label="Gender" value={selectedStaff?.gender} />
-                            <Info label="Date of Birth" value={selectedStaff?.dob} />
+                            <Info label="Date of Birth" value={formatDateTime(selectedStaff?.dob)} />
                             <Info label="Role" value={selectedStaff?.role} />
                             <Info label="Created At" value={formatDateTime(selectedStaff?.createdAt)} />
                         </div>

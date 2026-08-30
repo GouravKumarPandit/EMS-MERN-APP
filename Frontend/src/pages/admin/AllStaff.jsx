@@ -9,6 +9,7 @@ import DeleteStaffModal from "../../components/Staffs/DeleteStaffModal";
 import Button from "../../components/Ui/Button";
 import { getAllStaff, getStaffById } from "../../api/staff";
 import { toast } from "react-toastify";
+import CardHeader from "../../components/Layout/CardHeader";
 
 const AllStaff = () => {
     const [modal, setModal] = useState(null);
@@ -127,7 +128,13 @@ const AllStaff = () => {
     return (
         <div className="min-h-screen bg-black text-white p-4 md:p-6">
             {/* Header */}
-            <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <CardHeader 
+                cardHeading="Staffs" 
+                headingDescription="Manage your company staff members" 
+                buttonText="+ Create Staff" 
+                onClick={() => openModal("create")}
+            />
+            {/* <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-bold">
                         Staffs
@@ -144,7 +151,7 @@ const AllStaff = () => {
                 >
                     + Create Staff
                 </Button>
-            </div>
+            </div> */}
 
             <StaffFilters 
                 search={search} setSearch={setSearch}
