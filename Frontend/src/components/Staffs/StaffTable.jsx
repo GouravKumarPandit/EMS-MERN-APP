@@ -3,8 +3,9 @@ import {
     Pencil,
     Trash2,
 } from "lucide-react";
+import Pagination from "../Ui/Pagination";
 
-const StaffTable = ({ openModal, staffs }) => {
+const StaffTable = ({ openModal, staffs, pagination, onPageChange }) => {
     const getFullName = (staff) => {
         return `${staff.first_name} ${staff.last_name}`;
     };
@@ -138,6 +139,9 @@ const StaffTable = ({ openModal, staffs }) => {
                         )}
                     </tbody>
                 </table>
+            </div>
+            <div className="pb-4 px-4">
+                <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={onPageChange} />
             </div>
         </div>
     );

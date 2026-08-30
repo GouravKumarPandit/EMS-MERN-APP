@@ -4,12 +4,23 @@ export const dashboard = () => {
     return api.get("/api/staff/dashboard");
 }
 
-export const getAllStaff = (search = "", role = "", gender = "") => {
+export const getAllStaff = (search = "", role = "", gender = "", page = 1, limit = 10) => {
     return api.get("/api/staff", {
         params: {
             search,
             role,
-            gender
+            gender,
+            page,
+            limit
+        }
+    });
+};
+
+export const getFilterAllStaff = (page = 1, limit = 10) => {
+    return api.get("/api/staff/filter", {
+        params: {
+            page,
+            limit
         }
     });
 };

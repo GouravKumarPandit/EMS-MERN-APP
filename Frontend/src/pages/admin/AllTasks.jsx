@@ -8,13 +8,19 @@ import ChangeStatusModel from "../../components/Tasks/ChangeStatusModel";
 import DeleteTaskModel from "../../components/Tasks/DeleteTaskModel";
 import { getAllTask, getTaskById } from "../../api/task";
 import { toast } from "react-toastify";
-import { getAllStaff } from "../../api/staff";
+import { getFilterAllStaff } from "../../api/staff";
 import CardHeader from "../../components/Layout/CardHeader";
 
 const AllTasks = () => {
     const [tasks, setTasks] = useState([]);
     const [staffs, setStaffs] = useState([]);
     const [modal, setModal] = useState(null);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        totalRecords: 0,
+        limit: 3
+    });
     const [filters, setFilters] = useState({
         search: "",
         status: "",
@@ -109,23 +115,44 @@ const AllTasks = () => {
         }))
     }
 
+    const handlePageChange = (page) => {
+        setPagination(prev => ({
+            ...prev,
+            currentPage: page
+        }));
+    };
+
+
     useEffect(() => {
         const loadTasks = async () => {
             try {
-                const response = await getAllTask(filters.search, filters.status, filters.priority, filters.staff);
-                setTasks(response.data.data);
+                const response = await getAllTask(
+                    filters.search, 
+                    filters.status, 
+                    filters.priority, 
+                    filters.staff, 
+                    pagination.currentPage, pagination.limit
+                );
+
+                if (response.data.success) {
+                    const { tasks, pagination: paginationData } =
+                        response.data.data;
+
+                    setTasks(tasks);
+                    setPagination(paginationData);
+                }
             } catch (error) {
                 toast.error(error.response.data.message);
             }
         }
 
         loadTasks();
-    }, [modal, filters.search, filters.status, filters.priority, filters.staff])
+    }, [modal, filters.search, filters.status, filters.priority, filters.staff,  pagination.currentPage, pagination.limit])
 
     useEffect(() => {
         const loadStaff = async () => {
             try {
-                const response = await getAllStaff();
+                const response = await getFilterAllStaff();
                 setStaffs(response.data.data);
             } catch (error) {
                 toast.error(error.response.data.message);
@@ -144,7 +171,9 @@ const AllTasks = () => {
                 onClick={() => openModal("create")}
             />
 			<TaskFilters filters={filters} filterInputHandler={filterInputHandler} staffs={staffs} />
-			<TaskTable tasks={tasks} openModal={openModal} />
+			<TaskTable tasks={tasks} openModal={openModal} 
+                pagination={pagination} onPageChange={handlePageChange} 
+            />
 			<CreateTaskModel 
                 modal={modal} closeModal={closeModal} staffs={staffs}
                 createFormData={createFormData} setCreateFormData={setCreateFormData} inputHandler={inputHandler} 

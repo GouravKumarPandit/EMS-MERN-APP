@@ -8,6 +8,12 @@ import { getUserFullNameById } from "../utils/helper.js";
 export const getAllTask = asyncHandler(async (req, res, next) => {
     const { role, id: staffId } = req.user;
     const { search, status, priority, staff } = req.query;
+    let { page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const skip = (page - 1) * limit;
 
     const query = {};
     if(search){
@@ -23,11 +29,30 @@ export const getAllTask = asyncHandler(async (req, res, next) => {
     if(staff) query.assigned_staff = new mongoose.Types.ObjectId(staff);
     if(role !== "admin") query.assigned_staff = new mongoose.Types.ObjectId(staffId);
 
-    const tasks = await Task.find(query).populate("assigned_staff", "first_name last_name email username").lean();
+    const [tasks, totalTasks] = await Promise.all([
+        Task.find(query)
+            .populate("assigned_staff", "first_name last_name email username")
+            .skip(skip)
+            .limit(limit)
+            .lean(),
+
+        Task.countDocuments(query),
+    ]);
+    const totalPages = Math.ceil(totalTasks / limit);
 
     return res.status(200).json({
         success: true,
-        data: tasks
+        data: {
+            tasks,
+            pagination: {
+                currentPage: page,
+                limit,
+                totalRecords: totalTasks,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1
+            }
+        }
     });
 });
 

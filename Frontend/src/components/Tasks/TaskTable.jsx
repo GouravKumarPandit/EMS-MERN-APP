@@ -8,8 +8,9 @@ import {
 } from "lucide-react";
 import { formatDateTime } from "../../utils/date";
 import NoData from "../Ui/NoData";
+import Pagination from "../Ui/Pagination";
 
-function TaskTable({ tasks, openModal }) {
+function TaskTable({ tasks, openModal, pagination, onPageChange }) {
     return (
         <>
             <div className="overflow-hidden rounded-xl border border-neutral-800 bg-[#111111]">
@@ -119,6 +120,7 @@ function TaskTable({ tasks, openModal }) {
                     </div>
                 ))) : <NoData message={"No Task Found!"} />}
             </div>
+            <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={onPageChange} />
         </>
     )
 }

@@ -1,12 +1,14 @@
 import api from "./apiConfigure";
 
-export const getAllTask = (search = "", status = "", priority = "", staff = "") => {
+export const getAllTask = (search = "", status = "", priority = "", staff = "", page = 1, limit = 10) => {
     return api.get("/api/tasks", {
         params: {
             search,
             status,
             priority, 
-            staff
+            staff,
+            page,
+            limit
         }
     });
 }

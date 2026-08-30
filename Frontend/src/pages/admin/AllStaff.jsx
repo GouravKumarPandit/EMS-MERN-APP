@@ -6,7 +6,6 @@ import CreateStaffModal from "../../components/Staffs/CreateStaffModal";
 import ViewStaffModal from "../../components/Staffs/ViewStaffModal";
 import EditStaffModal from "../../components/Staffs/EditStaffModal";
 import DeleteStaffModal from "../../components/Staffs/DeleteStaffModal";
-import Button from "../../components/Ui/Button";
 import { getAllStaff, getStaffById } from "../../api/staff";
 import { toast } from "react-toastify";
 import CardHeader from "../../components/Layout/CardHeader";
@@ -18,6 +17,12 @@ const AllStaff = () => {
     const [search, setSearch] = useState("");
     const [role, setRole] = useState("");
     const [gender, setGender] = useState("");
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        totalRecords: 0,
+        limit: 3
+    });
     const [createFormData, setCreateFormData] = useState({
         first_name: "",
         last_name: "",
@@ -112,18 +117,32 @@ const AllStaff = () => {
         }))
     }
 
+    const handlePageChange = (page) => {
+        setPagination(prev => ({
+            ...prev,
+            currentPage: page
+        }));
+    };
+
     useEffect(() => {
         const loadStaff = async () => {
             try {
-                const response = await getAllStaff(search, role, gender);
-                setStaffs(response.data.data);
+                const response = await getAllStaff(search, role, gender, pagination.currentPage, pagination.limit);
+
+                if (response.data.success) {
+                    const { staffs, pagination: paginationData } =
+                        response.data.data;
+
+                    setStaffs(staffs);
+                    setPagination(paginationData);
+                }
             } catch (error) {
                 toast.error(error.response.data.message);
             }
         }
 
         loadStaff();
-    }, [modal, search, role, gender])
+    }, [modal, search, role, gender, pagination.currentPage, pagination.limit])
 
     return (
         <div className="min-h-screen bg-black text-white p-4 md:p-6">
@@ -134,31 +153,15 @@ const AllStaff = () => {
                 buttonText="+ Create Staff" 
                 onClick={() => openModal("create")}
             />
-            {/* <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold">
-                        Staffs
-                    </h1>
-
-                    <p className="text-sm text-gray-400 mt-1">
-                        Manage your company staff members
-                    </p>
-                </div>
-
-                <Button
-                    onClick={() => openModal("create")}
-                    buttonClass="w-full md:w-auto px-5 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 transition font-semibold"
-                >
-                    + Create Staff
-                </Button>
-            </div> */}
 
             <StaffFilters 
                 search={search} setSearch={setSearch}
                 role={role} setRole={setRole}
                 gender={gender} setGender={setGender}
             />
-            <StaffTable openModal={openModal} staffs={staffs} />
+            <StaffTable openModal={openModal} staffs={staffs}
+                pagination={pagination} onPageChange={handlePageChange} 
+            />
 
             <CreateStaffModal 
                 modal={modal} 

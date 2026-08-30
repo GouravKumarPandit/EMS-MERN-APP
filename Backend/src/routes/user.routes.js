@@ -1,5 +1,5 @@
 import express from "express";
-import { dashboard, getAllStaff, createStaff, getStaffById, updateStaff, deleteStaff, changePassword } from "../controllers/user.controller.js";
+import { dashboard, getAllStaff, getFilterAllStaff, createStaff, getStaffById, updateStaff, deleteStaff, changePassword } from "../controllers/user.controller.js";
 import isLoggedIn from "../middleware/isLoggedIn.middleware.js";
 import createStaffValidation from "../validators/createStaff.validator.js";
 import updateStaffValidation from "../validators/updateStaff.validator.js";
@@ -12,6 +12,7 @@ router.get("/dashboard", isLoggedIn, dashboard);
 
 // Staff Routes 
 router.get("/", isLoggedIn, getAllStaff);
+router.get("/filter", isLoggedIn, getFilterAllStaff);
 router.post("/", isLoggedIn, createStaffValidation, validate, createStaff);
 router.get("/:id", isLoggedIn, getStaffById);
 router.put("/:id", isLoggedIn, updateStaffValidation, validate, updateStaff);

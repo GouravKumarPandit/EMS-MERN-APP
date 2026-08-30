@@ -138,6 +138,12 @@ export const dashboard = asyncHandler(async (req, res, next) => {
 
 export const getAllStaff = asyncHandler(async (req, res, next) => {
     const { search, role, gender } = req.query;
+    let { page = 1, limit = 10 } = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const skip = (page - 1) * limit;
     const query = {};
     if(search){
         query.$or = [
@@ -156,11 +162,26 @@ export const getAllStaff = asyncHandler(async (req, res, next) => {
         query.gender = gender;
     }
 
-    const staffs = await User.find(query).lean();
+    const [staffs, totalStaff] = await Promise.all([
+        User.find(query).skip(skip).limit(limit).lean(),
+
+        User.countDocuments(query),
+    ]);
+    const totalPages = Math.ceil(totalStaff / limit);
 
     return res.status(200).json({
         success: true,
-        data: staffs
+        data: {
+            staffs,
+            pagination: {
+                currentPage: page,
+                limit,
+                totalRecords: totalStaff,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1
+            }
+        }
     });
 });
 
@@ -315,5 +336,14 @@ export const changePassword = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
         success: true,
         message: "Password changed successfully!"
+    });
+});
+
+export const getFilterAllStaff = asyncHandler(async (req, res, next) => {
+    const staffs = await User.find().select("first_name last_name").lean();
+
+    return res.status(200).json({
+        success: true,
+        data: staffs
     });
 });
