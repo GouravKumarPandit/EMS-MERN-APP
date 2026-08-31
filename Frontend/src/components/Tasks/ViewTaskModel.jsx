@@ -2,11 +2,14 @@ import {
 	X,
 	CalendarDays,
 	User,
-	Clock3,
-	CheckCircle2,
+	Clock3
 } from "lucide-react";
 import { formatDateTime } from "../../utils/date";
 import NoData from "../Ui/NoData";
+import TaskComment from "./TaskComment";
+import TaskHistory from "./TaskHistory";
+import Status from "../Ui/Status";
+import Priority from "../Ui/Priority";
 
 function ViewTaskModel({ modal, selectedTask, closeModal }) {
 
@@ -34,26 +37,16 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 
 						<div className="max-h-[75vh] overflow-y-auto p-6">
 							<div className="mb-5 flex gap-2">
-								<span className={`rounded-md border px-3 py-1 text-xs capitalize ${selectedTask?.task?.status === "pending"
-                                    ? "border-blue-500/20 bg-blue-500/10 text-blue-400"
-                                    : selectedTask?.task?.status === "accepted"
-                                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
-                                        : selectedTask?.task?.status === "completed"
-                                            ?"border-green-500/20 bg-green-500/10 text-green-400"
-                                            : "border-red-500/20 bg-red-500/10 text-red-400"
-                                    }`}>
-									{selectedTask?.task?.status ? selectedTask?.task?.status : "None"}
-								</span>
-								<span className={`rounded-md border px-3 py-1 text-xs capitalize ${selectedTask?.task?.priority === "high"
-                                    ? "border-red-500/20 bg-red-500/10 text-red-400"
-                                    : selectedTask?.task?.priority === "medium"
-                                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
-                                        : selectedTask?.task?.priority === "low"
-                                            ? "border-green-500/20 bg-green-500/10 text-green-400"
-                                            : "border-red-500/20 bg-red-500/10 text-red-400"
-                                    }`}>
-									{selectedTask?.task?.priority ? selectedTask?.task?.priority : "None"} priority
-								</span>
+								{
+									(selectedTask?.task?.priority) ? 
+									<Priority priority={selectedTask.task.priority} /> : 
+									"None priority"
+								}
+								{
+									(selectedTask?.task?.status) ? 
+									<Status status={selectedTask.task.status} /> : 
+									"None"
+								}
 							</div>
 
 							<div className="mb-6">
@@ -90,11 +83,11 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 									<p className="mt-1 text-sm">
 										{
 											selectedTask?.task?.assigned_staff ?
-											<div className="mt-2 flex items-center gap-1 text-xs text-neutral-400">
+											<span className="mt-2 flex items-center gap-1 text-xs text-neutral-400">
 												<User size={13} />
 												{selectedTask?.task?.assigned_staff?.first_name} {selectedTask?.task?.assigned_staff?.last_name}
-											</div> :
-											<p className="mt-1 text-xs">--</p>
+											</span> :
+											<span className="mt-1 text-xs">--</span>
 										}
 									</p>
 								</div>
@@ -122,44 +115,13 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 								</p>
 							</div>
 
-							<div className="mt-6">
-								<h3 className="mb-4 text-sm font-medium">
-									Task History
-								</h3>
+							{
+								selectedTask?.activities?.length > 0 ? 
+									<TaskHistory activities={selectedTask.activities} /> : 
+									<NoData message="No task activity found" />
+							}
 
-								<div className="space-y-3">
-									{selectedTask?.activities?.length ? selectedTask.activities.map(
-										(history, index) => (
-											<div
-												key={index}
-												className="flex gap-3 rounded-lg border border-neutral-800 bg-black p-3"
-											>
-												<div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-neutral-900">
-													<CheckCircle2
-														size={15}
-														className="text-green-400"
-													/>
-												</div>
-
-												<div>
-													<div className="flex flex-wrap items-center gap-2">
-														<span className="text-sm capitalize">
-															{history?.task_type.replace("_", " ")}
-														</span>
-														<span className="text-xs text-neutral-400">
-															{formatDateTime(history?.createdAt)}
-														</span>
-													</div>
-													<p className="mt-1 text-xs text-neutral-400">
-														{history?.task_activity} <br />
-														Updated By: {history?.updated_by?.first_name} {history?.updated_by?.last_name}
-													</p>
-												</div>
-											</div>
-										)
-									) : <NoData message="No task activity found" />}
-								</div>
-							</div>
+							<TaskComment />
 						</div>
 					</div>
 				</div>

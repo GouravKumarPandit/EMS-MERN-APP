@@ -4,6 +4,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import createError from "../utils/createError.js";
 import { TaskActivity } from "../models/taskActivity.model.js";
 import { getUserFullNameById } from "../utils/helper.js";
+import { TaskComment } from "../models/taskComment.model.js";
 
 export const getAllTask = asyncHandler(async (req, res, next) => {
     const { role, id: staffId } = req.user;
@@ -311,6 +312,10 @@ export const deleteTask = asyncHandler(async (req, res, next) => {
         task_activity: `Task deleted.`,
         updated_by: req.user.id,
         updated_by_name: `${loggedInUser}`
+    });
+
+    const result = await TaskComment.deleteMany({ 
+        task: new mongoose.Types.ObjectId(taskId)
     });
 
     await task.deleteOne();

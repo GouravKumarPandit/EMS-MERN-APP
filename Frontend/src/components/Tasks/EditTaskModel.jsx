@@ -63,10 +63,7 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 							</button>
 						</div>
 
-						<form
-							className="overflow-y-auto p-6"
-							onSubmit={submitHandler}
-						>
+						<form className="overflow-y-auto p-6" onSubmit={submitHandler}>
 							<div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 								<Input
 									label="Task"

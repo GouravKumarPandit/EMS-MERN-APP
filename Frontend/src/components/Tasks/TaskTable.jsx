@@ -9,6 +9,8 @@ import {
 import { formatDateTime } from "../../utils/date";
 import NoData from "../Ui/NoData";
 import Pagination from "../Ui/Pagination";
+import Priority from "../Ui/Priority";
+import Status from "../Ui/Status";
 
 function TaskTable({ tasks, openModal, pagination, onPageChange }) {
     return (
@@ -50,33 +52,19 @@ function TaskTable({ tasks, openModal, pagination, onPageChange }) {
                         </p>
 
                         <div>
-                            <span
-                                className={`inline-flex rounded-md border px-2.5 py-1 text-xs font-medium capitalize ${task.priority === "high"
-                                    ? "border-red-500/20 bg-red-500/10 text-red-400"
-                                    : task.priority === "medium"
-                                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
-                                        : task.priority === "low"
-                                            ?"border-green-500/20 bg-green-500/10 text-green-400"
-                                            : "border-red-500/20 bg-red-500/10 text-red-400"
-                                    }`}
-                            >
-                                {task.priority ? task.priority : "None"}
-                            </span>
+                            {
+                                (task?.priority) ? 
+                                <Priority priority={task.priority} /> : 
+                                "None priority"
+                            }
                         </div>
 
                         <div>
-                            <span
-                                className={`inline-flex rounded-md border px-2.5 py-1 text-xs font-medium capitalize ${task.status === "pending"
-                                    ? "border-blue-500/20 bg-blue-500/10 text-blue-400"
-                                    : task.status === "accepted"
-                                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
-                                        : task.status === "completed"
-                                            ? "border-green-500/20 bg-green-500/10 text-green-400"
-                                            : "border-red-500/20 bg-red-500/10 text-red-400"
-                                    }`}
-                            >
-                                {task.status ? task.status : "None"}
-                            </span>
+                            {
+                                (task?.status) ? 
+                                <Status status={task.status} /> : 
+                                "None"
+                            }
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-neutral-400">
