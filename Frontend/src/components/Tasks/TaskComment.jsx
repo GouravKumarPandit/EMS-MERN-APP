@@ -1,9 +1,80 @@
-function TaskComment() {
+import { useState } from "react";
+import Button from "../Ui/Button";
+import TextArea from "../Ui/TextArea";
+import Comment from "./Comment";
+import { toast } from "react-toastify";
+import { createTaskComment, deleteTaskComment, getAllTaskComment, updateTaskComment } from "../../api/taskComments";
+import { useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+
+function TaskComment({ taskId }) {
+    const { user } = useAuth();
+    const [comment, setComment] = useState("");
+    const [submitLoader, setSubmitLoader] = useState(false);
+    const [comments, setComments] = useState([]);
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            const response = await getAllTaskComment(taskId);
+
+            if (response.data.success) {
+                setComments(response.data.data);
+            }
+        };
+
+        fetchComments();
+    }, [taskId]);
+
+    const submitCreateHandler = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await createTaskComment(taskId, { comment });
+            setComment("");
+            if(response.data.success){
+                toast.success(response?.data?.message);
+
+                const commentResponse = await getAllTaskComment(taskId);
+                setComments(commentResponse.data.data);
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+        } finally{
+            setSubmitLoader(false);
+        }
+    }
+
+    const submitUpdateHandler = async (editComment, id) => {
+        try {
+            const response = await updateTaskComment(taskId, id, { comment: editComment });
+            if(response.data.success){
+                toast.success(response?.data?.message);
+
+                const commentResponse = await getAllTaskComment(taskId);
+                setComments(commentResponse.data.data);
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    }
+
+    const submitDeleteHandler = async (id) => {
+        try {
+            const response = await deleteTaskComment(taskId, id);
+            if(response.data.success){
+                toast.success(response?.data?.message);
+
+                const commentResponse = await getAllTaskComment(taskId);
+                setComments(commentResponse.data.data);
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+    }
+
     return (
         <>
             <div className="mt-6 border-t border-neutral-800 pt-6">
-
-                {/* Header */}
                 <div className="mb-4 flex items-center justify-between">
                     <div>
                         <h3 className="text-sm font-semibold text-white">
@@ -13,179 +84,59 @@ function TaskComment() {
                             Add updates, notes, or discussions related to this task.
                         </p>
                     </div>
-
                     <span className="rounded-full bg-neutral-800 px-2.5 py-1 text-xs text-neutral-400">
-                        3 Comments
+                        {comments?.length} Comments
                     </span>
                 </div>
 
-
-                {/* Existing Comments */}
                 <div className="space-y-3">
+                    {
+                        comments?.length ? 
+                        comments.map((comment, index) => (<Comment key={index} comment={comment} submitUpdateHandler={submitUpdateHandler} submitDeleteHandler={submitDeleteHandler} />)) :
+                        ""
+                    }
+                </div>
 
-                    {/* Comment 1 */}
-                    <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
-
+                <form onSubmit={submitCreateHandler}>
+                    <div className="mt-4 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
                         <div className="flex items-start gap-3">
-
-                            {/* Avatar */}
                             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-sm font-semibold text-violet-400">
-                                GK
+                                {user?.first_name.charAt(0)}
+                                {user?.last_name.charAt(0)}
                             </div>
 
-                            {/* Comment Content */}
-                            <div className="min-w-0 flex-1">
+                            <div className="flex-1">
+                                <TextArea
+                                    rows={3}
+                                    placeholder="Write a comment..."
+                                    className="w-full resize-none rounded-lg border border-neutral-800 bg-black px-3 py-3 text-sm text-neutral-300 placeholder:text-neutral-600 outline-none transition focus:border-violet-500"
+                                    value={comment}
+                                    onChange={(event) => setComment(event.target.value)}
+                                />
 
-                                <div className="flex items-center justify-between gap-3">
-                                    <div>
-                                        <span className="text-sm font-medium text-white">
-                                            Gourav Kumar
-                                        </span>
-
-                                        <span className="ml-2 text-xs text-neutral-500">
-                                            2 hours ago
-                                        </span>
-                                    </div>
-
-                                    {/* More */}
-                                    <button
-                                        type="button"
-                                        className="rounded-md p-1 text-neutral-500 transition hover:bg-neutral-800 hover:text-white"
+                                <div className="mt-3 flex items-center justify-between">
+                                    <span className="text-xs text-neutral-600">
+                                        Keep your comment clear and relevant.
+                                    </span>
+                                    <Button
+                                        type="submit"
+                                        disabled={submitLoader}
+                                        buttonClass="flex items-center justify-center gap-2 rounded-xl py-3"
                                     >
-                                        ⋮
-                                    </button>
+                                        {
+                                            submitLoader ? (
+                                                <>
+                                                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                                                    Adding Comment...
+                                                </>
+                                            ) : "Add Comment"
+                                        }
+                                    </Button>
                                 </div>
-
-                                <p className="mt-2 text-sm leading-6 text-neutral-400">
-                                    I have completed the initial implementation.
-                                    Need to verify the validation before moving this
-                                    task to completed.
-                                </p>
-
                             </div>
                         </div>
                     </div>
-
-
-                    {/* Comment 2 */}
-                    <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
-
-                        <div className="flex items-start gap-3">
-
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-500/10 text-sm font-semibold text-blue-400">
-                                AS
-                            </div>
-
-                            <div className="min-w-0 flex-1">
-
-                                <div className="flex items-center justify-between gap-3">
-                                    <div>
-                                        <span className="text-sm font-medium text-white">
-                                            Amit Sharma
-                                        </span>
-
-                                        <span className="ml-2 text-xs text-neutral-500">
-                                            Yesterday
-                                        </span>
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        className="rounded-md p-1 text-neutral-500 transition hover:bg-neutral-800 hover:text-white"
-                                    >
-                                        ⋮
-                                    </button>
-                                </div>
-
-                                <p className="mt-2 text-sm leading-6 text-neutral-400">
-                                    Please make sure the error messages are displayed
-                                    properly on the frontend.
-                                </p>
-
-                            </div>
-                        </div>
-                    </div>
-
-
-                    {/* Comment 3 */}
-                    <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
-
-                        <div className="flex items-start gap-3">
-
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-sm font-semibold text-emerald-400">
-                                RS
-                            </div>
-
-                            <div className="min-w-0 flex-1">
-
-                                <div className="flex items-center justify-between gap-3">
-                                    <div>
-                                        <span className="text-sm font-medium text-white">
-                                            Rahul Singh
-                                        </span>
-
-                                        <span className="ml-2 text-xs text-neutral-500">
-                                            2 days ago
-                                        </span>
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        className="rounded-md p-1 text-neutral-500 transition hover:bg-neutral-800 hover:text-white"
-                                    >
-                                        ⋮
-                                    </button>
-                                </div>
-
-                                <p className="mt-2 text-sm leading-6 text-neutral-400">
-                                    The requirements have been updated. Please review
-                                    the latest task description.
-                                </p>
-
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-                {/* Add Comment */}
-                <div className="mt-4 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
-
-                    <div className="flex items-start gap-3">
-
-                        {/* Current User Avatar */}
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-sm font-semibold text-violet-400">
-                            GK
-                        </div>
-
-                        <div className="flex-1">
-
-                            <textarea
-                                rows={3}
-                                placeholder="Write a comment..."
-                                className="w-full resize-none rounded-lg border border-neutral-800 bg-black px-3 py-3 text-sm text-neutral-300 placeholder:text-neutral-600 outline-none transition focus:border-violet-500"
-                            />
-
-                            <div className="mt-3 flex items-center justify-between">
-
-                                <span className="text-xs text-neutral-600">
-                                    Keep your comment clear and relevant.
-                                </span>
-
-                                <button
-                                    type="button"
-                                    className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-500"
-                                >
-                                    Add Comment
-                                </button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
+                </form>
             </div>
         </>
     )

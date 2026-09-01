@@ -1,9 +1,12 @@
+import mongoose from "mongoose";
 import { TaskComment } from "../models/taskComment.model.js";
-import asyncHandler from "../utils/asyncHandler";
+import asyncHandler from "../utils/asyncHandler.js";
 
 export const getAllTaskComment = asyncHandler(async (req, res, next) => {
     const { taskId } = req.params;
-    const taskComment = await TaskComment.find({ task: new mongoose.Types.ObjectId(taskId) }).populate("comment_by", "first_name last_name").lean();
+    const taskComment = await TaskComment.find({ task: new mongoose.Types.ObjectId(taskId) })
+        .populate("comment_by", "first_name last_name")
+        .lean();
 
     return res.status(200).json({
         success: true, 
@@ -94,7 +97,7 @@ export const deleteTaskComment = asyncHandler(async (req, res, next) => {
 
     if(!comment) return next(createError('Comment not found!', 404)); 
 
-    if(updateComment.comment_by.toString() !== staffId) return next(createError('Unauthorized action!', 403));
+    if(comment.comment_by.toString() !== staffId) return next(createError('Unauthorized action!', 403));
 
     await comment.deleteOne();
 

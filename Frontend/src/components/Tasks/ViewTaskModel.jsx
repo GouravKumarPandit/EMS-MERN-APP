@@ -121,7 +121,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 									<NoData message="No task activity found" />
 							}
 
-							<TaskComment />
+							<TaskComment taskId={selectedTask?.task?._id} />
 						</div>
 					</div>
 				</div>

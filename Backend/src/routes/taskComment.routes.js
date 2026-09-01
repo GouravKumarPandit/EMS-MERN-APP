@@ -2,7 +2,9 @@ import express from "express";
 import isLoggedIn from "../middleware/isLoggedin.middleware.js";
 import { getAllTaskComment, createTaskComment, getTaskCommentById, updateTaskComment, deleteTaskComment } from "../controllers/taskComment.controller.js"
 
-const router = express.Router();
+const router = express.Router({
+    mergeParams: true
+});
 
 router.get("/", isLoggedIn, getAllTaskComment);
 router.post("/", isLoggedIn, createTaskComment);
