@@ -4,16 +4,15 @@ import {
 	CheckCircle2,
 } from "lucide-react";
 import Select from "../Ui/Select";
-import Input from "../Ui/Input";
 import TextArea from "../Ui/TextArea";
 import CancelButton from "../Ui/CancelButton";
 import Button from "../Ui/Button";
 import { useState } from "react";
-import formatDateForInput from "../../utils/formatDateForInput";
 import { formatDateTime } from "../../utils/date";
 import NoData from "../Ui/NoData";
 import { toast } from "react-toastify";
 import { changeStatus } from "../../api/task";
+import Status from "../Ui/Status";
 
 function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData, closeModal }) {
     const [submitLoader, setSubmitLoader] = useState(false);
@@ -47,12 +46,12 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                     <div className="w-full max-w-2xl rounded-xl border border-neutral-800 bg-[#111111] shadow-2xl">
                         <div className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
                             <div>
-                                <p className="text-xs text-neutral-400">
-                                    {selectedTask?.task?.task_id}
-                                </p>
                                 <h2 className="mt-1 font-semibold">
                                     Change Status
                                 </h2>
+                                <p className="text-xs text-neutral-400">
+                                    Task ID # {selectedTask?.task?.task_id}
+                                </p>
                             </div>
 
                             <button
@@ -70,10 +69,10 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                                         Current Status
                                     </p>
                                     <p className="mt-2 text-sm capitalize text-white">
-                                        {selectedTask?.task?.status}
+                                        <Status status={selectedTask?.task?.status} />
                                     </p>
                                 </div>
-                                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div className="grid grid-cols-1">
                                     <Select
                                         label="Status"
                                         name="status"
@@ -83,6 +82,7 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                                             { label: "Completed", value: "completed" },
                                             { label: "Failed", value: "failed" }
                                         ]}
+                                        divClass="mb-5"
                                         required
                                         value={createFormData.status}
                                         onChange={inputHandler}
@@ -97,29 +97,6 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                                         value={createFormData.status_description}
                                         onChange={inputHandler}
                                         errorMessage={createFormErrorData.status_description}
-                                    />
-
-                                    <Select
-                                        label="Priority"
-                                        name="priority"
-                                        options={[
-                                            { label: "Low", value: "low" },
-                                            { label: "Medium", value: "medium" },
-                                            { label: "High", value: "high" }
-                                        ]}
-                                        value={createFormData.priority}
-                                        onChange={inputHandler}
-                                        errorMessage={createFormErrorData.priority}
-                                    />
-
-                                    <Input
-                                        label="Due Date"
-                                        type="date"
-                                        placeholder="Enter due date"
-                                        name="due_date"
-                                        value={formatDateForInput(createFormData.due_date)}
-                                        onChange={inputHandler}
-                                        errorMessage={createFormErrorData.due_date}
                                     />
                                 </div>
 

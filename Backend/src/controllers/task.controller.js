@@ -229,7 +229,7 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
     if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
 
     const { role, id: staffId } = req.user;
-    const { priority, status, status_description, due_date } = req.body; 
+    const { status, status_description } = req.body; 
 
     const task = await Task.findById(taskId);
     if(!task) return next(createError("Task not found!", 404));
@@ -238,17 +238,6 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
 
     const activities = [];
     const loggedInUser = await getUserFullNameById(req.user.id);
-    if(task.priority !== priority){
-        activities.push({
-            task: task._id,
-            task_type: "priority_changed",
-            task_activity: `Task priority changed from ${task.priority} to ${priority}.`,
-            old_value: task.priority,
-            new_value: priority,
-            updated_by: req.user.id,
-            updated_by_name: `${loggedInUser}`
-        });
-    }
     if(task.status !== status){
         activities.push({
             task: task._id,
@@ -261,28 +250,8 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
         });
     }
 
-    const oldDueDate = task.due_date
-        ? new Date(task.due_date).getTime()
-        : null;
-
-    const newDueDate = due_date
-        ? new Date(due_date).getTime()
-        : null;
-    if (oldDueDate !== newDueDate) {
-        activities.push({
-            task: task._id,
-            task_type: "due_date_changed",
-            task_activity: `Task due date changed to ${due_date}.`,
-            new_value: due_date,
-            updated_by: req.user.id,
-            updated_by_name: `${loggedInUser}`
-        });
-    }    
-    
-    task.priority = priority;
     task.status = status;
     task.status_description = status_description;
-    task.due_date = due_date;
     await task.save();
 
     const taskActivities = await TaskActivity.insertMany(activities);
