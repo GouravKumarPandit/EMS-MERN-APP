@@ -4,146 +4,154 @@ import {
     Trash2,
 } from "lucide-react";
 import Pagination from "../Ui/Pagination";
+import IconButton from "../Ui/IconButton";
+import StaffFilters from "./StaffFilters";
+import { useEffect, useState } from "react";
+import { getAllStaff } from "../../api/staff";
+import { toast } from "react-toastify";
 
-const StaffTable = ({ openModal, staffs, pagination, onPageChange }) => {
+const StaffTable = ({ modal, openModal }) => {
+    const [search, setSearch] = useState("");
+    const [role, setRole] = useState("");
+    const [gender, setGender] = useState("");
+    const [staffs, setStaffs] = useState([]);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        totalRecords: 0,
+        limit: 3
+    });
+    const handlePageChange = (page) => {
+        setPagination(prev => ({
+            ...prev,
+            currentPage: page
+        }));
+    };
     const getFullName = (staff) => {
         return `${staff.first_name} ${staff.last_name}`;
     };
 
+    useEffect(() => {
+        const loadStaff = async () => {
+            try {
+                const response = await getAllStaff(search, role, gender, pagination.currentPage, pagination.limit);
+
+                if (response.data.success) {
+                    const { staffs, pagination: paginationData } =
+                        response.data.data;
+
+                    setStaffs(staffs);
+                    setPagination(paginationData);
+                }
+            } catch (error) {
+                toast.error(error.response.data.message);
+            }
+        }
+
+        loadStaff();
+    }, [modal, search, role, gender, pagination.currentPage, pagination.limit])
+
     return (
-        <div className="overflow-hidden rounded-xl border border-[#252525] bg-[#111111]">
-            <div className="border-b border-[#252525] px-5 py-4">
-                <h2 className="font-semibold text-lg">
-                    Staff List
-                </h2>
-                <p className="text-sm text-gray-500 mt-1">
-                    Manage all staff members
-                </p>
-            </div>
+        <>
+            <StaffFilters search={search} setSearch={setSearch} role={role} setRole={setRole} gender={gender} setGender={setGender} />
+            <div className="overflow-hidden rounded-xl border border-[#252525] bg-[#111111]">
+                <div className="border-b border-[#252525] px-5 py-4">
+                    <h2 className="font-semibold text-lg">
+                        Staff List
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                        Manage all staff members
+                    </p>
+                </div>
 
-            {/* Horizontal Scroll */}
-            <div className="overflow-x-auto">
-                <table className="w-full min-w-[950px] text-left">
-                    <thead className="bg-[#171717] text-xs uppercase tracking-wider text-gray-500">
-                        <tr>
-                            <th className="px-5 py-4">Staff</th>
-                            {/* <th className="px-5 py-4">Username</th> */}
-                            <th className="px-5 py-4">Email</th>
-                            <th className="px-5 py-4">Phone</th>
-                            <th className="px-5 py-4">Gender</th>
-                            <th className="px-5 py-4">Role</th>
-                            <th className="px-5 py-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody className="divide-y divide-[#252525]">
-                        {staffs.length ? staffs.map((staff) => (
-                            <tr
-                                key={staff._id}
-                                className="hover:bg-[#171717] transition"
-                            >
-                                {/* Staff */}
-                                <td className="px-5 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-500/15 text-sm font-bold text-violet-400">
-                                            {staff.first_name.charAt(0)}
-                                            {staff.last_name.charAt(0)}
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">
-                                                {getFullName(staff)}
-                                            </p>
-                                            <p className="text-xs text-gray-500">
-                                                @{staff.username}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                {/* Email */}
-                                <td className="px-5 py-4 text-sm text-gray-400">
-                                    {staff.email}
-                                </td>
-
-                                {/* Phone */}
-                                <td className="px-5 py-4 text-sm text-gray-400">
-                                    +{staff.dialcode} {staff.phone_number}
-                                </td>
-
-                                {/* Gender */}
-                                <td className="px-5 py-4">
-                                    <span className="capitalize text-sm text-gray-300">
-                                        {staff.gender}
-                                    </span>
-                                </td>
-
-                                {/* Role */}
-                                <td className="px-5 py-4">
-                                    <span
-                                        className={`rounded-full px-3 py-1 text-xs font-medium ${
-                                            staff.role === "admin"
-                                                ? "bg-violet-500/15 text-violet-400"
-                                                : "bg-blue-500/15 text-blue-400"
-                                        }`}
-                                    >
-                                        {staff.role}
-                                    </span>
-                                </td>
-
-                                {/* Actions */}
-                                <td className="px-5 py-4">
-                                    <div className="flex justify-end gap-2">
-                                        {/* View */}
-                                        <button
-                                            onClick={() =>
-                                                openModal("view", staff)
-                                            }
-                                            title="View"
-                                            className="rounded-lg border border-[#303030] p-2 text-gray-400 hover:border-blue-500 hover:bg-blue-500/10 hover:text-blue-400 transition"
-                                        >
-                                            <Eye size={17} />
-                                        </button>
-
-                                        {/* Edit */}
-                                        <button
-                                            onClick={() =>
-                                                openModal("edit", staff)
-                                            }
-                                            title="Edit"
-                                            className="rounded-lg border border-[#303030] p-2 text-gray-400 hover:border-yellow-500 hover:bg-yellow-500/10 hover:text-yellow-400 transition"
-                                        >
-                                            <Pencil size={17} />
-                                        </button>
-
-                                        {/* Delete */}
-                                        <button
-                                            onClick={() =>
-                                                openModal("delete", staff)
-                                            }
-                                            title="Delete"
-                                            className="rounded-lg border border-[#303030] p-2 text-gray-400 hover:border-red-500 hover:bg-red-500/10 hover:text-red-400 transition"
-                                        >
-                                            <Trash2 size={17} />
-                                        </button>
-                                    </div>
-                                </td>
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[950px] text-left">
+                        <thead className="bg-[#171717] text-xs uppercase tracking-wider text-gray-500">
+                            <tr>
+                                <th className="px-5 py-4">Staff</th>
+                                <th className="px-5 py-4">Email</th>
+                                <th className="px-5 py-4">Phone</th>
+                                <th className="px-5 py-4">Gender</th>
+                                <th className="px-5 py-4">Role</th>
+                                <th className="px-5 py-4 text-right">Actions</th>
                             </tr>
-                        )) : (
-                            <tr
-                                className="hover:bg-[#171717] transition"
-                            >
-                                <td colSpan="6" className="px-5 py-4 text-sm text-gray-400 text-center">
-                                    No staff found!
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody className="divide-y divide-[#252525]">
+                            {staffs?.length ? staffs.map((staff) => (
+                                <tr
+                                    key={staff._id}
+                                    className="hover:bg-[#171717] transition"
+                                >
+                                    {/* Staff */}
+                                    <td className="px-5 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-500/15 text-sm font-bold text-violet-400">
+                                                {staff.first_name.charAt(0)}
+                                                {staff.last_name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <p className="font-medium">
+                                                    {getFullName(staff)}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    @{staff.username}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td className="px-5 py-4 text-sm text-gray-400">
+                                        {staff.email}
+                                    </td>
+
+                                    <td className="px-5 py-4 text-sm text-gray-400">
+                                        +{staff.dialcode} {staff.phone_number}
+                                    </td>
+
+                                    <td className="px-5 py-4">
+                                        <span className="capitalize text-sm text-gray-300">
+                                            {staff.gender}
+                                        </span>
+                                    </td>
+
+                                    <td className="px-5 py-4">
+                                        <span
+                                            className={`rounded-full px-3 py-1 text-xs font-medium ${
+                                                staff.role === "admin"
+                                                    ? "bg-violet-500/15 text-violet-400"
+                                                    : "bg-blue-500/15 text-blue-400"
+                                            }`}
+                                        >
+                                            {staff.role}
+                                        </span>
+                                    </td>
+
+                                    <td className="px-5 py-4">
+                                        <div className="flex justify-end gap-2">
+                                            <IconButton label={<Eye size={17} />} onClick={() => openModal("view", staff)} title="View" />
+                                            <IconButton label={<Pencil size={17} />} onClick={() => openModal("edit", staff)} title="Edit" />
+                                            <IconButton label={<Trash2 size={17} />} onClick={() => openModal("delete", staff)} title="Delete" />
+                                        </div>
+                                    </td>
+                                </tr>
+                            )) : (
+                                <tr
+                                    className="hover:bg-[#171717] transition"
+                                >
+                                    <td colSpan="6" className="px-5 py-4 text-sm text-gray-400 text-center">
+                                        No staff found!
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="pb-4 px-4">
+                    <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={handlePageChange} />
+                </div>
             </div>
-            <div className="pb-4 px-4">
-                <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={onPageChange} />
-            </div>
-        </div>
+        </>
     );
 };
 

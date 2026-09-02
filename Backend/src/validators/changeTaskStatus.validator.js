@@ -11,18 +11,6 @@ const changeTaskStatusValidation = [
     body("status_description")
         .optional()
         .trim(),
-    
-    body("priority")
-        .optional()
-        .trim()
-        .isIn(["high", "medium", "low"])
-        .withMessage("Priority must be either 'high' or 'medium' or 'low'."),
-
-    body("due_date")
-        .optional()
-        .trim()
-        .isISO8601({ strict: true })
-        .withMessage("Due date must be date"),
 ];
 
 export default changeTaskStatusValidation; 

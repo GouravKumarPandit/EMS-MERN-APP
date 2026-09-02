@@ -110,6 +110,7 @@ function TaskComment({ taskId }) {
                                     rows={3}
                                     placeholder="Write a comment..."
                                     className="w-full resize-none rounded-lg border border-neutral-800 bg-black px-3 py-3 text-sm text-neutral-300 placeholder:text-neutral-600 outline-none transition focus:border-violet-500"
+                                    name="comment"
                                     value={comment}
                                     onChange={(event) => setComment(event.target.value)}
                                 />

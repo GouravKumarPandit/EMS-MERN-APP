@@ -11,10 +11,71 @@ import NoData from "../Ui/NoData";
 import Pagination from "../Ui/Pagination";
 import Priority from "../Ui/Priority";
 import Status from "../Ui/Status";
+import TaskFilters from "./TaskFilters";
+import { useEffect, useState } from "react";
+import { getAllTask } from "../../api/task";
+import { toast } from "react-toastify";
+import IconButton from "../Ui/IconButton";
 
-function TaskTable({ tasks, openModal, pagination, onPageChange }) {
+function TaskTable({ modal, openModal, staffs }) {
+    const [tasks, setTasks] = useState([]);
+    const [filters, setFilters] = useState({
+        search: "",
+        status: "",
+        priority: "",
+        staff: ""
+    });
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        totalRecords: 0,
+        limit: 3
+    });
+
+    const filterInputHandler = (event) => {
+        const { name, value } = event.target;
+        setFilters((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const handlePageChange = (page) => {
+        setPagination(prev => ({
+            ...prev,
+            currentPage: page
+        }));
+    };
+
+    useEffect(() => {
+        const loadTasks = async () => {
+            try {
+                const response = await getAllTask(
+                    filters.search, 
+                    filters.status, 
+                    filters.priority, 
+                    filters.staff, 
+                    pagination.currentPage, pagination.limit
+                );
+
+                if (response.data.success) {
+                    const { tasks, pagination: paginationData } =
+                        response.data.data;
+
+                    setTasks(tasks);
+                    setPagination(paginationData);
+                }
+            } catch (error) {
+                toast.error(error.response.data.message);
+            }
+        }
+
+        loadTasks();
+    }, [modal, filters.search, filters.status, filters.priority, filters.staff,  pagination.currentPage, pagination.limit]);
+
     return (
         <>
+            <TaskFilters filters={filters} filterInputHandler={filterInputHandler} staffs={staffs} />
             <div className="overflow-hidden rounded-xl border border-neutral-800 bg-[#111111]">
                 <div className="hidden grid-cols-[1.5fr_2fr_1fr_1fr_1fr_1.5fr] gap-4 border-b border-neutral-800 bg-[#151515] px-5 py-4 text-xs uppercase tracking-wide text-neutral-400 lg:grid">
                     <span>Task</span>
@@ -73,42 +134,15 @@ function TaskTable({ tasks, openModal, pagination, onPageChange }) {
                         </div>
 
                         <div className="flex items-center gap-1">
-                            <button
-                                onClick={() => openModal("view", task)}
-                                title="View"
-                                className="rounded-lg p-2 text-neutral-400 transition hover:bg-blue-500/10 hover:text-blue-400"
-                            >
-                                <Eye size={17} />
-                            </button>
-
-                            <button
-                                onClick={() => openModal("edit", task)}
-                                title="Edit"
-                                className="rounded-lg p-2 text-neutral-400 transition hover:bg-yellow-500/10 hover:text-yellow-400"
-                            >
-                                <Pencil size={17} />
-                            </button>
-
-                            <button
-                                onClick={() => openModal("status", task)}
-                                title="Change Status"
-                                className="rounded-lg p-2 text-neutral-400 transition hover:bg-green-500/10 hover:text-green-400"
-                            >
-                                <RefreshCw size={17} />
-                            </button>
-
-                            <button
-                                onClick={() => openModal("delete", task)}
-                                title="Delete"
-                                className="rounded-lg p-2 text-neutral-400 transition hover:bg-red-500/10 hover:text-red-400"
-                            >
-                                <Trash2 size={17} />
-                            </button>
+                            <IconButton label={<Eye size={17} />} onClick={() => openModal("view", task)} title="View" />
+                            <IconButton label={<Pencil size={17} />} onClick={() => openModal("edit", task)} title="Edit" />
+                            <IconButton label={<RefreshCw size={17} />} onClick={() => openModal("status", task)} title="View" />
+                            <IconButton label={<Trash2 size={17} />} onClick={() => openModal("delete", task)} title="View" />
                         </div>
                     </div>
                 ))) : <NoData message={"No Task Found!"} />}
             </div>
-            <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={onPageChange} />
+            <Pagination currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={handlePageChange} />
         </>
     )
 }

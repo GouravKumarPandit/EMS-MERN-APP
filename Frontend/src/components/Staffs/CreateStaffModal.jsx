@@ -7,8 +7,45 @@ import { useState } from "react";
 import { createStaff } from "../../api/staff";
 import { toast } from "react-toastify";
 
-const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandler, createFormErrorData, setCreateFormErrorData,  closeModal }) => {
+const CreateStaffModal = ({ modal, closeModal }) => {
     const [submitLoader, setSubmitLoader] = useState(false);
+    const [createFormData, setCreateFormData] = useState({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        dialcode: 91,
+        phone_number: "",
+        gender: "",
+        dob: "",
+        role: "",
+    });
+    const [createFormErrorData, setCreateFormErrorData] = useState({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        dialcode: 91,
+        phone_number: "",
+        gender: "",
+        dob: "",
+        role: "",
+    });
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setCreateFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+
+        setCreateFormErrorData((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
@@ -44,13 +81,12 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
             });
             closeModal();
         } catch (error) {
-            error.response.data.errors.map((error) => {
+            error?.response?.data?.errors?.length > 0 ? error.response.data.errors.map((error) => {
                 setCreateFormErrorData((prev) => ({
                     ...prev,
                     [error.path]: error.msg
                 }))
-            })
-            toast.error(error.response.data.message);
+            }) : toast.error(error.response.data.message);
         } finally{
             setSubmitLoader(false);
         }
@@ -63,7 +99,6 @@ const CreateStaffModal = ({ modal, createFormData, setCreateFormData, inputHandl
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
             <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[#303030] bg-[#111111] shadow-2xl">
-                {/* Header */}
                 <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#252525] bg-[#111111] px-6 py-4">
                     <div>
                         <h2 className="text-xl font-bold">

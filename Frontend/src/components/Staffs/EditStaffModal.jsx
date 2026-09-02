@@ -4,34 +4,112 @@ import Input from "../Ui/Input";
 import CancelButton from "../Ui/CancelButton";
 import Select from "../Ui/Select";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateStaff } from "../../api/staff";
 import formatDateForInput from "../../utils/formatDateForInput";
 
-const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData, closeModal }) => {
+const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
     const [submitLoader, setSubmitLoader] = useState(false);
+    const [updateFormData, setUpdateFormData] = useState({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        dialcode: 91,
+        phone_number: "",
+        gender: "",
+        dob: "",
+        role: "",
+    });
+    const [updateFormErrorData, setUpdateFormErrorData] = useState({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        dialcode: 91,
+        phone_number: "",
+        gender: "",
+        dob: "",
+        role: "",
+    });
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setUpdateFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+
+        setUpdateFormErrorData((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
 
         try {
-            const response = await updateStaff(selectedStaff._id, createFormData);
+            const response = await updateStaff(selectedStaff._id, updateFormData);
             if(response.data.success){
                 toast.success(response?.data?.message);
             }
+            setUpdateFormData({
+                first_name: "",
+                last_name: "",
+                username: "",
+                email: "",
+                password: "",
+                dialcode: 91,
+                phone_number: "",
+                gender: "",
+                dob: "",
+                role: "",
+            });
+            setUpdateFormErrorData({
+                first_name: "",
+                last_name: "",
+                username: "",
+                email: "",
+                password: "",
+                dialcode: 91,
+                phone_number: "",
+                gender: "",
+                dob: "",
+                role: "",
+            });
             closeModal();
         } catch (error) {
-            error.response.data.errors.map((error) => {
-                setCreateFormErrorData((prev) => ({
+            error?.response?.data?.errors?.length > 0 ? error.response.data.errors.map((error) => {
+                setUpdateFormErrorData((prev) => ({
                     ...prev,
                     [error.path]: error.msg
                 }))
-            })
-            toast.error(error.response.data.message);
+            }) : toast.error(error.response.data.message);
         } finally{
             setSubmitLoader(false);
         }
     }
+
+    useEffect(() => {
+        const setEditStaff = async () => {
+            setUpdateFormData({
+                first_name: selectedStaff.first_name || "",
+                last_name: selectedStaff.last_name || "",
+                email: selectedStaff.email || "",
+                dialcode: selectedStaff.dialcode || 91,
+                phone_number: selectedStaff.phone_number || "",
+                gender: selectedStaff.gender || "",
+                dob: selectedStaff.dob || "",
+                role: selectedStaff.role || "",
+            })
+            console.log("Edit >> ", selectedStaff)
+        }
+
+        if(selectedStaff) setEditStaff();
+    }, [selectedStaff])
 
     if (modal !== "edit" || !selectedStaff) {
         return null;
@@ -67,9 +145,9 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             placeholder="Enter first name"
                             name="first_name"
                             required
-                            value={createFormData.first_name}
+                            value={updateFormData.first_name}
                             onChange={inputHandler}
-                            errorMessage={createFormErrorData.first_name}
+                            errorMessage={updateFormErrorData.first_name}
                         />
                         <Input
                             label="Last Name" 
@@ -77,9 +155,9 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             placeholder="Enter last name"
                             name="last_name"
                             required
-                            value={createFormData.last_name}
+                            value={updateFormData.last_name}
                             onChange={inputHandler}
-                            errorMessage={createFormErrorData.last_name}
+                            errorMessage={updateFormErrorData.last_name}
                         />
 
                         <Input
@@ -98,12 +176,11 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             placeholder="Enter email"
                             name="email"
                             required
-                            value={createFormData.email}
+                            value={updateFormData.email}
                             onChange={inputHandler}
-                            errorMessage={createFormErrorData.email}
+                            errorMessage={updateFormErrorData.email}
                         />
 
-                        {/* Phone */}
                         <div>
                             <label className="mb-2 block text-sm font-medium">
                                 Phone Number
@@ -112,7 +189,7 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             <div className="flex gap-2">
                                 <Input
                                     type="number"
-                                    value={createFormData.dialcode}
+                                    value={updateFormData.dialcode}
                                     name="dialcode"
                                     className="w-20 rounded-lg border border-[#303030] bg-black px-3 py-2.5 text-white outline-none focus:border-violet-500"
                                     onChange={inputHandler}
@@ -122,9 +199,9 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                                     type="number"
                                     name="phone_number"
                                     className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-black px-4 py-2.5 text-white outline-none focus:border-violet-500"
-                                    value={createFormData.phone_number}
+                                    value={updateFormData.phone_number}
                                     onChange={inputHandler}
-                                    errorMessage={createFormErrorData.phone_number}
+                                    errorMessage={updateFormErrorData.phone_number}
                                 />
                             </div>
                         </div>
@@ -137,9 +214,9 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                                 { label: "Female", value: "female" },
                                 { label: "Others", value: "others" }
                             ]}
-                            value={createFormData.gender}
+                            value={updateFormData.gender}
                             onChange={inputHandler}
-                            errorMessage={createFormErrorData.gender}
+                            errorMessage={updateFormErrorData.gender}
                         />
 
                         <Input
@@ -147,9 +224,9 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                             type="date"
                             placeholder="Enter date of birth"
                             name="dob"
-                            value={formatDateForInput(createFormData.dob)}
+                            value={formatDateForInput(updateFormData.dob)}
                             onChange={inputHandler}
-                            errorMessage={createFormErrorData.dob}
+                            errorMessage={updateFormErrorData.dob}
                         />
 
                         <Select
@@ -160,13 +237,12 @@ const EditStaffModal = ({ modal, selectedStaff, createFormData, inputHandler, cr
                                 { label: "Staff", value: "staff" },
                                 { label: "Admin", value: "admin" }
                             ]}
-                            value={createFormData.role}
+                            value={updateFormData.role}
                             onChange={inputHandler}
-                            errorMessage={createFormErrorData.role}
+                            errorMessage={updateFormErrorData.role}
                         />
                     </div>
 
-                    {/* Buttons */}
                     <div className="mt-6 flex justify-end gap-3 border-t border-[#252525] pt-5">
                         <CancelButton type="button" onClick={closeModal}>
                             Cancel

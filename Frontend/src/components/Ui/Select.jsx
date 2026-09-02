@@ -1,4 +1,3 @@
-import { ChevronDown } from "lucide-react";
 import ValidationError from "./ValidationError";
 
 export default function Select({ label, options = [], required = false, divClass = "", selectClass = "", labelClass = "", errorMessage = "", ...props }) {

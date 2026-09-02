@@ -10,8 +10,21 @@ import TaskComment from "./TaskComment";
 import TaskHistory from "./TaskHistory";
 import Status from "../Ui/Status";
 import Priority from "../Ui/Priority";
+import { useEffect, useState } from "react";
+import { getTaskById } from "../../api/task";
 
 function ViewTaskModel({ modal, selectedTask, closeModal }) {
+	const [taskActivity, setTaskActivity] = useState([]);
+	useEffect(() => {
+		const fetchTaskActivity = async (taskId) => {
+			const response = await getTaskById(taskId);
+			setTaskActivity(response.data.data);
+		}
+
+		if(selectedTask){
+			fetchTaskActivity(selectedTask?._id);
+		}
+	}, [selectedTask])
 
     return (
         <>
@@ -21,10 +34,10 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 						<div className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
 							<div>
 								<p className="text-xs text-neutral-400">
-									{selectedTask?.task?.task_id}
+									{selectedTask?.task_id}
 								</p>
 								<h2 className="mt-1 font-semibold">
-									{selectedTask?.task?.task}
+									{selectedTask?.task}
 								</h2>
 							</div>
 							<button
@@ -38,13 +51,13 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 						<div className="max-h-[75vh] overflow-y-auto p-6">
 							<div className="mb-5 flex gap-2">
 								{
-									(selectedTask?.task?.priority) ? 
-									<Priority priority={selectedTask.task.priority} /> : 
+									(selectedTask?.priority) ? 
+									<Priority priority={selectedTask.priority} /> : 
 									"None priority"
 								}
 								{
-									(selectedTask?.task?.status) ? 
-									<Status status={selectedTask.task.status} /> : 
+									(selectedTask?.status) ? 
+									<Status status={selectedTask.status} /> : 
 									"None"
 								}
 							</div>
@@ -54,7 +67,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 									Description
 								</p>
 								<p className="text-sm leading-6 text-neutral-400">
-									{selectedTask?.task?.task_description ? selectedTask?.task?.task_description : "--"}
+									{selectedTask?.task_description ? selectedTask?.task_description : "--"}
 								</p>
 							</div>
 
@@ -68,7 +81,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 										Due Date
 									</p>
 									<p className="mt-1 text-sm">
-										{selectedTask?.task?.due_date ? formatDateTime(selectedTask.task.due_date) : "--"}
+										{selectedTask?.due_date ? formatDateTime(selectedTask.due_date) : "--"}
 									</p>
 								</div>
 
@@ -82,10 +95,10 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 									</p>
 									<p className="mt-1 text-sm">
 										{
-											selectedTask?.task?.assigned_staff ?
+											selectedTask?.assigned_staff ?
 											<span className="mt-2 flex items-center gap-1 text-xs text-neutral-400">
 												<User size={13} />
-												{selectedTask?.task?.assigned_staff?.first_name} {selectedTask?.task?.assigned_staff?.last_name}
+												{selectedTask?.assigned_staff?.first_name} {selectedTask?.assigned_staff?.last_name}
 											</span> :
 											<span className="mt-1 text-xs">--</span>
 										}
@@ -101,7 +114,7 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 										Created
 									</p>
 									<p className="mt-1 text-sm">
-										{formatDateTime(selectedTask?.task?.createdAt)}
+										{formatDateTime(selectedTask?.createdAt)}
 									</p>
 								</div>
 							</div>
@@ -111,17 +124,17 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 									Status Description
 								</p>
 								<p className="text-sm text-neutral-400">
-									{selectedTask?.task?.status_description ? selectedTask.task.status_description : "--"}
+									{selectedTask?.status_description ? selectedTask.status_description : "--"}
 								</p>
 							</div>
 
 							{
-								selectedTask?.activities?.length > 0 ? 
-									<TaskHistory activities={selectedTask.activities} /> : 
+								taskActivity?.activities?.length > 0 ? 
+									<TaskHistory activities={taskActivity?.activities} /> : 
 									<NoData message="No task activity found" />
 							}
 
-							<TaskComment taskId={selectedTask?.task?._id} />
+							<TaskComment taskId={selectedTask?._id} />
 						</div>
 					</div>
 				</div>

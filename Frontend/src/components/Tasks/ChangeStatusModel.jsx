@@ -1,43 +1,90 @@
 import {
 	RefreshCw,
-	X,
-	CheckCircle2,
+	X
 } from "lucide-react";
 import Select from "../Ui/Select";
 import TextArea from "../Ui/TextArea";
 import CancelButton from "../Ui/CancelButton";
 import Button from "../Ui/Button";
-import { useState } from "react";
-import { formatDateTime } from "../../utils/date";
+import { useEffect, useState } from "react";
 import NoData from "../Ui/NoData";
 import { toast } from "react-toastify";
-import { changeStatus } from "../../api/task";
+import { changeStatus, getTaskById } from "../../api/task";
 import Status from "../Ui/Status";
+import TaskHistory from "./TaskHistory";
 
-function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData, closeModal }) {
+function ChangeStatusModel({ modal, selectedTask, closeModal }) {
+    const [taskActivity, setTaskActivity] = useState([]);
     const [submitLoader, setSubmitLoader] = useState(false);
+    const [changeStatusFormData, setChangeStatusFormData] = useState({
+        status: "",
+        status_description: ""
+    });
+    const [changeStatusFormErrorData, setChangeStatusFormErrorData] = useState({
+        status: "",
+        status_description: ""
+    });
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setChangeStatusFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+
+        setChangeStatusFormErrorData((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
+    }
 
     const submitHandler = async (event) => {
         event.preventDefault();
         
         try {
-            const response = await changeStatus(selectedTask?.task?._id, createFormData);
+            const response = await changeStatus(selectedTask?._id, changeStatusFormData);
             if(response.data.success){
                 toast.success(response?.data?.message);
             }
+            setChangeStatusFormData({
+                status: "",
+                status_description: ""
+            });
+            setChangeStatusFormErrorData({
+                status: "",
+                status_description: ""
+            });
             closeModal();
         } catch (error) {
-            error.response.data.errors.map((error) => {
-                setCreateFormErrorData((prev) => ({
+            error?.response?.data?.errors?.length > 0 ? error.response.data.errors.map((error) => {
+                setChangeStatusFormErrorData((prev) => ({
                     ...prev,
                     [error.path]: error.msg
                 }))
-            })
-            toast.error(error.response.data.message);
+            }) : toast.error(error.response.data.message);
         } finally{
             setSubmitLoader(false);
         }
     }
+
+    useEffect(() => {
+        const fetchEditData = async () => {
+            setChangeStatusFormData({
+                status: selectedTask?.status || "",
+                status_description: selectedTask?.status_description || ""
+            });
+        }
+
+        const fetchTaskActivity = async (taskId) => {
+            const response = await getTaskById(taskId);
+            setTaskActivity(response.data.data);
+        }
+
+        if(modal){
+            fetchEditData();
+            fetchTaskActivity(selectedTask?._id);
+        }
+    }, [selectedTask])
 
     return (
         <>
@@ -50,7 +97,7 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                                     Change Status
                                 </h2>
                                 <p className="text-xs text-neutral-400">
-                                    Task ID # {selectedTask?.task?.task_id}
+                                    Task ID # {selectedTask?.task_id}
                                 </p>
                             </div>
 
@@ -62,14 +109,14 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                             </button>
                         </div>
 
-                        <form onSubmit={submitHandler} >
-                            <div className="max-h-[75vh] overflow-y-auto p-6">
+                        <div className="max-h-[75vh] overflow-y-auto p-6">
+                            <form onSubmit={submitHandler} >
                                 <div className="mb-5 rounded-lg border border-neutral-800 bg-black p-4">
                                     <p className="text-xs text-neutral-400">
                                         Current Status
                                     </p>
                                     <p className="mt-2 text-sm capitalize text-white">
-                                        <Status status={selectedTask?.task?.status} />
+                                        <Status status={selectedTask?.status} />
                                     </p>
                                 </div>
                                 <div className="grid grid-cols-1">
@@ -84,9 +131,9 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                                         ]}
                                         divClass="mb-5"
                                         required
-                                        value={createFormData.status}
+                                        value={changeStatusFormData?.status}
                                         onChange={inputHandler}
-                                        errorMessage={createFormErrorData.status}
+                                        errorMessage={changeStatusFormErrorData?.status}
                                     />
 
                                     <TextArea
@@ -94,9 +141,9 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                                         placeholder="Enter status description"
                                         row={4}
                                         name="status_description"
-                                        value={createFormData.status_description}
+                                        value={changeStatusFormData?.status_description}
                                         onChange={inputHandler}
-                                        errorMessage={createFormErrorData.status_description}
+                                        errorMessage={changeStatusFormErrorData?.status_description}
                                     />
                                 </div>
 
@@ -120,46 +167,13 @@ function ChangeStatusModel({ modal, selectedTask, createFormData, inputHandler, 
                                         )}
                                     </Button>
                                 </div>
-
-                                <div className="mt-7">
-                                    <h3 className="mb-4 text-sm font-medium">
-                                        Status History
-                                    </h3>
-                                    <div className="space-y-3">
-                                        {selectedTask?.activities?.length ? selectedTask.activities.map(
-                                            (history, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="flex gap-3 rounded-lg border border-neutral-800 bg-black p-3"
-                                                >
-                                                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-neutral-900">
-                                                        <CheckCircle2
-                                                            size={15}
-                                                            className="text-green-400"
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <div className="flex flex-wrap items-center gap-2">
-                                                            <span className="text-sm capitalize">
-                                                                {history?.task_type.replace("_", " ")}
-                                                            </span>
-                                                            <span className="text-xs text-neutral-400">
-                                                                {formatDateTime(history?.createdAt)}
-                                                            </span>
-                                                        </div>
-                                                        <p className="mt-1 text-xs text-neutral-400">
-                                                            {history?.task_activity} <br />
-                                                            Updated By: {history?.updated_by?.first_name} {history?.updated_by?.last_name}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            )
-                                        ) : <NoData message="No task activity found" />}
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                            {
+                                taskActivity?.activities?.length > 0 ? 
+                                    <TaskHistory activities={taskActivity?.activities} /> : 
+                                    <NoData message="No task activity found" />
+                            }
+                        </div>
                     </div>
                 </div>
             )}

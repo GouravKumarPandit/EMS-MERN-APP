@@ -11,9 +11,40 @@ import { createTask } from "../../api/task";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
-function CreateTaskModel({ modal, staffs, createFormData, setCreateFormData, inputHandler, createFormErrorData, setCreateFormErrorData, closeModal }) {
-    const [submitLoader, setSubmitLoader] = useState(false);
+function CreateTaskModel({ modal, staffs, closeModal }) {
     const { user } = useAuth();
+    const [submitLoader, setSubmitLoader] = useState(false);
+    const [createFormData, setCreateFormData] = useState({
+        task: "",
+        task_description: "",
+        priority: "",
+        status: "",
+        status_description: "",
+        due_date: "",
+        assigned_staff: ""
+    });
+    const [createFormErrorData, setCreateFormErrorData] = useState({
+        task: "",
+        task_description: "",
+        priority: "",
+        status: "",
+        status_description: "",
+        due_date: "",
+        assigned_staff: ""
+    });
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setCreateFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+
+        setCreateFormErrorData((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
+    }
     
     const submitHandler = async (event) => {
         event.preventDefault();
@@ -43,13 +74,12 @@ function CreateTaskModel({ modal, staffs, createFormData, setCreateFormData, inp
             });
             closeModal();
         } catch (error) {
-            error.response.data.errors.map((error) => {
+            error?.response?.data?.errors?.length > 0 ? error.response.data.errors.map((error) => {
                 setCreateFormErrorData((prev) => ({
                     ...prev,
                     [error.path]: error.msg
                 }))
-            })
-            toast.error(error.response.data.message);
+            }) : toast.error(error.response.data.message);
         } finally{
             setSubmitLoader(false);
         }

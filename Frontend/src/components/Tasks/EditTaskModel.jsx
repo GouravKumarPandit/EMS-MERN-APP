@@ -6,37 +6,101 @@ import CancelButton from "../Ui/CancelButton";
 import Button from "../Ui/Button";
 import TextArea from "../Ui/TextArea";
 import Select from "../Ui/Select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateTask } from "../../api/task";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import formatDateForInput from "../../utils/formatDateForInput";
 
-function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, createFormErrorData, setCreateFormErrorData, staffs, closeModal }) {
-	const [submitLoader, setSubmitLoader] = useState(false);
+function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 	const { user } = useAuth();
+	const [submitLoader, setSubmitLoader] = useState(false);
+	const [editFormData, setEditFormData] = useState({
+        task: "",
+        task_description: "",
+        priority: "",
+        status: "",
+        status_description: "",
+        due_date: "",
+        assigned_staff: ""
+    });
+    const [editFormErrorData, setEditFormErrorData] = useState({
+        task: "",
+        task_description: "",
+        priority: "",
+        status: "",
+        status_description: "",
+        due_date: "",
+        assigned_staff: ""
+    });
+
+    const inputHandler = (event) => {
+        const { name, value } = event.target;
+        setEditFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+
+        setEditFormErrorData((prev) => ({
+            ...prev,
+            [name]: ""
+        }))
+    }
 	
 	const submitHandler = async (event) => {
 		event.preventDefault();
 
 		try {
-			const response = await updateTask(selectedTask._id, createFormData);
+			const response = await updateTask(selectedTask._id, editFormData);
 			if(response.data.success){
 				toast.success(response?.data?.message);
 			}
+			setEditFormData({
+                task: "",
+                task_description: "",
+                priority: "",
+                status: "",
+                status_description: "",
+                due_date: "",
+                assigned_staff: ""
+            });
+            setEditFormErrorData({
+                task: "",
+                task_description: "",
+                priority: "",
+                status: "",
+                status_description: "",
+                due_date: "",
+                assigned_staff: ""
+            });
 			closeModal();
 		} catch (error) {
-			error.response.data.errors.map((error) => {
-				setCreateFormErrorData((prev) => ({
+			error?.response?.data?.errors?.length > 0 ? error.response.data.errors.map((error) => {
+				setEditFormErrorData((prev) => ({
 					...prev,
 					[error.path]: error.msg
 				}))
-			})
-			toast.error(error.response.data.message);
+			}) : toast.error(error.response.data.message);
 		} finally{
 			setSubmitLoader(false);
 		}
 	}
+
+	useEffect(() => {
+        const fetchEditData = async () => {
+			setEditFormData({
+                task: selectedTask?.task || "",
+                task_description: selectedTask?.task_description || "",
+                priority: selectedTask?.priority || "",
+                status: selectedTask?.status || "",
+                status_description: selectedTask?.status_description || "",
+                due_date: selectedTask?.due_date || "",
+                assigned_staff: selectedTask?.assigned_staff?._id || ""
+            });
+		}
+
+		fetchEditData();
+	}, [selectedTask])
 
     return (
 		<>
@@ -72,9 +136,9 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 									name="task"
 									required
 									divClass="md:col-span-2"
-									value={createFormData.task}
+									value={editFormData.task}
 									onChange={inputHandler}
-									errorMessage={createFormErrorData.task}
+									errorMessage={editFormErrorData.task}
 								/>
 
 								<TextArea
@@ -83,9 +147,9 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 									placeholder="Enter task description"
 									row={4}
 									name="task_description"
-									value={createFormData.task_description}
+									value={editFormData.task_description}
 									onChange={inputHandler}
-									errorMessage={createFormErrorData.task_description}
+									errorMessage={editFormErrorData.task_description}
 								/>
 
 								<Select
@@ -99,9 +163,9 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 											value: staff._id
 										}))
 									}
-									value={createFormData.assigned_staff}
+									value={editFormData.assigned_staff}
 									onChange={inputHandler}
-									errorMessage={createFormErrorData.assigned_staff}
+									errorMessage={editFormErrorData.assigned_staff}
 								/>
 
 								<Select
@@ -125,9 +189,9 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 											value: "failed"
 										}
 									]}
-									value={createFormData.status}
+									value={editFormData.status}
 									onChange={inputHandler}
-									errorMessage={createFormErrorData.status}
+									errorMessage={editFormErrorData.status}
 								/>
 
 								<TextArea
@@ -135,9 +199,9 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 									placeholder="Enter status description"
 									row={4}
 									name="status_description"
-									value={createFormData.status_description}
+									value={editFormData.status_description}
 									onChange={inputHandler}
-									errorMessage={createFormErrorData.status_description}
+									errorMessage={editFormErrorData.status_description}
 								/>
 
 								<Select
@@ -157,9 +221,9 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 											value: "high"
 										}
 									]}
-									value={createFormData.priority}
+									value={editFormData.priority}
 									onChange={inputHandler}
-									errorMessage={createFormErrorData.priority}
+									errorMessage={editFormErrorData.priority}
 								/>
 
 								<Input
@@ -167,9 +231,9 @@ function EditTaskModel({ modal, selectedTask, createFormData, inputHandler, crea
 									type="date"
 									placeholder="Enter due date"
 									name="due_date"
-									value={formatDateForInput(createFormData.due_date)}
+									value={formatDateForInput(editFormData.due_date)}
 									onChange={inputHandler}
-									errorMessage={createFormErrorData.due_date}
+									errorMessage={editFormErrorData.due_date}
 								/>
 							</div>
 
