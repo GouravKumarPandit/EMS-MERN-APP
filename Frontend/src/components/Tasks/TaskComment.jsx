@@ -74,17 +74,17 @@ function TaskComment({ taskId }) {
 
     return (
         <>
-            <div className="mt-6 border-t border-neutral-800 pt-6">
+            <div className="mt-6 border-t border-app-line pt-6">
                 <div className="mb-4 flex items-center justify-between">
                     <div>
-                        <h3 className="text-sm font-semibold text-white">
+                        <h3 className="text-sm font-semibold text-app-text">
                             Task Comments
                         </h3>
-                        <p className="mt-1 text-xs text-neutral-500">
+                        <p className="mt-1 text-xs text-app-subtle">
                             Add updates, notes, or discussions related to this task.
                         </p>
                     </div>
-                    <span className="rounded-full bg-neutral-800 px-2.5 py-1 text-xs text-neutral-400">
+                    <span className="rounded-full bg-app-hover px-2.5 py-1 text-xs text-app-muted">
                         {comments?.length} Comments
                     </span>
                 </div>
@@ -98,7 +98,7 @@ function TaskComment({ taskId }) {
                 </div>
 
                 <form onSubmit={submitCreateHandler}>
-                    <div className="mt-4 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
+                    <div className="mt-4 rounded-xl border border-app-line bg-app-soft/30 p-4">
                         <div className="flex items-start gap-3">
                             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-sm font-semibold text-violet-400">
                                 {user?.first_name.charAt(0)}
@@ -109,14 +109,14 @@ function TaskComment({ taskId }) {
                                 <TextArea
                                     rows={3}
                                     placeholder="Write a comment..."
-                                    className="w-full resize-none rounded-lg border border-neutral-800 bg-black px-3 py-3 text-sm text-neutral-300 placeholder:text-neutral-600 outline-none transition focus:border-violet-500"
+                                    className="w-full resize-none rounded-lg border border-app-line bg-app-bg px-3 py-3 text-sm text-app-muted placeholder:text-app-subtle outline-none transition focus:border-violet-500"
                                     name="comment"
                                     value={comment}
                                     onChange={(event) => setComment(event.target.value)}
                                 />
 
                                 <div className="mt-3 flex items-center justify-between">
-                                    <span className="text-xs text-neutral-600">
+                                    <span className="text-xs text-app-subtle">
                                         Keep your comment clear and relevant.
                                     </span>
                                     <Button

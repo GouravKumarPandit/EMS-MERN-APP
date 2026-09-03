@@ -7,17 +7,17 @@ function Profile() {
 
     return (
         <>
-            <div className="min-h-screen bg-black text-white p-6">
+            <div className="min-h-screen bg-app-bg text-app-text p-6">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold">
                         Staff Profile
                     </h1>
                 </div>
 
-                <div className="max-w-2xl bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
+                <div className="max-w-2xl bg-app-card border border-app-line rounded-2xl overflow-hidden">
                     <div className="p-6">
                         {/* Profile */}
-                        <div className="mb-6 flex items-center gap-4 rounded-xl border border-[#252525] bg-[#171717] p-5">
+                        <div className="mb-6 flex items-center gap-4 rounded-xl border border-app-line bg-app-soft p-5">
                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500/15 text-xl font-bold text-violet-400">
                                 {selectedStaff?.first_name?.charAt(0)}
                                 {selectedStaff?.last_name?.charAt(0)}
@@ -28,7 +28,7 @@ function Profile() {
                                     {fullName}
                                 </h3>
 
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-app-subtle">
                                     @{selectedStaff?.username}
                                 </p>
                             </div>
@@ -55,12 +55,12 @@ function Profile() {
 
 const Info = ({ label, value }) => {
     return (
-        <div className="rounded-lg border border-[#252525] bg-[#171717] p-4">
-            <p className="text-xs uppercase tracking-wide text-gray-500">
+        <div className="rounded-lg border border-app-line bg-app-soft p-4">
+            <p className="text-xs uppercase tracking-wide text-app-subtle">
                 {label}
             </p>
 
-            <p className="mt-1 break-words text-sm text-gray-200 capitalize">
+            <p className="mt-1 break-words text-sm text-app-text capitalize">
                 {value || "Not provided"}
             </p>
         </div>

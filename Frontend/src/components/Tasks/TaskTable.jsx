@@ -78,8 +78,8 @@ function TaskTable({ modal, openModal, staffs }) {
     return (
         <>
             <TaskFilters filters={filters} filterInputHandler={filterInputHandler} staffs={staffs} />
-            <div className="overflow-hidden rounded-xl border border-neutral-800 bg-[#111111]">
-                <div className="hidden grid-cols-[1.5fr_2fr_1fr_1fr_1fr_1.5fr] gap-4 border-b border-neutral-800 bg-[#151515] px-5 py-4 text-xs uppercase tracking-wide text-neutral-400 lg:grid">
+            <div className="overflow-hidden rounded-xl border border-app-line bg-app-card">
+                <div className="hidden grid-cols-[1.5fr_2fr_1fr_1fr_1fr_1.5fr] gap-4 border-b border-app-line bg-app-raised px-5 py-4 text-xs uppercase tracking-wide text-app-muted lg:grid">
                     <span>Task</span>
                     <span>Description</span>
                     <span>Priority</span>
@@ -91,26 +91,26 @@ function TaskTable({ modal, openModal, staffs }) {
                 {tasks.length > 0 ? (tasks.map((task) => (
                     <div
                         key={task.task_id}
-                        className="grid grid-cols-1 gap-4 border-b border-neutral-800 px-5 py-5 last:border-b-0 lg:grid-cols-[1.5fr_2fr_1fr_1fr_1fr_1.5fr] lg:items-center"
+                        className="grid grid-cols-1 gap-4 border-b border-app-line px-5 py-5 last:border-b-0 lg:grid-cols-[1.5fr_2fr_1fr_1fr_1fr_1.5fr] lg:items-center"
                     >
                         <div>
-                            <p className="font-medium text-white">
+                            <p className="font-medium text-app-text">
                                 {task.task}
                             </p>
-                            <p className="mt-1 text-xs text-neutral-400">
+                            <p className="mt-1 text-xs text-app-muted">
                                 ID: {task.task_id}
                             </p>
                             {
                                 task?.assigned_staff ?
-                                <div className="mt-2 flex items-center gap-1 text-xs text-neutral-400">
+                                <div className="mt-2 flex items-center gap-1 text-xs text-app-muted">
                                     <User size={13} />
                                     {task?.assigned_staff?.first_name} {task?.assigned_staff?.last_name}
                                 </div> :
-                                <p className="mt-1 text-xs text-neutral-400">No Staff Assigned</p>
+                                <p className="mt-1 text-xs text-app-muted">No Staff Assigned</p>
                             }
                         </div>
 
-                        <p className="line-clamp-2 text-sm text-neutral-400">
+                        <p className="line-clamp-2 text-sm text-app-muted">
                             {task?.task_description ? task?.task_description : "--"}
                         </p>
 
@@ -130,7 +130,7 @@ function TaskTable({ modal, openModal, staffs }) {
                             }
                         </div>
 
-                        <div className="flex items-center gap-2 text-sm text-neutral-400">
+                        <div className="flex items-center gap-2 text-sm text-app-muted">
                             <CalendarDays size={15} />
                             {task.due_date ? formatDateTime(task.due_date) : "--"}
                         </div>

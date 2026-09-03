@@ -4,19 +4,19 @@ import ChangePasswordForm from "../../components/Profile/ChangePasswordForm";
 const ChangePassword = () => {
 
     return (
-        <div className="min-h-screen bg-black text-white p-6">
+        <div className="min-h-screen bg-app-bg text-app-text p-6">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold">
                     Change Password
                 </h1>
 
-                <p className="text-gray-400 mt-1">
+                <p className="text-app-muted mt-1">
                     Update your account password to keep your account secure
                 </p>
             </div>
 
-            <div className="max-w-2xl bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
-                <div className="px-6 py-5 border-b border-neutral-800">
+            <div className="max-w-2xl bg-app-card border border-app-line rounded-2xl overflow-hidden">
+                <div className="px-6 py-5 border-b border-app-line">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
                             <LockKeyhole
@@ -29,7 +29,7 @@ const ChangePassword = () => {
                                 Password Security
                             </h2>
 
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-app-subtle">
                                 Create a strong password for your account
                             </p>
                         </div>

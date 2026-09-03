@@ -1,4 +1,4 @@
-import { Building2, Mail, Phone, Save, Shield, FileText, ExternalLink } from "lucide-react";
+import { Building2, Mail, Phone, Save, Shield, FileText, ExternalLink, Upload, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Input from "../../components/Ui/Input";
@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { useSettings } from "../../context/SettingsContext";
 
 const Settings = () => {
-    const { settings, refreshSettings } = useSettings();
+    const { settings, refreshSettings, logoUrl } = useSettings();
     const [settingsData, setSettingsData] = useState({
         company_name: "",
         company_email: "",
@@ -17,6 +17,9 @@ const Settings = () => {
         privacy_policy: "",
         terms_of_service: "",
     });
+    const [logoFile, setLogoFile] = useState(null);
+    const [logoPreview, setLogoPreview] = useState("");
+    const [removeLogo, setRemoveLogo] = useState(false);
     const [submitLoader, setSubmitLoader] = useState(false);
 
     const inputHandler = (event) => {
@@ -27,14 +30,43 @@ const Settings = () => {
         }));
     }
 
+    const handleLogoChange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setLogoFile(file);
+        setRemoveLogo(false);
+        setLogoPreview(URL.createObjectURL(file));
+        event.target.value = "";
+    }
+
+    const handleRemoveLogo = () => {
+        setLogoFile(null);
+        setLogoPreview("");
+        setRemoveLogo(true);
+    }
+
     const submitHandler = async (event) => {
         event.preventDefault();
         setSubmitLoader(true);
         
         try {
-            const response = await updateSettings(settingsData);
+            const formData = new FormData();
+            Object.entries(settingsData).forEach(([key, value]) => {
+                formData.append(key, value ?? "");
+            });
+            if (logoFile) {
+                formData.append("logo", logoFile);
+            }
+            if (removeLogo) {
+                formData.append("remove_logo", "true");
+            }
+
+            const response = await updateSettings(formData);
             if(response.data.success){
                 toast.success(response?.data?.message);
+                setLogoFile(null);
+                setRemoveLogo(false);
                 await refreshSettings();
             }
         } catch (error) {
@@ -52,23 +84,26 @@ const Settings = () => {
             privacy_policy: settings.privacy_policy || "",
             terms_of_service: settings.terms_of_service || "",
         });
-    }, [settings])
+        if (!logoFile) {
+            setLogoPreview(removeLogo ? "" : (logoUrl || ""));
+        }
+    }, [settings, logoUrl]);
 
     return (
-        <div className="min-h-screen bg-black text-white p-6">
+        <div className="min-h-screen bg-app-bg text-app-text p-6">
             <div className="mb-8">
                 <h1 className="text-3xl font-bold">
                     Settings
                 </h1>
 
-                <p className="text-gray-400 mt-1">
+                <p className="text-app-muted mt-1">
                     Manage your company information and configuration
                 </p>
             </div>
 
             <form onSubmit={submitHandler} className="max-w-4xl space-y-6">
-                <div className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
-                    <div className="px-6 py-5 border-b border-neutral-800">
+                <div className="bg-app-card border border-app-line rounded-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-app-line">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
                                 <Building2
@@ -82,7 +117,7 @@ const Settings = () => {
                                     Company Information
                                 </h2>
 
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-app-subtle">
                                     Update your company details
                                 </p>
                             </div>
@@ -90,6 +125,56 @@ const Settings = () => {
                     </div>
 
                     <div className="p-6 space-y-7">
+                        <div>
+                            <label className="block text-sm font-medium mb-3">
+                                Company Logo
+                            </label>
+                            <p className="mb-3 text-xs text-app-subtle">
+                                JPG, PNG, WEBP or GIF. Maximum 2MB. If no logo is set, the company name is shown instead.
+                            </p>
+
+                            <div className="flex items-center gap-5">
+                                <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-app-line bg-app-soft">
+                                    {logoPreview ? (
+                                        <img
+                                            src={logoPreview}
+                                            alt="Company logo"
+                                            className="h-full w-full object-contain p-2"
+                                        />
+                                    ) : (
+                                        <Building2 size={35} className="text-app-subtle" />
+                                    )}
+                                </div>
+
+                                <div className="flex flex-wrap gap-2">
+                                    <label
+                                        htmlFor="company-logo"
+                                        className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-app-line bg-app-hover px-4 py-2.5 text-sm transition hover:border-violet-500"
+                                    >
+                                        <Upload size={17} />
+                                        Upload Logo
+                                    </label>
+                                    <input
+                                        id="company-logo"
+                                        type="file"
+                                        accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                                        className="hidden"
+                                        onChange={handleLogoChange}
+                                    />
+                                    {logoPreview ? (
+                                        <button
+                                            type="button"
+                                            onClick={handleRemoveLogo}
+                                            className="inline-flex items-center gap-2 rounded-lg border border-app-line px-4 py-2.5 text-sm text-red-400 transition hover:border-red-500"
+                                        >
+                                            <X size={17} />
+                                            Remove
+                                        </button>
+                                    ) : null}
+                                </div>
+                            </div>
+                        </div>
+
                         <div>
                             <label
                                 htmlFor="company-name"
@@ -101,14 +186,14 @@ const Settings = () => {
                             <div className="relative">
                                 <Building2
                                     size={18}
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-app-subtle"
                                 />
                                 <Input
                                     id="company-name"
                                     type="text"
                                     placeholder="Enter company name"
                                     name="company_name"
-                                    className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
+                                    className="w-full bg-app-soft border border-app-line rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
                                     value={settingsData?.company_name || ""}
                                     onChange={inputHandler}
                                 />
@@ -126,14 +211,14 @@ const Settings = () => {
                                 <div className="relative">
                                     <Mail
                                         size={18}
-                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-app-subtle"
                                     />
                                     <Input
                                         id="company-email"
                                         type="email"
                                         placeholder="company@example.com"
                                         name="company_email"
-                                        className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
+                                        className="w-full bg-app-soft border border-app-line rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
                                         value={settingsData?.company_email || ""}
                                         onChange={inputHandler}
                                     />
@@ -150,14 +235,14 @@ const Settings = () => {
                                 <div className="relative">
                                     <Phone
                                         size={18}
-                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-app-subtle"
                                     />
                                     <Input
                                         id="company-phone"
                                         type="tel"
                                         placeholder="+91 9876543210"
                                         name="company_phone"
-                                        className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
+                                        className="w-full bg-app-soft border border-app-line rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
                                         value={settingsData?.company_phone || ""}
                                         onChange={inputHandler}
                                     />
@@ -167,8 +252,8 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
-                    <div className="px-6 py-5 border-b border-neutral-800">
+                <div className="bg-app-card border border-app-line rounded-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-app-line">
                         <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
@@ -181,7 +266,7 @@ const Settings = () => {
                                     <h2 className="text-lg font-semibold">
                                         Privacy Policy
                                     </h2>
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm text-app-subtle">
                                         Stored text shown on the Privacy page
                                     </p>
                                 </div>
@@ -202,13 +287,13 @@ const Settings = () => {
                             row={8}
                             value={settingsData.privacy_policy}
                             onChange={inputHandler}
-                            inputClass="min-h-40 bg-[#181818] border-neutral-700"
+                            inputClass="min-h-40 bg-app-soft border-app-line"
                         />
                     </div>
                 </div>
 
-                <div className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
-                    <div className="px-6 py-5 border-b border-neutral-800">
+                <div className="bg-app-card border border-app-line rounded-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-app-line">
                         <div className="flex items-center justify-between gap-3">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
@@ -221,7 +306,7 @@ const Settings = () => {
                                     <h2 className="text-lg font-semibold">
                                         Terms of Service
                                     </h2>
-                                    <p className="text-sm text-gray-500">
+                                    <p className="text-sm text-app-subtle">
                                         Stored text shown on the Terms page
                                     </p>
                                 </div>
@@ -242,7 +327,7 @@ const Settings = () => {
                             row={8}
                             value={settingsData.terms_of_service}
                             onChange={inputHandler}
-                            inputClass="min-h-40 bg-[#181818] border-neutral-700"
+                            inputClass="min-h-40 bg-app-soft border-app-line"
                         />
                     </div>
                 </div>

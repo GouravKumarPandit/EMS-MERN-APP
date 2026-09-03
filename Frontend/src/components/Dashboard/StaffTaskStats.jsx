@@ -3,33 +3,33 @@ const staffStatsStats = ({ staffStats }) => {
     return (
         <div className="mt-8">
             <div className="mb-4">
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-app-text">
                     Staff Task Statistics
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-app-subtle mt-1">
                     Task performance overview for each staff member
                 </p>
             </div>
 
-            <div className="bg-[#111111] border border-neutral-800 rounded-xl overflow-hidden">
+            <div className="bg-app-card border border-app-line rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[750px] text-sm">
-                        <thead className="bg-[#181818] border-b border-neutral-800">
+                        <thead className="bg-app-soft border-b border-app-line">
                             <tr>
-                                <th className="px-6 py-4 text-left font-medium text-gray-400">Staff Name</th>
-                                <th className="px-6 py-4 text-center font-medium text-gray-400">Pending</th>
-                                <th className="px-6 py-4 text-center font-medium text-gray-400">Accepted</th>
-                                <th className="px-6 py-4 text-center font-medium text-gray-400">Completed</th>
-                                <th className="px-6 py-4 text-center font-medium text-gray-400">Failed</th>
+                                <th className="px-6 py-4 text-left font-medium text-app-muted">Staff Name</th>
+                                <th className="px-6 py-4 text-center font-medium text-app-muted">Pending</th>
+                                <th className="px-6 py-4 text-center font-medium text-app-muted">Accepted</th>
+                                <th className="px-6 py-4 text-center font-medium text-app-muted">Completed</th>
+                                <th className="px-6 py-4 text-center font-medium text-app-muted">Failed</th>
                             </tr>
                         </thead>
 
-                        <tbody className="divide-y divide-neutral-800">
+                        <tbody className="divide-y divide-app-line">
                             {staffStats.map((staff) => (
                                 <tr
                                     key={staff._id || staff.staff_id}
-                                    className="hover:bg-[#181818] transition"
+                                    className="hover:bg-app-soft transition"
                                 >
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
@@ -38,11 +38,11 @@ const staffStatsStats = ({ staffStats }) => {
                                                 {staff.last_name.charAt(0)}
                                             </div>
                                             <div>
-                                                <p className="font-medium text-white">
+                                                <p className="font-medium text-app-text">
                                                     {staff.first_name}{" "}
                                                     {staff.last_name}
                                                 </p>
-                                                <p className="text-xs text-gray-500">
+                                                <p className="text-xs text-app-subtle">
                                                     Staff
                                                 </p>
                                             </div>

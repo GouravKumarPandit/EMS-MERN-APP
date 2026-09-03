@@ -33,6 +33,20 @@ const settingSchema = new mongoose.Schema({
         maxlength: 20000,
         trim: true,
     },
+    company_logo: {
+        original_name: {
+            type: String,
+            trim: true,
+        },
+        file_name: {
+            type: String,
+            trim: true,
+        },
+        path: {
+            type: String,
+            trim: true,
+        },
+    },
 });
 
 export const Setting = mongoose.model("Setting", settingSchema);

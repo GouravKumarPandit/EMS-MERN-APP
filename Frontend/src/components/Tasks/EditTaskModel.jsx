@@ -11,10 +11,15 @@ import { updateTask } from "../../api/task";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import formatDateForInput from "../../utils/formatDateForInput";
+import TaskAttachmentField from "./TaskAttachmentField";
+import { buildTaskFormData } from "../../utils/taskForm";
 
 function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 	const { user } = useAuth();
 	const [submitLoader, setSubmitLoader] = useState(false);
+    const [attachmentFiles, setAttachmentFiles] = useState([]);
+    const [existingAttachments, setExistingAttachments] = useState([]);
+    const [removedAttachments, setRemovedAttachments] = useState([]);
 	const [editFormData, setEditFormData] = useState({
         task: "",
         task_description: "",
@@ -49,9 +54,11 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 	
 	const submitHandler = async (event) => {
 		event.preventDefault();
+        setSubmitLoader(true);
 
 		try {
-			const response = await updateTask(selectedTask._id, editFormData);
+			const payload = buildTaskFormData(editFormData, attachmentFiles, removedAttachments);
+			const response = await updateTask(selectedTask._id, payload);
 			if(response.data.success){
 				toast.success(response?.data?.message);
 			}
@@ -73,6 +80,8 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
                 due_date: "",
                 assigned_staff: ""
             });
+            setAttachmentFiles([]);
+            setRemovedAttachments([]);
 			closeModal();
 		} catch (error) {
 			error?.response?.data?.errors?.length > 0 ? error.response.data.errors.map((error) => {
@@ -97,6 +106,9 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
                 due_date: selectedTask?.due_date || "",
                 assigned_staff: selectedTask?.assigned_staff?._id || ""
             });
+            setExistingAttachments(selectedTask?.attachments || []);
+            setAttachmentFiles([]);
+            setRemovedAttachments([]);
 		}
 
 		fetchEditData();
@@ -106,14 +118,14 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 		<>
 			{modal === "edit" && selectedTask && (
 				<div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-					<div className="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl border border-neutral-800 bg-[#111111] shadow-2xl">
-						<div className="flex shrink-0 items-center justify-between border-b border-neutral-800 px-6 py-4">
+					<div className="flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl border border-app-line bg-app-card shadow-2xl">
+						<div className="flex shrink-0 items-center justify-between border-b border-app-line px-6 py-4">
 							<div>
 								<h2 className="font-semibold">
 									Edit Task
 								</h2>
 
-								<p className="mt-1 text-xs text-neutral-400">
+								<p className="mt-1 text-xs text-app-muted">
 									Update task information.
 								</p>
 							</div>
@@ -121,7 +133,7 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 							<button
 								type="button"
 								onClick={closeModal}
-								className="rounded-lg p-2 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+								className="rounded-lg p-2 text-app-muted hover:bg-app-hover hover:text-app-text"
 							>
 								<X size={18} />
 							</button>
@@ -241,6 +253,16 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 									onChange={inputHandler}
 									errorMessage={editFormErrorData.due_date}
 								/>
+
+                                <TaskAttachmentField
+                                    files={attachmentFiles}
+                                    onFilesChange={setAttachmentFiles}
+                                    existingAttachments={existingAttachments}
+                                    onRemoveExisting={(fileName) => {
+                                        setExistingAttachments((prev) => prev.filter((item) => item.file_name !== fileName));
+                                        setRemovedAttachments((prev) => [...prev, fileName]);
+                                    }}
+                                />
 							</div>
 
 							{/* Buttons */}

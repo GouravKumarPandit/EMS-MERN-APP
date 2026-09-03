@@ -38,7 +38,30 @@ const taskSchema = new mongoose.Schema(
         assigned_staff: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
-        }
+        },
+        attachments: [
+            {
+                original_name: {
+                    type: String,
+                    trim: true,
+                },
+                file_name: {
+                    type: String,
+                    trim: true,
+                },
+                path: {
+                    type: String,
+                    trim: true,
+                },
+                mime_type: {
+                    type: String,
+                    trim: true,
+                },
+                size: {
+                    type: Number,
+                },
+            }
+        ]
     },
     {
         timestamps: true

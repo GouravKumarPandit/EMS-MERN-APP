@@ -12,19 +12,19 @@ const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[#303030] bg-[#111111] shadow-2xl">
-                <div className="flex items-center justify-between border-b border-[#252525] px-6 py-4">
+            <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-app-line bg-app-card shadow-2xl">
+                <div className="flex items-center justify-between border-b border-app-line px-6 py-4">
                     <div>
                         <h2 className="text-xl font-bold">
                             Staff Details
                         </h2>
 
-                        <p className="mt-1 text-sm text-gray-500">
+                        <p className="mt-1 text-sm text-app-subtle">
                             View staff information
                         </p>
                     </div>
                     <Button
-                        buttonClass="rounded-lg p-2 text-gray-400 hover:bg-[#222] hover:text-white"
+                        buttonClass="rounded-lg p-2 text-app-muted hover:bg-app-hover hover:text-app-text"
                         onClick={closeModal}
                     >
                         <X size={20} />
@@ -32,7 +32,7 @@ const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {
                 </div>
 
                 <div className="p-6">
-                    <div className="mb-6 flex items-center gap-4 rounded-xl border border-[#252525] bg-[#171717] p-5">
+                    <div className="mb-6 flex items-center gap-4 rounded-xl border border-app-line bg-app-soft p-5">
                         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-500/15 text-xl font-bold text-violet-400">
                             {selectedStaff?.staff?.first_name.charAt(0)}
                             {selectedStaff?.staff?.last_name.charAt(0)}
@@ -42,7 +42,7 @@ const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {
                                 {fullName}
                             </h3>
 
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-app-subtle">
                                 @{selectedStaff?.staff?.username}
                             </p>
                         </div>
@@ -72,7 +72,7 @@ const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {
 
 
                     {/* Close */}
-                    <div className="mt-6 flex justify-end border-t border-[#252525] pt-5">
+                    <div className="mt-6 flex justify-end border-t border-app-line pt-5">
                         <Button
                             buttonClass="rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold hover:bg-violet-700 transition"
                             onClick={closeModal}
@@ -88,11 +88,11 @@ const ViewStaffModal = ({ modal, selectedStaff, closeModal }) => {
 
 const Info = ({ label, value }) => {
     return (
-        <div className="rounded-lg border border-[#252525] bg-[#171717] p-4">
-            <p className="text-xs uppercase tracking-wide text-gray-500">
+        <div className="rounded-lg border border-app-line bg-app-soft p-4">
+            <p className="text-xs uppercase tracking-wide text-app-subtle">
                 {label}
             </p>
-            <p className="mt-1 break-words text-sm text-gray-200 capitalize">
+            <p className="mt-1 break-words text-sm text-app-text capitalize">
                 {value || "Not provided"}
             </p>
         </div>

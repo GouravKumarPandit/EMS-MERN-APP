@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import path from "path";
+import { fileURLToPath } from "url";
 import authRoute from "./routes/auth.routes.js";
 import staffRoute from "./routes/user.routes.js";
 import taskRoute from "./routes/task.routes.js";
@@ -10,13 +12,16 @@ import notesRoute from "./routes/note.routes.js";
 import settingsRoute from "./routes/settings.routes.js";
 import { apiLimiter } from "./middleware/rateLimit.middleware.js";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
 }
 
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+}));
 app.use(cors({
     origin: process.env.CLIENT_URI || "http://localhost:5173",
     credentials: true
@@ -25,6 +30,7 @@ app.use(cors({
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api", apiLimiter);
 
 app.use("/api/auth", authRoute);

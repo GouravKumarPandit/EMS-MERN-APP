@@ -96,20 +96,20 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
         <>
             {modal === "status" && selectedTask && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-                    <div className="w-full max-w-2xl rounded-xl border border-neutral-800 bg-[#111111] shadow-2xl">
-                        <div className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
+                    <div className="w-full max-w-2xl rounded-xl border border-app-line bg-app-card shadow-2xl">
+                        <div className="flex items-center justify-between border-b border-app-line px-6 py-4">
                             <div>
                                 <h2 className="mt-1 font-semibold">
                                     Change Status
                                 </h2>
-                                <p className="text-xs text-neutral-400">
+                                <p className="text-xs text-app-muted">
                                     Task ID # {selectedTask?.task_id}
                                 </p>
                             </div>
 
                             <button
                                 onClick={closeModal}
-                                className="rounded-lg p-2 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+                                className="rounded-lg p-2 text-app-muted hover:bg-app-hover hover:text-app-text"
                             >
                                 <X size={18} />
                             </button>
@@ -117,11 +117,11 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
 
                         <div className="max-h-[75vh] overflow-y-auto p-6">
                             <form onSubmit={submitHandler} >
-                                <div className="mb-5 rounded-lg border border-neutral-800 bg-black p-4">
-                                    <p className="text-xs text-neutral-400">
+                                <div className="mb-5 rounded-lg border border-app-line bg-app-bg p-4">
+                                    <p className="text-xs text-app-muted">
                                         Current Status
                                     </p>
-                                    <p className="mt-2 text-sm capitalize text-white">
+                                    <p className="mt-2 text-sm capitalize text-app-text">
                                         <Status status={selectedTask?.status} />
                                     </p>
                                 </div>

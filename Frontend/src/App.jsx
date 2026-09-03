@@ -2,6 +2,7 @@ import './App.css';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Routes, Route, Navigate } from "react-router-dom"
+import { useTheme } from './context/ThemeContext';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AllStaff from './pages/admin/AllStaff';
 import AllTasks from './pages/admin/AllTasks';
@@ -16,6 +17,7 @@ import AllNotes from './pages/admin/AllNotes';
 import LegalPage from './pages/admin/LegalPage';
 
 function App() {
+	const { theme } = useTheme();
 
 	return (
 		<>
@@ -47,7 +49,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
 			</Routes>
 
-			<ToastContainer position="top-right" autoClose={5000} theme="dark" />
+			<ToastContainer position="top-right" autoClose={5000} theme={theme} />
 		</>
 	);
 }

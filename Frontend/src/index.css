@@ -1,8 +1,55 @@
 @import "tailwindcss";
 
-body{
-    @apply text-white;
-    background: #000;
+:root,
+html.dark {
+    --app-bg: #000000;
+    --app-card: #111111;
+    --app-raised: #151515;
+    --app-soft: #181818;
+    --app-hover: #1c1c1c;
+    --app-field: #000000;
+    --app-line: #262626;
+    --app-text: #ffffff;
+    --app-muted: #a3a3a3;
+    --app-subtle: #737373;
+}
+
+html.light {
+    --app-bg: #f4f4f5;
+    --app-card: #ffffff;
+    --app-raised: #ffffff;
+    --app-soft: #f4f4f5;
+    --app-hover: #e4e4e7;
+    --app-field: #ffffff;
+    --app-line: #e4e4e7;
+    --app-text: #18181b;
+    --app-muted: #52525b;
+    --app-subtle: #71717a;
+}
+
+@theme inline {
+    --color-app-bg: var(--app-bg);
+    --color-app-card: var(--app-card);
+    --color-app-raised: var(--app-raised);
+    --color-app-soft: var(--app-soft);
+    --color-app-hover: var(--app-hover);
+    --color-app-field: var(--app-field);
+    --color-app-line: var(--app-line);
+    --color-app-text: var(--app-text);
+    --color-app-muted: var(--app-muted);
+    --color-app-subtle: var(--app-subtle);
+}
+
+html {
+    color-scheme: dark;
+}
+
+html.light {
+    color-scheme: light;
+}
+
+body {
+    @apply bg-app-bg text-app-text;
 }
 
 #taskList {
@@ -10,6 +57,6 @@ body{
     -ms-overflow-style: none;
 }
 
-#taskList::-webkit-scrollbar{
+#taskList::-webkit-scrollbar {
     display: none;
 }

@@ -5,5 +5,9 @@ export const settings = () => {
 }
 
 export const updateSettings = (formData) => {
-    return api.post("/api/settings/update-settings", formData);
+    return api.post("/api/settings/update-settings", formData, {
+        headers: {
+            "Content-Type": undefined,
+        },
+    });
 }

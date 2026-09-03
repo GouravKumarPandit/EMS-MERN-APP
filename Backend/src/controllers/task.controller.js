@@ -5,6 +5,7 @@ import createError from "../utils/createError.js";
 import { TaskActivity } from "../models/taskActivity.model.js";
 import { canAccessTask, escapeRegex, getUserFullNameById, parsePagination } from "../utils/helper.js";
 import { TaskComment } from "../models/taskComment.model.js";
+import { deleteTaskFiles, mapUploadedFiles } from "../middleware/upload.middleware.js";
 
 export const getAllTask = asyncHandler(async (req, res) => {
     const { role, id: staffId } = req.user;
@@ -67,7 +68,8 @@ export const createTask = asyncHandler(async (req, res) => {
         status: status ? status : "pending",
         status_description,
         due_date: due_date ? due_date : null,
-        assigned_staff: assigned_staff ? assigned_staff : null
+        assigned_staff: assigned_staff ? assigned_staff : null,
+        attachments: mapUploadedFiles(req.files),
     });
     await createTask.save();
 
@@ -87,6 +89,15 @@ export const createTask = asyncHandler(async (req, res) => {
             task: createTask._id,
             task_type: "assigned",
             task_activity: `Task assigned to ${assignedStaff}.`,
+            updated_by: req.user.id,
+            updated_by_name: `${createdBy}`
+        });
+    }
+    if (req.files?.length) {
+        activities.push({
+            task: createTask._id,
+            task_type: "updated",
+            task_activity: `${req.files.length} attachment(s) added.`,
             updated_by: req.user.id,
             updated_by_name: `${createdBy}`
         });
@@ -244,6 +255,55 @@ export const updateTask = asyncHandler(async (req, res, next) => {
     if (role === "admin") {
         updateTask.assigned_staff = assigned_staff ? assigned_staff : null;
     }
+
+    if (!Array.isArray(updateTask.attachments)) {
+        updateTask.attachments = [];
+    }
+
+    let removedAttachments = [];
+    try {
+        removedAttachments = req.body.removed_attachments
+            ? JSON.parse(req.body.removed_attachments)
+            : [];
+    } catch (error) {
+        removedAttachments = [];
+    }
+
+    if (Array.isArray(removedAttachments) && removedAttachments.length) {
+        const toRemove = updateTask.attachments.filter((attachment) =>
+            removedAttachments.includes(attachment.file_name)
+        );
+        deleteTaskFiles(toRemove);
+        updateTask.attachments = updateTask.attachments.filter((attachment) =>
+            !removedAttachments.includes(attachment.file_name)
+        );
+        activities.push({
+            task: updateTask._id,
+            task_type: "updated",
+            task_activity: `${toRemove.length} attachment(s) removed.`,
+            updated_by: req.user.id,
+            updated_by_name: `${loggedInUser}`
+        });
+    }
+
+    const newAttachments = mapUploadedFiles(req.files);
+    if (newAttachments.length) {
+        const remainingSlots = Math.max(0, 5 - updateTask.attachments.length);
+        const attachmentsToAdd = newAttachments.slice(0, remainingSlots);
+        const unused = newAttachments.slice(remainingSlots);
+        deleteTaskFiles(unused);
+        updateTask.attachments.push(...attachmentsToAdd);
+        if (attachmentsToAdd.length) {
+            activities.push({
+                task: updateTask._id,
+                task_type: "updated",
+                task_activity: `${attachmentsToAdd.length} attachment(s) added.`,
+                updated_by: req.user.id,
+                updated_by_name: `${loggedInUser}`
+            });
+        }
+    }
+
     await updateTask.save();
 
     await TaskActivity.insertMany(activities);
@@ -315,6 +375,7 @@ export const deleteTask = asyncHandler(async (req, res, next) => {
         task: new mongoose.Types.ObjectId(taskId)
     });
 
+    deleteTaskFiles(task.attachments || []);
     await task.deleteOne();
 
     return res.status(200).json({

@@ -10,7 +10,7 @@ function LegalPage({ type }) {
     const Icon = isPrivacy ? Shield : FileText;
 
     return (
-        <div className="min-h-screen bg-black text-white p-6">
+        <div className="min-h-screen bg-app-bg text-app-text p-6">
             <div className="mb-8">
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-500/10">
@@ -18,30 +18,30 @@ function LegalPage({ type }) {
                     </div>
                     <div>
                         <h1 className="text-3xl font-bold">{title}</h1>
-                        <p className="mt-1 text-sm text-gray-400">
+                        <p className="mt-1 text-sm text-app-muted">
                             {companyName}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-4xl rounded-2xl border border-neutral-800 bg-[#111111] p-6">
+            <div className="max-w-4xl rounded-2xl border border-app-line bg-app-card p-6">
                 {content?.trim() ? (
-                    <p className="whitespace-pre-wrap text-sm leading-7 text-neutral-300">
+                    <p className="whitespace-pre-wrap text-sm leading-7 text-app-muted">
                         {content}
                     </p>
                 ) : (
-                    <p className="text-sm text-neutral-500">
+                    <p className="text-sm text-app-subtle">
                         No {title.toLowerCase()} has been published yet.
                     </p>
                 )}
             </div>
 
             <div className="mt-6 flex gap-4 text-sm">
-                <Link to="/privacy" className={`transition ${isPrivacy ? "text-violet-400" : "text-neutral-400 hover:text-white"}`}>
+                <Link to="/privacy" className={`transition ${isPrivacy ? "text-violet-400" : "text-app-muted hover:text-app-text"}`}>
                     Privacy Policy
                 </Link>
-                <Link to="/terms" className={`transition ${!isPrivacy ? "text-violet-400" : "text-neutral-400 hover:text-white"}`}>
+                <Link to="/terms" className={`transition ${!isPrivacy ? "text-violet-400" : "text-app-muted hover:text-app-text"}`}>
                     Terms of Service
                 </Link>
             </div>

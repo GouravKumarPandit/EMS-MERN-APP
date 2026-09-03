@@ -29,7 +29,7 @@ function DeleteTaskModel({ modal, selectedTask, closeModal }) {
         <>
             {modal === "delete" && selectedTask && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-                    <div className="w-full max-w-md rounded-xl border border-neutral-800 bg-[#111111] p-6 shadow-2xl">
+                    <div className="w-full max-w-md rounded-xl border border-app-line bg-app-card p-6 shadow-2xl">
                         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
                             <Trash2
                                 size={22}
@@ -38,13 +38,13 @@ function DeleteTaskModel({ modal, selectedTask, closeModal }) {
                         </div>
                         <h2 className="mt-6 text-lg font-semibold text-center">
                             Delete Task{" "}
-                            <span className="text-neutral-300">
+                            <span className="text-app-muted">
                                 "{selectedTask.task_id}"
                             </span> ?
                         </h2>
-                        <p className="mt-2 text-sm leading-6 text-neutral-400 text-center">
+                        <p className="mt-2 text-sm leading-6 text-app-muted text-center">
                             Are you sure you want to delete{" "}
-                            <span className="text-neutral-300">
+                            <span className="text-app-muted">
                                 "{selectedTask.task}"
                             </span>
                             ?
@@ -52,7 +52,7 @@ function DeleteTaskModel({ modal, selectedTask, closeModal }) {
                         <div className="mt-8 flex justify-center gap-3">
                             <CancelButton
                                 onClick={closeModal}
-                                className="rounded-lg border border-[#303030] px-5 py-2.5 text-sm font-medium text-gray-300 hover:bg-[#222] transition"
+                                className="rounded-lg border border-app-line px-5 py-2.5 text-sm font-medium text-app-muted hover:bg-app-hover transition"
                             >
                                 Cancel
                             </CancelButton>

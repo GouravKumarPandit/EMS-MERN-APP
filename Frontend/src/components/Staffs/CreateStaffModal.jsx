@@ -98,21 +98,21 @@ const CreateStaffModal = ({ modal, closeModal }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[#303030] bg-[#111111] shadow-2xl">
-                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#252525] bg-[#111111] px-6 py-4">
+            <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-app-line bg-app-card shadow-2xl">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-app-line bg-app-card px-6 py-4">
                     <div>
                         <h2 className="text-xl font-bold">
                             Create Staff
                         </h2>
 
-                        <p className="mt-1 text-sm text-gray-500">
+                        <p className="mt-1 text-sm text-app-subtle">
                             Add a new staff member
                         </p>
                     </div>
 
                     <button
                         onClick={closeModal}
-                        className="rounded-lg p-2 text-gray-400 hover:bg-[#222] hover:text-white"
+                        className="rounded-lg p-2 text-app-muted hover:bg-app-hover hover:text-app-text"
                     >
                         <X size={20} />
                     </button>
@@ -188,7 +188,7 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                                     type="number"
                                     value="91"
                                     name="dialcode"
-                                    className="w-20 rounded-lg border border-[#303030] bg-black px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="w-20 rounded-lg border border-app-line bg-app-bg px-3 py-2.5 text-app-text outline-none focus:border-violet-500"
                                     onChange={inputHandler}
                                 />
 
@@ -199,7 +199,7 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                                     value={createFormData.phone_number}
                                     onChange={inputHandler}
                                     errorMessage={createFormErrorData.phone_number}
-                                    className="w-62 rounded-lg border border-[#303030] bg-black px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="w-62 rounded-lg border border-app-line bg-app-bg px-3 py-2.5 text-app-text outline-none focus:border-violet-500"
                                     // min="10"
                                     // max="10"
                                 />
@@ -244,7 +244,7 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                     </div>
 
                     {/* Buttons */}
-                    <div className="mt-6 flex justify-end gap-3 border-t border-[#252525] pt-5">
+                    <div className="mt-6 flex justify-end gap-3 border-t border-app-line pt-5">
                         <CancelButton type="button" onClick={closeModal}>Cancel</CancelButton>
                         <Button
                             type="submit"

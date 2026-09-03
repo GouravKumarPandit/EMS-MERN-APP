@@ -10,10 +10,13 @@ import { useState } from "react";
 import { createTask } from "../../api/task";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
+import TaskAttachmentField from "./TaskAttachmentField";
+import { buildTaskFormData } from "../../utils/taskForm";
 
 function CreateTaskModel({ modal, staffs, closeModal }) {
     const { user } = useAuth();
     const [submitLoader, setSubmitLoader] = useState(false);
+    const [attachmentFiles, setAttachmentFiles] = useState([]);
     const [createFormData, setCreateFormData] = useState({
         task: "",
         task_description: "",
@@ -48,9 +51,11 @@ function CreateTaskModel({ modal, staffs, closeModal }) {
     
     const submitHandler = async (event) => {
         event.preventDefault();
+        setSubmitLoader(true);
 
         try {
-            const response = await createTask(createFormData);
+            const payload = buildTaskFormData(createFormData, attachmentFiles);
+            const response = await createTask(payload);
             if(response.data.success){
                 toast.success(response?.data?.message);
             }
@@ -72,6 +77,7 @@ function CreateTaskModel({ modal, staffs, closeModal }) {
                 due_date: "",
                 assigned_staff: ""
             });
+            setAttachmentFiles([]);
             closeModal();
         } catch (error) {
             error?.response?.data?.errors?.length > 0 ? error.response.data.errors.map((error) => {
@@ -90,20 +96,20 @@ function CreateTaskModel({ modal, staffs, closeModal }) {
             {modal === "create" && (
 
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-                    <div className="w-full max-w-2xl rounded-xl border border-neutral-800 bg-[#111111] shadow-2xl">
-                        <div className="flex items-center justify-between border-b border-neutral-800 px-6 py-4">
+                    <div className="w-full max-w-2xl rounded-xl border border-app-line bg-app-card shadow-2xl">
+                        <div className="flex items-center justify-between border-b border-app-line px-6 py-4">
                             <div>
                                 <h2 className="font-semibold">
                                     Create Task
                                 </h2>
-                                <p className="mt-1 text-xs text-neutral-400">
+                                <p className="mt-1 text-xs text-app-muted">
                                     Create and assign a new task.
                                 </p>
                             </div>
 
                             <button
                                 onClick={closeModal}
-                                className="rounded-lg p-2 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+                                className="rounded-lg p-2 text-app-muted hover:bg-app-hover hover:text-app-text"
                             >
                                 <X size={18} />
                             </button>
@@ -181,6 +187,11 @@ function CreateTaskModel({ modal, staffs, closeModal }) {
                                     value={createFormData.assigned_staff}
                                     onChange={inputHandler}
                                     errorMessage={createFormErrorData.assigned_staff}
+                                />
+
+                                <TaskAttachmentField
+                                    files={attachmentFiles}
+                                    onFilesChange={setAttachmentFiles}
                                 />
                             </div>
 

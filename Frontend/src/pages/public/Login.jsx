@@ -5,6 +5,7 @@ import Button from '../../components/Ui/Button';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import ThemeToggle from '../../components/Layout/ThemeToggle';
 
 const features = [
     "Manage employee tasks",
@@ -77,7 +78,8 @@ function Login() {
     }, [usernameError, passwordError]);
 
     return (
-        <div className="flex min-h-screen">
+        <div className="relative flex min-h-screen">
+            <ThemeToggle className="absolute right-6 top-6 z-20" />
             <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-violet-600 p-12 text-white lg:flex">
                 <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-white/10" />
                 <div className="pointer-events-none absolute -bottom-28 -right-20 h-96 w-96 rounded-full bg-white/10" />
@@ -121,13 +123,13 @@ function Login() {
                 </p>
             </div>
 
-            <div className="flex w-full items-center justify-center bg-white px-6 py-12 text-gray-900 lg:w-1/2">
+            <div className="flex w-full items-center justify-center bg-app-bg px-6 py-12 text-app-text lg:w-1/2">
                 <div className="w-full max-w-md">
                     <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
                         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white">
                             <LayoutDashboard size={20} />
                         </div>
-                        <span className="text-2xl font-bold text-gray-900">EMS</span>
+                        <span className="text-2xl font-bold text-app-text">EMS</span>
                     </div>
 
                     <div className="mb-8 text-center">
@@ -135,12 +137,12 @@ function Login() {
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-white">
                                 <LayoutDashboard size={20} />
                             </div>
-                            <span className="text-xl font-bold text-gray-900">EMS</span>
+                            <span className="text-xl font-bold text-app-text">EMS</span>
                         </div>
-                        <h2 className="text-3xl font-bold text-gray-900">
+                        <h2 className="text-3xl font-bold text-app-text">
                             Staff Login
                         </h2>
-                        <p className="mt-2 text-sm text-gray-500">
+                        <p className="mt-2 text-sm text-app-subtle">
                             Enter your credentials to continue
                         </p>
                     </div>
@@ -148,8 +150,8 @@ function Login() {
                     <form className="space-y-5" onSubmit={submitHandler}>
                         <Input
                             label="Username"
-                            labelClass="mb-2 block text-sm font-medium text-gray-500"
-                            inputClass="!border-gray-200 !bg-gray-100 !text-gray-900 placeholder:!text-gray-400 focus:!border-violet-500"
+                            labelClass="mb-2 block text-sm font-medium text-app-subtle"
+                            inputClass="border-app-line bg-app-field text-app-text placeholder:text-app-muted focus:border-violet-500"
                             required="required"
                             type="text"
                             placeholder="Enter your username"
@@ -161,8 +163,8 @@ function Login() {
 
                         <Input
                             label="Password"
-                            labelClass="mb-2 block text-sm font-medium text-gray-500"
-                            inputClass="!border-gray-200 !bg-gray-100 !text-gray-900 placeholder:!text-gray-400 focus:!border-violet-500"
+                            labelClass="mb-2 block text-sm font-medium text-app-subtle"
+                            inputClass="border-app-line bg-app-field text-app-text placeholder:text-app-muted focus:border-violet-500"
                             required="required"
                             type="password"
                             placeholder="Enter your password"

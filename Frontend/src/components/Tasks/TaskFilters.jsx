@@ -7,11 +7,11 @@ function TaskFilters({ filters, filterInputHandler, staffs }) {
     const { user } = useAuth();
 
     return (
-        <div className="mb-6 rounded-xl border border-neutral-800 bg-[#111111] p-4">
+        <div className="mb-6 rounded-xl border border-app-line bg-app-card p-4">
             <div className="mb-4 flex items-center gap-2">
                 <Filter
                     size={18}
-                    className="text-neutral-400"
+                    className="text-app-muted"
                 />
                 <h2 className="text-sm font-medium">
                     Filter Tasks
@@ -23,7 +23,7 @@ function TaskFilters({ filters, filterInputHandler, staffs }) {
                     label="Search Task"
                     type="text"
                     placeholder="Search task..."
-                    className="h-10 w-full rounded-lg border border-neutral-800 bg-black pl-4 pr-3 text-sm text-white outline-none placeholder:text-neutral-400 focus:border-violet-500"
+                    className="h-10 w-full rounded-lg border border-app-line bg-app-bg pl-4 pr-3 text-sm text-app-text outline-none placeholder:text-app-muted focus:border-violet-500"
                     name="search"
                     value={filters.search}
                     onChange={filterInputHandler}

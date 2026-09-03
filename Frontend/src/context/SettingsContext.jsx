@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { settings as fetchSettingsApi } from "../api/settings";
 import { useAuth } from "./AuthContext";
+import { getAttachmentUrl } from "../utils/taskForm";
 
 const defaultSettings = {
     company_name: "",
@@ -8,6 +9,7 @@ const defaultSettings = {
     company_phone: "",
     privacy_policy: "",
     terms_of_service: "",
+    company_logo: null,
 };
 
 const SettingsContext = createContext(null);
@@ -55,6 +57,7 @@ export function SettingsProvider({ children }) {
             settingsLoading,
             refreshSettings,
             companyName: settings.company_name || "EMS",
+            logoUrl: getAttachmentUrl(settings.company_logo?.path),
         }}>
             {children}
         </SettingsContext.Provider>

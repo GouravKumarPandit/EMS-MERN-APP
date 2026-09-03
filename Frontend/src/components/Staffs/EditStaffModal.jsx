@@ -117,20 +117,20 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-[#303030] bg-[#111111] shadow-2xl">
-                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#252525] bg-[#111111] px-6 py-4">
+            <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-app-line bg-app-card shadow-2xl">
+                <div className="sticky top-0 z-10 flex items-center justify-between border-b border-app-line bg-app-card px-6 py-4">
                     <div>
                         <h2 className="text-xl font-bold">
                             Edit Staff
                         </h2>
 
-                        <p className="mt-1 text-sm text-gray-500">
+                        <p className="mt-1 text-sm text-app-subtle">
                             Update staff information
                         </p>
                     </div>
 
                     <Button
-                        buttonClass="rounded-lg p-2 text-gray-400 hover:bg-[#222] hover:text-white"
+                        buttonClass="rounded-lg p-2 text-app-muted hover:bg-app-hover hover:text-app-text"
                         onClick={closeModal}
                     >
                         <X size={20} />
@@ -191,14 +191,14 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
                                     type="number"
                                     value={updateFormData.dialcode}
                                     name="dialcode"
-                                    className="w-20 rounded-lg border border-[#303030] bg-black px-3 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="w-20 rounded-lg border border-app-line bg-app-bg px-3 py-2.5 text-app-text outline-none focus:border-violet-500"
                                     onChange={inputHandler}
                                 />
 
                                 <Input
                                     type="number"
                                     name="phone_number"
-                                    className="min-w-0 flex-1 rounded-lg border border-[#303030] bg-black px-4 py-2.5 text-white outline-none focus:border-violet-500"
+                                    className="min-w-0 flex-1 rounded-lg border border-app-line bg-app-bg px-4 py-2.5 text-app-text outline-none focus:border-violet-500"
                                     value={updateFormData.phone_number}
                                     onChange={inputHandler}
                                     errorMessage={updateFormErrorData.phone_number}
@@ -243,7 +243,7 @@ const EditStaffModal = ({ modal, selectedStaff, closeModal }) => {
                         />
                     </div>
 
-                    <div className="mt-6 flex justify-end gap-3 border-t border-[#252525] pt-5">
+                    <div className="mt-6 flex justify-end gap-3 border-t border-app-line pt-5">
                         <CancelButton type="button" onClick={closeModal}>
                             Cancel
                         </CancelButton>

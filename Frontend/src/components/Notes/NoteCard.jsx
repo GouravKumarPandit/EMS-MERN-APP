@@ -25,7 +25,7 @@ function NoteCard({ note, color, openEditModal, openDeleteModal }) {
                             <h2 className={`truncate text-base font-semibold ${color.notes}`}>
                                 {note.notes}
                             </h2>
-                            <p className="mt-1 text-xs text-neutral-400">
+                            <p className="mt-1 text-xs text-app-muted">
                                 {formatDateTime(note.createdAt)}
                             </p>
                         </div>
@@ -34,13 +34,13 @@ function NoteCard({ note, color, openEditModal, openDeleteModal }) {
                     <div className="flex items-center gap-1">
                         <button
                             onClick={() => openEditModal(note)}
-                            className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition hover:bg-white/5 hover:text-white">
+                            className="flex h-8 w-8 items-center justify-center rounded-md text-app-subtle transition hover:bg-app-hover hover:text-app-text">
                             <Edit2 size={16} />
                         </button>
 
                         <button
                             onClick={() => openDeleteModal(note)}
-                            className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition hover:bg-red-500/10 hover:text-red-400">
+                            className="flex h-8 w-8 items-center justify-center rounded-md text-app-subtle transition hover:bg-red-500/10 hover:text-red-400">
                             <Trash2 size={16} />
                         </button>
                     </div>
@@ -55,7 +55,7 @@ function NoteCard({ note, color, openEditModal, openDeleteModal }) {
                         }
                     `}>
                     <div className="px-5 pb-4">
-                        <p className={`text-sm leading-6 text-neutral-400`}>
+                        <p className={`text-sm leading-6 text-app-muted`}>
                             {note.notes_description}
                         </p>
                     </div>
@@ -63,8 +63,8 @@ function NoteCard({ note, color, openEditModal, openDeleteModal }) {
 
                 {/* Bottom / Expand */}
                 <div
-                    className="flex items-center justify-between border-t border-white/5 px-5 py-3">
-                    <span className="text-xs text-neutral-400">
+                    className="flex items-center justify-between border-t border-app-line/60 px-5 py-3">
+                    <span className="text-xs text-app-muted">
                         Note #{note.notes_id}
                     </span>
 
@@ -72,7 +72,7 @@ function NoteCard({ note, color, openEditModal, openDeleteModal }) {
                         onClick={() =>
                             toggleNoteDetail(note.id)
                         }
-                        className="flex items-center gap-1.5 text-xs font-medium text-neutral-500 transition hover:text-white"
+                        className="flex items-center gap-1.5 text-xs font-medium text-app-subtle transition hover:text-app-text"
                     >
                         {isExpanded ? "Hide Details" : "View Details"}
                         {isExpanded ? (

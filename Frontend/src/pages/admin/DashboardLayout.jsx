@@ -5,7 +5,7 @@ import Footer from "../../components/Layout/Footer";
 
 const DashboardLayout = () => {
     return (
-        <div className="min-h-screen bg-black text-white">
+        <div className="min-h-screen bg-app-bg text-app-text">
             <Sidebar />
             <div className="ml-64 min-h-screen min-w-0 flex flex-col">
                 <Header />

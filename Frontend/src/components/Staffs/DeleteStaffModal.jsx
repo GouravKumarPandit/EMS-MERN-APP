@@ -29,15 +29,15 @@ const DeleteStaffModal = ({ modal, selectedStaff, closeModal }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-md rounded-2xl border border-[#303030] bg-[#111111] shadow-2xl">
-                <div className="flex items-center justify-between border-b border-[#252525] px-6 py-4">
+            <div className="w-full max-w-md rounded-2xl border border-app-line bg-app-card shadow-2xl">
+                <div className="flex items-center justify-between border-b border-app-line px-6 py-4">
                     <h2 className="text-lg font-bold">
                         Delete Staff
                     </h2>
 
                     <button
                         onClick={closeModal}
-                        className="rounded-lg p-2 text-gray-400 hover:bg-[#222] hover:text-white"
+                        className="rounded-lg p-2 text-app-muted hover:bg-app-hover hover:text-app-text"
                     >
                         <X size={20} />
                     </button>
@@ -53,7 +53,7 @@ const DeleteStaffModal = ({ modal, selectedStaff, closeModal }) => {
                         Delete {fullName}?
                     </h3>
 
-                    <p className="mt-2 text-sm leading-6 text-gray-500">
+                    <p className="mt-2 text-sm leading-6 text-app-subtle">
                         Are you sure you want to delete this staff member?
                         This action cannot be undone.
                     </p>
@@ -61,7 +61,7 @@ const DeleteStaffModal = ({ modal, selectedStaff, closeModal }) => {
                     <div className="mt-6 flex justify-center gap-3">
                         <CancelButton
                             onClick={closeModal}
-                            className="rounded-lg border border-[#303030] px-5 py-2.5 text-sm font-medium text-gray-300 hover:bg-[#222] transition"
+                            className="rounded-lg border border-app-line px-5 py-2.5 text-sm font-medium text-app-muted hover:bg-app-hover transition"
                         >
                             Cancel
                         </CancelButton>

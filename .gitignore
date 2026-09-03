@@ -23,9 +23,11 @@ build/
 # Coverage and test output
 coverage/
 
-# Uploads
+# Uploads (keep folder, ignore files)
 uploads/
-!uploads/.gitkeep
+**/uploads/**
+!**/uploads/.gitkeep
+!**/uploads/**/.gitkeep
 
 # OS files
 .DS_Store

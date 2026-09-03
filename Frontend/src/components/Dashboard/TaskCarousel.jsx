@@ -44,7 +44,7 @@ function TaskCarousel({ tasks = [] }) {
                 <button
                     type="button"
                     onClick={() => scrollByCard(-1)}
-                    className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950/90 text-white shadow-lg transition hover:border-violet-500 hover:bg-violet-600"
+                    className="absolute left-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-app-line bg-app-card/90 text-app-text shadow-lg transition hover:border-violet-500 hover:bg-violet-600 hover:text-white"
                     aria-label="Previous tasks"
                 >
                     <ChevronLeft size={18} />
@@ -55,7 +55,7 @@ function TaskCarousel({ tasks = [] }) {
                 <button
                     type="button"
                     onClick={() => scrollByCard(1)}
-                    className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-neutral-700 bg-neutral-950/90 text-white shadow-lg transition hover:border-violet-500 hover:bg-violet-600"
+                    className="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-app-line bg-app-card/90 text-app-text shadow-lg transition hover:border-violet-500 hover:bg-violet-600 hover:text-white"
                     aria-label="Next tasks"
                 >
                     <ChevronRight size={18} />

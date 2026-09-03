@@ -5,15 +5,18 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { SettingsProvider } from './context/SettingsContext.jsx'
+import { ThemeProvider } from './context/ThemeContext.jsx'
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
-        <AuthProvider>
-            <SettingsProvider>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </SettingsProvider>
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <SettingsProvider>
+                    <BrowserRouter>
+                        <App />
+                    </BrowserRouter>
+                </SettingsProvider>
+            </AuthProvider>
+        </ThemeProvider>
     </StrictMode>,
 )

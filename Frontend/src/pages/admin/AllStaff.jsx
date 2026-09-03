@@ -30,7 +30,7 @@ const AllStaff = () => {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white p-4 md:p-6">
+        <div className="min-h-screen bg-app-bg text-app-text p-4 md:p-6">
             <CardHeader 
                 cardHeading="Staffs" 
                 headingDescription="Manage your company staff members" 

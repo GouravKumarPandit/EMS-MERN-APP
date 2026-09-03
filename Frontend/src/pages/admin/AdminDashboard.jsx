@@ -43,9 +43,9 @@ function AdminDashboard() {
 
     return (
         <>
-            <div className="min-h-screen min-w-0 bg-black text-white p-6 space-y-6">
+            <div className="min-h-screen min-w-0 bg-app-bg text-app-text p-6 space-y-6">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">
+                    <h2 className="text-lg font-semibold text-app-text">
                         Task Status
                     </h2>
                 </div>
@@ -60,11 +60,11 @@ function AdminDashboard() {
                 <div className="mt-8 min-w-0">
                     <div className="mb-4 flex items-center justify-between">
                         <div>
-                            <h2 className="text-lg font-semibold text-white">
+                            <h2 className="text-lg font-semibold text-app-text">
                                 My Tasks
                             </h2>
 
-                            <p className="mt-1 text-sm text-neutral-400">
+                            <p className="mt-1 text-sm text-app-muted">
                                 Recently assigned tasks
                             </p>
                         </div>

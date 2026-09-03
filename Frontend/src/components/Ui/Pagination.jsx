@@ -8,7 +8,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             <button
                 disabled={currentPage === 1}
                 onClick={() => onPageChange(currentPage - 1)}
-                className="rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-300 transition cursor-pointer hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-app-line bg-app-hover px-4 py-2 text-sm text-app-muted transition cursor-pointer hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-40"
             >
                 Previous
             </button>
@@ -25,7 +25,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                         className={`h-9 min-w-9 rounded-lg px-3 text-sm transition cursor-pointer ${
                             currentPage === page
                                 ? "bg-violet-600 text-white"
-                                : "border border-neutral-800 bg-neutral-900 text-neutral-400 hover:bg-neutral-800"
+                                : "border border-app-line bg-app-hover text-app-muted hover:bg-app-hover"
                         }`}
                     >
                         {page}
@@ -36,7 +36,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             <button
                 disabled={currentPage === totalPages}
                 onClick={() => onPageChange(currentPage + 1)}
-                className="rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-300 transition cursor-pointer hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg border border-app-line bg-app-hover px-4 py-2 text-sm text-app-muted transition cursor-pointer hover:bg-app-hover disabled:cursor-not-allowed disabled:opacity-40"
             >
                 Next
             </button>

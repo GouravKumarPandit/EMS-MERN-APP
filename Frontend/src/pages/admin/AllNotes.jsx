@@ -92,7 +92,7 @@ export default function AllNotes() {
     }, [debouncedSearch, isModalOpen, isDeleteModalOpen])
 
     return (
-        <div className="min-h-screen bg-black text-white p-4 md:p-6">
+        <div className="min-h-screen bg-app-bg text-app-text p-4 md:p-6">
             <CardHeader 
                 cardHeading="Your Notes" 
                 headingDescription="Keep track of your thoughts, ideas and important reminders" 
@@ -102,20 +102,20 @@ export default function AllNotes() {
 
             <div className="mb-6 flex items-center justify-between">
                 <div
-                    className="flex h-11 w-80 items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-950 px-4">
+                    className="flex h-11 w-80 items-center gap-3 rounded-lg border border-app-line bg-app-card px-4">
                     <Search
                         size={18}
-                        className="text-neutral-500"
+                        className="text-app-subtle"
                     />
 
                     <Input
                         onChange={(e) => {setSearch(e.target.value)}}
                         type="text"
                         placeholder="Search notes..."
-                        className="w-full bg-transparent text-sm text-neutral-200 outline-none placeholder:text-neutral-600"/>
+                        className="w-full bg-transparent text-sm text-app-text outline-none placeholder:text-app-subtle"/>
                 </div>
 
-                <p className="text-sm text-neutral-500">
+                <p className="text-sm text-app-subtle">
                     {notes.length} Notes
                 </p>
             </div>

@@ -56,19 +56,19 @@ const StaffTable = ({ modal, openModal }) => {
     return (
         <>
             <StaffFilters search={search} setSearch={setSearch} role={role} setRole={setRole} gender={gender} setGender={setGender} />
-            <div className="overflow-hidden rounded-xl border border-[#252525] bg-[#111111]">
-                <div className="border-b border-[#252525] px-5 py-4">
+            <div className="overflow-hidden rounded-xl border border-app-line bg-app-card">
+                <div className="border-b border-app-line px-5 py-4">
                     <h2 className="font-semibold text-lg">
                         Staff List
                     </h2>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-app-subtle mt-1">
                         Manage all staff members
                     </p>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-[950px] text-left">
-                        <thead className="bg-[#171717] text-xs uppercase tracking-wider text-gray-500">
+                        <thead className="bg-app-soft text-xs uppercase tracking-wider text-app-subtle">
                             <tr>
                                 <th className="px-5 py-4">Staff</th>
                                 <th className="px-5 py-4">Email</th>
@@ -79,11 +79,11 @@ const StaffTable = ({ modal, openModal }) => {
                             </tr>
                         </thead>
 
-                        <tbody className="divide-y divide-[#252525]">
+                        <tbody className="divide-y divide-app-line">
                             {staffs?.length ? staffs.map((staff) => (
                                 <tr
                                     key={staff._id}
-                                    className="hover:bg-[#171717] transition"
+                                    className="hover:bg-app-hover transition"
                                 >
                                     {/* Staff */}
                                     <td className="px-5 py-4">
@@ -96,23 +96,23 @@ const StaffTable = ({ modal, openModal }) => {
                                                 <p className="font-medium">
                                                     {getFullName(staff)}
                                                 </p>
-                                                <p className="text-xs text-gray-500">
+                                                <p className="text-xs text-app-subtle">
                                                     @{staff.username}
                                                 </p>
                                             </div>
                                         </div>
                                     </td>
 
-                                    <td className="px-5 py-4 text-sm text-gray-400">
+                                    <td className="px-5 py-4 text-sm text-app-muted">
                                         {staff.email}
                                     </td>
 
-                                    <td className="px-5 py-4 text-sm text-gray-400">
+                                    <td className="px-5 py-4 text-sm text-app-muted">
                                         +{staff.dialcode} {staff.phone_number}
                                     </td>
 
                                     <td className="px-5 py-4">
-                                        <span className="capitalize text-sm text-gray-300">
+                                        <span className="capitalize text-sm text-app-muted">
                                             {staff.gender}
                                         </span>
                                     </td>
@@ -139,9 +139,9 @@ const StaffTable = ({ modal, openModal }) => {
                                 </tr>
                             )) : (
                                 <tr
-                                    className="hover:bg-[#171717] transition"
+                                    className="hover:bg-app-hover transition"
                                 >
-                                    <td colSpan="6" className="px-5 py-4 text-sm text-gray-400 text-center">
+                                    <td colSpan="6" className="px-5 py-4 text-sm text-app-muted text-center">
                                         No staff found!
                                     </td>
                                 </tr>

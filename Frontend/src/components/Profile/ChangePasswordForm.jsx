@@ -66,13 +66,13 @@ function ChangePasswordForm() {
                     <div className="relative">
                         <LockKeyhole
                             size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-app-subtle"
                         />
                         <Input
                             id="current-password"
                             type={showCurrent ? "text" : "password"}
                             placeholder="Enter current password"
-                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
+                            className="w-full bg-app-soft border border-app-line rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
                             name="currentPassword"
                             value={formData.currentPassword}
                             onChange={inputHandler}
@@ -80,7 +80,7 @@ function ChangePasswordForm() {
                         <button
                             type="button"
                             onClick={() => setShowCurrent(!showCurrent)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-app-subtle hover:text-app-text transition"
                         >
                             {showCurrent ? (
                                 <EyeOff size={18} />
@@ -102,13 +102,13 @@ function ChangePasswordForm() {
                     <div className="relative">
                         <LockKeyhole
                             size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-app-subtle"
                         />
                         <Input
                             id="new-password"
                             type={showNew ? "text" : "password"}
                             placeholder="Enter new password"
-                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
+                            className="w-full bg-app-soft border border-app-line rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
                             name="newPassword"
                             value={formData.newPassword}
                             onChange={inputHandler}
@@ -116,7 +116,7 @@ function ChangePasswordForm() {
                         <button
                             type="button"
                             onClick={() => setShowNew(!showNew)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-app-subtle hover:text-app-text transition"
                         >
                             {showNew ? (
                                 <EyeOff size={18} />
@@ -138,13 +138,13 @@ function ChangePasswordForm() {
                     <div className="relative">
                         <LockKeyhole
                             size={18}
-                            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-app-subtle"
                         />
                         <Input
                             id="confirm-password"
                             type={showConfirm ? "text" : "password"}
                             placeholder="Confirm new password"
-                            className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
+                            className="w-full bg-app-soft border border-app-line rounded-lg pl-10 pr-11 py-3 outline-none focus:border-violet-500 transition"
                             name="confirmPassword"
                             value={formData.confirmPassword}
                             onChange={inputHandler}
@@ -152,7 +152,7 @@ function ChangePasswordForm() {
                         <button
                             type="button"
                             onClick={() => setShowConfirm(!showConfirm)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-app-subtle hover:text-app-text transition"
                         >
                             {showConfirm ? (
                                 <EyeOff size={18} />
@@ -163,12 +163,12 @@ function ChangePasswordForm() {
                     </div>
                 </div>
 
-                <div className="bg-[#181818] border border-neutral-800 rounded-lg p-4">
+                <div className="bg-app-soft border border-app-line rounded-lg p-4">
                     <p className="text-sm font-medium mb-2">
                         Password requirements
                     </p>
 
-                    <ul className="text-xs text-gray-500 space-y-1">
+                    <ul className="text-xs text-app-subtle space-y-1">
                         <li>• At least 8 characters</li>
                         <li>• Use a combination of letters and numbers</li>
                         <li>• Avoid using easily guessable passwords</li>
@@ -176,7 +176,7 @@ function ChangePasswordForm() {
                 </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-neutral-800 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-app-line flex justify-end gap-3">
                 <Button
                     type="submit"
                     disabled={submitLoader}
@@ -196,7 +196,7 @@ function ChangePasswordForm() {
                 <CancelButton
                     type="button"
                     onClick={() => (navigate("/dashboard"))}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-700 hover:bg-[#1c1c1c] transition"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-app-line hover:bg-app-hover transition"
                 >
                     <X size={17} />
                     Cancel

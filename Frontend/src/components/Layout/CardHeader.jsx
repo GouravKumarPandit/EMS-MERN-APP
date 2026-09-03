@@ -8,7 +8,7 @@ function CardHeader({ cardHeading, headingDescription, buttonText, showButton = 
                     {cardHeading}
                 </h1>
 
-                <p className="text-sm text-gray-400 mt-1">
+                <p className="text-sm text-app-muted mt-1">
                     {headingDescription}
                 </p>
             </div>

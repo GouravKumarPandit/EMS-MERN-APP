@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useSettings } from "../../context/SettingsContext";
+import CompanyBrand from "./CompanyBrand";
 
 const sidebarOptions = [
     {
@@ -47,22 +47,23 @@ const sidebarOptions = [
 const Sidebar = () => {
     const currentURI = useLocation();
     const { isAdmin } = useAuth();
-    const { companyName } = useSettings();
     const visibleOptions = sidebarOptions.filter((item) => !item.adminOnly || isAdmin);
 
     return (
-        <aside className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-neutral-800 bg-black px-4 py-6">
+        <aside className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-app-line bg-app-bg px-4 py-6">
             <div className="mb-10 px-3">
-                <h1 className="text-2xl font-bold text-white break-words">
-                    {companyName}
-                </h1>
+                <CompanyBrand textClass="text-2xl font-bold text-app-text break-words" imgClass="h-12 max-h-14 max-w-full object-contain object-left" />
             </div>
 
             <nav className="flex flex-1 flex-col gap-2">
                 {
                     visibleOptions.map((sidebar) => (
                         <Link to={sidebar.link} key={sidebar.id}
-                            className={`flex items-center gap-3 rounded-lg ${currentURI.pathname === sidebar.link ? "bg-violet-600" : "" } px-4 py-3 text-sm font-medium text-white transition hover:bg-violet-700`}
+                            className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition ${
+                                currentURI.pathname === sidebar.link
+                                    ? "bg-violet-600 text-white hover:bg-violet-700"
+                                    : "text-app-text hover:bg-violet-700 hover:text-white"
+                            }`}
                         >
                             {sidebar.icon}
                             <span>{sidebar.label}</span>
@@ -71,8 +72,8 @@ const Sidebar = () => {
                 }
             </nav>
 
-            <div className="border-t border-neutral-800 pt-4">
-                <p className="px-3 text-xs text-neutral-400">
+            <div className="border-t border-app-line pt-4">
+                <p className="px-3 text-xs text-app-muted">
                     EMS Dashboard
                 </p>
             </div>

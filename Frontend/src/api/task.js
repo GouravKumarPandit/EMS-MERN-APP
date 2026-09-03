@@ -14,7 +14,11 @@ export const getAllTask = (search = "", status = "", priority = "", staff = "", 
 }
 
 export const createTask = (formData) => {
-    return api.post("/api/tasks", formData);
+    return api.post("/api/tasks", formData, {
+        headers: {
+            "Content-Type": undefined,
+        },
+    });
 }
 
 export const getTaskById = (id) => {
@@ -30,7 +34,11 @@ export const getTaskActivities = (id, type = "") => {
 }
 
 export const updateTask = (id, formData) => {
-    return api.put(`/api/tasks/${id}`, formData);
+    return api.put(`/api/tasks/${id}`, formData, {
+        headers: {
+            "Content-Type": undefined,
+        },
+    });
 }
 
 export const changeStatus = (id, formData) => {

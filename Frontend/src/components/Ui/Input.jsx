@@ -11,7 +11,7 @@ function Input({ label, labelClass, required = false, divClass = "", inputClass 
                     )}
                 </label>}
                 <input
-                    className={`w-full rounded-lg border border-[#303030] bg-black px-4 py-2.5 text-white outline-none placeholder:text-gray-600 focus:border-violet-500 ${inputClass}`}
+                    className={`w-full rounded-lg border border-app-line bg-app-field px-4 py-2.5 text-app-text outline-none placeholder:text-app-subtle focus:border-violet-500 ${inputClass}`}
                     {...props}
                 />
                 {
