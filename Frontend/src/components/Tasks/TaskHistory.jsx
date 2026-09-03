@@ -1,12 +1,12 @@
 import { formatDateTime } from '../../utils/date';
 import { CheckCircle2 } from 'lucide-react';
 
-function TaskHistory({ activities }) {
+function TaskHistory({ activities, title = "Task History" }) {
     return (
         <>
             <div className="mt-6">
                 <h3 className="mb-4 text-sm font-medium">
-                    Task History
+                    {title}
                 </h3>
 
                 <div className="space-y-3">

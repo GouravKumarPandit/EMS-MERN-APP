@@ -8,28 +8,30 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useSettings } from "../../context/SettingsContext";
 import { toast } from "react-toastify";
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { user, logout } = useAuth();
+    const { companyName } = useSettings();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
         await logout();
         toast.success("Logout Successfully!");
+        navigate("/login", { replace: true });
     };
 
     return (
         <header className="flex h-20 items-center justify-between border-b border-neutral-800 bg-black px-8">
             <div>
-                <p className="text-sm text-neutral-400">
-                    Hello,
-                </p>
-
-                <h1 className="mt-1 text-2xl font-semibold text-white">
-                    {user.first_name} {user.last_name} 👋
+                <h1 className="text-2xl font-semibold text-white">
+                    {companyName}
                 </h1>
+                <p className="mt-1 text-sm text-neutral-400">
+                    Hello, {user?.first_name} {user?.last_name} 👋
+                </p>
             </div>
 
             <div className="relative">
@@ -40,12 +42,12 @@ const Header = () => {
 
                     <div className="hidden text-left sm:block">
                         <p className="text-sm font-medium text-white">
-                            {user.first_name} {user.last_name}
+                            {user?.first_name} {user?.last_name}
                         </p>
 
                         <p className="text-xs text-neutral-400">
                             {
-                                user.role === "admin" ? "Administrator" : "Staff"
+                                user?.role === "admin" ? "Administrator" : "Staff"
                             }
                         </p>
                     </div>
@@ -65,12 +67,12 @@ const Header = () => {
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold text-white">
-                                        {user.first_name} {user.last_name}
+                                        {user?.first_name} {user?.last_name}
                                     </p>
 
                                     <p className="text-xs text-neutral-400">
                                         {
-                                            user.role === "admin" ? "Administrator" : "Staff"
+                                            user?.role === "admin" ? "Administrator" : "Staff"
                                         }
                                     </p>
                                 </div>

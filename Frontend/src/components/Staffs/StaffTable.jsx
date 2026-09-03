@@ -9,6 +9,7 @@ import StaffFilters from "./StaffFilters";
 import { useEffect, useState } from "react";
 import { getAllStaff } from "../../api/staff";
 import { toast } from "react-toastify";
+import useDebounce from "../../utils/useDebounce";
 
 const StaffTable = ({ modal, openModal }) => {
     const [search, setSearch] = useState("");
@@ -19,8 +20,9 @@ const StaffTable = ({ modal, openModal }) => {
         currentPage: 1,
         totalPages: 1,
         totalRecords: 0,
-        limit: 3
+        limit: 10
     });
+    const debouncedSearch = useDebounce(search);
     const handlePageChange = (page) => {
         setPagination(prev => ({
             ...prev,
@@ -34,7 +36,7 @@ const StaffTable = ({ modal, openModal }) => {
     useEffect(() => {
         const loadStaff = async () => {
             try {
-                const response = await getAllStaff(search, role, gender, pagination.currentPage, pagination.limit);
+                const response = await getAllStaff(debouncedSearch, role, gender, pagination.currentPage, pagination.limit);
 
                 if (response.data.success) {
                     const { staffs, pagination: paginationData } =
@@ -49,7 +51,7 @@ const StaffTable = ({ modal, openModal }) => {
         }
 
         loadStaff();
-    }, [modal, search, role, gender, pagination.currentPage, pagination.limit])
+    }, [modal, debouncedSearch, role, gender, pagination.currentPage, pagination.limit])
 
     return (
         <>

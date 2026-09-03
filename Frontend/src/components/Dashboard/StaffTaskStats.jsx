@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const staffStatsStats = ({ staffStats }) => {
 
     return (
@@ -30,7 +28,7 @@ const staffStatsStats = ({ staffStats }) => {
                         <tbody className="divide-y divide-neutral-800">
                             {staffStats.map((staff) => (
                                 <tr
-                                    key={staff._id}
+                                    key={staff._id || staff.staff_id}
                                     className="hover:bg-[#181818] transition"
                                 >
                                     <td className="px-6 py-4">

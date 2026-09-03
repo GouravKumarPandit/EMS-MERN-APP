@@ -2,9 +2,12 @@ import {
     Home,
     ClipboardList,
     Users,
-    Settings
+    Settings,
+    StickyNote
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useSettings } from "../../context/SettingsContext";
 
 const sidebarOptions = [
     {
@@ -23,36 +26,41 @@ const sidebarOptions = [
         id: "3",
         link: "/staffs",
         label: "Staffs",
-        icon: <Users size={20} />
+        icon: <Users size={20} />,
+        adminOnly: true
     },
     {
         id: "4",
         link: "/notes",
         label: "Your Notes",
-        icon: <ClipboardList size={20} />
+        icon: <StickyNote size={20} />
     },
     {
         id: "5",
         link: "/settings",
         label: "Settings",
-        icon: <Settings size={20} />
+        icon: <Settings size={20} />,
+        adminOnly: true
     }
 ]
 
 const Sidebar = () => {
     const currentURI = useLocation();
+    const { isAdmin } = useAuth();
+    const { companyName } = useSettings();
+    const visibleOptions = sidebarOptions.filter((item) => !item.adminOnly || isAdmin);
 
     return (
         <aside className="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-neutral-800 bg-black px-4 py-6">
             <div className="mb-10 px-3">
-                <h1 className="text-2xl font-bold text-white">
-                    MY COMPANY
+                <h1 className="text-2xl font-bold text-white break-words">
+                    {companyName}
                 </h1>
             </div>
 
             <nav className="flex flex-1 flex-col gap-2">
                 {
-                    sidebarOptions.map((sidebar) => (
+                    visibleOptions.map((sidebar) => (
                         <Link to={sidebar.link} key={sidebar.id}
                             className={`flex items-center gap-3 rounded-lg ${currentURI.pathname === sidebar.link ? "bg-violet-600" : "" } px-4 py-3 text-sm font-medium text-white transition hover:bg-violet-700`}
                         >

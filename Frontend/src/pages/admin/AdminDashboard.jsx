@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import StaffTaskStats from "../../components/Dashboard/StaffTaskStats";
 import TaskCountCard from "../../components/Dashboard/TaskCountCard";
-import TaskSummaryCard from "../../components/Dashboard/TaskSummaryCard";
+import TaskCarousel from "../../components/Dashboard/TaskCarousel";
 import Button from "../../components/Ui/Button";
 import { dashboard } from "../../api/staff";
 import { toast } from "react-toastify";
 import NoData from "../../components/Ui/NoData";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function AdminDashboard() {
-    const [loader, setLoader] = useState(false);
     const [loginStaffTaskData, setLoginStaffTaskData] = useState({});
-    const [allStaffTaskCount, setAllStaffTaskCount] = useState({});
+    const [allStaffTaskCount, setAllStaffTaskCount] = useState([]);
     const navigate = useNavigate();
+    const { isAdmin } = useAuth();
 
     const handleViewAll = () => {
         navigate("/tasks");
@@ -20,13 +21,12 @@ function AdminDashboard() {
 
     useEffect(() => {
         const dashboardFetch = async () => {
-            setLoader(true);
             try {
                 const response = await dashboard();
                 if(response.data.success) {
                     const { loggedInStaffTask, staffTaskCount } = response.data.data;
                     setLoginStaffTaskData(loggedInStaffTask);
-                    setAllStaffTaskCount(staffTaskCount);
+                    setAllStaffTaskCount(staffTaskCount || []);
                 }
 
             } catch (error) {
@@ -35,8 +35,6 @@ function AdminDashboard() {
                     error?.message ||
                     "Something went wrong"
                 );
-            } finally{
-                setLoader(false);
             }
         }
 
@@ -45,7 +43,7 @@ function AdminDashboard() {
 
     return (
         <>
-            <div className="min-h-screen bg-black text-white p-6 space-y-6">
+            <div className="min-h-screen min-w-0 bg-black text-white p-6 space-y-6">
                 <div>
                     <h2 className="text-lg font-semibold text-white">
                         Task Status
@@ -59,7 +57,7 @@ function AdminDashboard() {
                 </div>
 
                 {/* Task */}
-                <div className="mt-8">
+                <div className="mt-8 min-w-0">
                     <div className="mb-4 flex items-center justify-between">
                         <div>
                             <h2 className="text-lg font-semibold text-white">
@@ -76,20 +74,20 @@ function AdminDashboard() {
                         </Button>
                     </div>
 
-                    {/* Horizontal Task List */}
-                    <div
-                        id="taskList"
-                        className="flex gap-4 overflow-x-auto pb-3"
-                    >
+                    <div className="w-full min-w-0">
                         {
-                            (loginStaffTaskData?.recentTasks?.length > 0) ? 
-                            loginStaffTaskData?.recentTasks.map((task) => (<TaskSummaryCard key={task.task_id} task={task} />)) :
+                            (loginStaffTaskData?.recentTasks?.length > 0) ?
+                            <TaskCarousel tasks={loginStaffTaskData.recentTasks} /> :
                             <NoData message={"No task found!"} />
                         }
                     </div>
                 </div>
                 {
-                    allStaffTaskCount.length > 0 ? <StaffTaskStats staffStats={allStaffTaskCount} /> : <NoData message={"No staff stats found!"} />
+                    isAdmin ? (
+                        allStaffTaskCount.length > 0
+                            ? <StaffTaskStats staffStats={allStaffTaskCount} />
+                            : <NoData message={"No staff stats found!"} />
+                    ) : null
                 }
             </div >
         </>

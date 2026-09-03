@@ -1,22 +1,23 @@
-import { Building2, Mail, Phone, Upload, Save, X } from "lucide-react";
+import { Building2, Mail, Phone, Save, Shield, FileText, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Input from "../../components/Ui/Input";
 import Button from "../../components/Ui/Button";
-import CancelButton from "../../components/Ui/CancelButton";
-import { settings, updateSettings } from "../../api/settings";
+import TextArea from "../../components/Ui/TextArea";
+import { updateSettings } from "../../api/settings";
 import { toast } from "react-toastify";
+import { useSettings } from "../../context/SettingsContext";
 
 const Settings = () => {
-    const [settingsData, setSettingsData] = useState({});
-    const [logoPreview, setLogoPreview] = useState(null);
+    const { settings, refreshSettings } = useSettings();
+    const [settingsData, setSettingsData] = useState({
+        company_name: "",
+        company_email: "",
+        company_phone: "",
+        privacy_policy: "",
+        terms_of_service: "",
+    });
     const [submitLoader, setSubmitLoader] = useState(false);
-    const handleLogoChange = (e) => {
-        const file = e.target.files?.[0];
-
-        if (file) {
-            setLogoPreview(URL.createObjectURL(file));
-        }
-    };
 
     const inputHandler = (event) => {
         const { name, value } = event.target;
@@ -28,32 +29,30 @@ const Settings = () => {
 
     const submitHandler = async (event) => {
         event.preventDefault();
+        setSubmitLoader(true);
         
         try {
             const response = await updateSettings(settingsData);
             if(response.data.success){
                 toast.success(response?.data?.message);
+                await refreshSettings();
             }
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "Failed to update settings");
         } finally{
             setSubmitLoader(false);
         }
     }
 
     useEffect(() => {
-        const fetchSetting = async () => {
-            try {
-                const response = await settings();
-                const [ setting ] = response.data.data;
-                setSettingsData(setting);
-            } catch (error) {
-                toast.error(error.response.data.message);
-            }
-        }
-
-        fetchSetting();
-    }, [])
+        setSettingsData({
+            company_name: settings.company_name || "",
+            company_email: settings.company_email || "",
+            company_phone: settings.company_phone || "",
+            privacy_policy: settings.privacy_policy || "",
+            terms_of_service: settings.terms_of_service || "",
+        });
+    }, [settings])
 
     return (
         <div className="min-h-screen bg-black text-white p-6">
@@ -67,79 +66,30 @@ const Settings = () => {
                 </p>
             </div>
 
-            {/* Company Settings Card */}
-            <div className="max-w-4xl bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
-                {/* Card Header */}
-                <div className="px-6 py-5 border-b border-neutral-800">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
-                            <Building2
-                                size={20}
-                                className="text-violet-500"
-                            />
-                        </div>
+            <form onSubmit={submitHandler} className="max-w-4xl space-y-6">
+                <div className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-neutral-800">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                                <Building2
+                                    size={20}
+                                    className="text-violet-500"
+                                />
+                            </div>
 
-                        <div>
-                            <h2 className="text-lg font-semibold">
-                                Company Information
-                            </h2>
+                            <div>
+                                <h2 className="text-lg font-semibold">
+                                    Company Information
+                                </h2>
 
-                            <p className="text-sm text-gray-500">
-                                Update your company details
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <form onSubmit={submitHandler} >
-                    <div className="p-6 space-y-7">
-                        <div>
-                            <label className="block text-sm font-medium mb-3">
-                                Company Logo
-                            </label>
-
-                            <div className="flex items-center gap-5">
-                                <div className="w-24 h-24 rounded-xl border border-neutral-700 bg-[#181818] flex items-center justify-center overflow-hidden">
-                                    {logoPreview ? (
-                                        <img
-                                            src={logoPreview}
-                                            alt="Company Logo"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <Building2
-                                            size={35}
-                                            className="text-gray-600"
-                                        />
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label
-                                        htmlFor="company-logo"
-                                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1c1c1c] border border-neutral-700 hover:border-violet-500 rounded-lg cursor-pointer transition"
-                                    >
-                                        <Upload size={17} />
-                                        <span className="text-sm">
-                                            Upload Logo
-                                        </span>
-                                    </label>
-
-                                    <input
-                                        id="company-logo"
-                                        type="file"
-                                        accept="image/png,image/jpeg,image/jpg,image/webp"
-                                        className="hidden"
-                                        onChange={handleLogoChange}
-                                    />
-
-                                    <p className="text-xs text-gray-500 mt-2">
-                                        PNG, JPG or WEBP. Maximum size 2MB.
-                                    </p>
-                                </div>
+                                <p className="text-sm text-gray-500">
+                                    Update your company details
+                                </p>
                             </div>
                         </div>
+                    </div>
 
+                    <div className="p-6 space-y-7">
                         <div>
                             <label
                                 htmlFor="company-name"
@@ -159,7 +109,7 @@ const Settings = () => {
                                     placeholder="Enter company name"
                                     name="company_name"
                                     className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
-                                    value={settingsData?.company_name}
+                                    value={settingsData?.company_name || ""}
                                     onChange={inputHandler}
                                 />
                             </div>
@@ -184,7 +134,7 @@ const Settings = () => {
                                         placeholder="company@example.com"
                                         name="company_email"
                                         className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
-                                        value={settingsData?.company_email}
+                                        value={settingsData?.company_email || ""}
                                         onChange={inputHandler}
                                     />
                                 </div>
@@ -208,40 +158,112 @@ const Settings = () => {
                                         placeholder="+91 9876543210"
                                         name="company_phone"
                                         className="w-full bg-[#181818] border border-neutral-700 rounded-lg pl-10 pr-4 py-3 outline-none focus:border-violet-500 transition"
-                                        value={settingsData?.company_phone}
+                                        value={settingsData?.company_phone || ""}
                                         onChange={inputHandler}
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {/* Footer */}
-                    <div className="px-6 py-4 border-t border-neutral-800 flex justify-end gap-3">
-                        <CancelButton
-                            type="button"
-                            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-neutral-700 hover:bg-[#1c1c1c] transition"
-                        >
-                            <X size={17} /> Cancel
-                        </CancelButton>
+                </div>
 
-                        <Button
-                            type="submit"
-                            disabled={submitLoader}
-                            buttonClass="flex items-center justify-center gap-2 rounded-xl py-3"
-                        >
-                            {submitLoader ? (
-                                <>
-                                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
-                                    Saving...
-                                </>
-                            ) : (
-                                <><Save size={17} /> Save Changes</>
-                            )}
-                        </Button>
+                <div className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-neutral-800">
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                                    <Shield
+                                        size={20}
+                                        className="text-violet-500"
+                                    />
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-semibold">
+                                        Privacy Policy
+                                    </h2>
+                                    <p className="text-sm text-gray-500">
+                                        Stored text shown on the Privacy page
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                to="/privacy"
+                                className="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300"
+                            >
+                                View page <ExternalLink size={14} />
+                            </Link>
+                        </div>
                     </div>
-                </form> 
+                    <div className="p-6">
+                        <TextArea
+                            label="Privacy Policy"
+                            placeholder="Write your privacy policy..."
+                            name="privacy_policy"
+                            row={8}
+                            value={settingsData.privacy_policy}
+                            onChange={inputHandler}
+                            inputClass="min-h-40 bg-[#181818] border-neutral-700"
+                        />
+                    </div>
+                </div>
 
-            </div>
+                <div className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden">
+                    <div className="px-6 py-5 border-b border-neutral-800">
+                        <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center">
+                                    <FileText
+                                        size={20}
+                                        className="text-violet-500"
+                                    />
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-semibold">
+                                        Terms of Service
+                                    </h2>
+                                    <p className="text-sm text-gray-500">
+                                        Stored text shown on the Terms page
+                                    </p>
+                                </div>
+                            </div>
+                            <Link
+                                to="/terms"
+                                className="inline-flex items-center gap-1 text-sm text-violet-400 hover:text-violet-300"
+                            >
+                                View page <ExternalLink size={14} />
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="p-6">
+                        <TextArea
+                            label="Terms of Service"
+                            placeholder="Write your terms of service..."
+                            name="terms_of_service"
+                            row={8}
+                            value={settingsData.terms_of_service}
+                            onChange={inputHandler}
+                            inputClass="min-h-40 bg-[#181818] border-neutral-700"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex justify-end">
+                    <Button
+                        type="submit"
+                        disabled={submitLoader}
+                        buttonClass="flex items-center justify-center gap-2 rounded-xl py-3"
+                    >
+                        {submitLoader ? (
+                            <>
+                                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+                                Saving...
+                            </>
+                        ) : (
+                            <><Save size={17} /> Save Changes</>
+                        )}
+                    </Button>
+                </div>
+            </form>
         </div>
     );
 };

@@ -169,7 +169,7 @@ const CreateStaffModal = ({ modal, closeModal }) => {
                         <Input
                             label="Password" 
                             type="password"
-                            placeholder="Enter password"
+                            placeholder="At least 8 characters"
                             name="password"
                             required
                             value={createFormData.password}

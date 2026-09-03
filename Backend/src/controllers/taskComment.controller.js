@@ -1,28 +1,56 @@
 import mongoose from "mongoose";
+import { Task } from "../models/task.model.js";
 import { TaskComment } from "../models/taskComment.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import createError from "../utils/createError.js";
+import { canAccessTask, idsEqual } from "../utils/helper.js";
+
+const getAccessibleTask = async (req, next) => {
+    const { taskId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
+        next(createError("Invalid task id!", 400));
+        return null;
+    }
+
+    const task = await Task.findById(taskId).lean();
+    if (!task) {
+        next(createError("Task not found!", 404));
+        return null;
+    }
+
+    if (!canAccessTask(req.user, task)) {
+        next(createError("Unauthorized action!", 403));
+        return null;
+    }
+
+    return task;
+};
 
 export const getAllTaskComment = asyncHandler(async (req, res, next) => {
-    const { taskId } = req.params;
-    const taskComment = await TaskComment.find({ task: new mongoose.Types.ObjectId(taskId) })
+    const task = await getAccessibleTask(req, next);
+    if (!task) return;
+
+    const taskComment = await TaskComment.find({ task: task._id })
         .populate("comment_by", "first_name last_name")
         .lean();
 
     return res.status(200).json({
-        success: true, 
+        success: true,
         data: taskComment
     });
 });
 
 export const createTaskComment = asyncHandler(async (req, res, next) => {
-    const { id: staffId } = req.user; 
-    const { taskId } = req.params;
-    const { comment } = req.body; 
+    const task = await getAccessibleTask(req, next);
+    if (!task) return;
+
+    const { id: staffId } = req.user;
+    const { comment } = req.body;
     const comment_id = Date.now();
 
     const taskComment = new TaskComment({
-        task: new mongoose.Types.ObjectId(taskId),
-        comment, 
+        task: task._id,
+        comment,
         comment_id,
         comment_by: new mongoose.Types.ObjectId(staffId),
     });
@@ -36,45 +64,46 @@ export const createTaskComment = asyncHandler(async (req, res, next) => {
 });
 
 export const getTaskCommentById = asyncHandler(async (req, res, next) => {
-    const { taskId, id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
-    if(!mongoose.Types.ObjectId.isValid(id)) return next(createError('Invalid comment id!', 400)); 
+    const task = await getAccessibleTask(req, next);
+    if (!task) return;
 
-    const comment = await TaskComment.findOne({ 
-        task: new mongoose.Types.ObjectId(taskId),
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return next(createError("Invalid comment id!", 400));
+
+    const comment = await TaskComment.findOne({
+        task: task._id,
         _id: new mongoose.Types.ObjectId(id)
     })
     .populate("comment_by", "first_name last_name")
     .lean();
 
-    if(!comment) return next(createError('Comment not found!', 404)); 
-
-    if(note.notes_by !== staffId) return next(createError('Unauthorized action!', 403)); 
+    if (!comment) return next(createError("Comment not found!", 404));
 
     return res.status(200).json({
         success: true,
-        message: "Note found!",
-        data: note
+        message: "Comment found!",
+        data: comment
     });
 });
 
 export const updateTaskComment = asyncHandler(async (req, res, next) => {
-    const { id: staffId } = req.user; 
-    const { taskId, id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
-    if(!mongoose.Types.ObjectId.isValid(id)) return next(createError('Invalid comment id!', 400));  
+    const task = await getAccessibleTask(req, next);
+    if (!task) return;
 
-    const updateComment = await TaskComment.findOne({ 
+    const { id: staffId } = req.user;
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return next(createError("Invalid comment id!", 400));
+
+    const updateComment = await TaskComment.findOne({
         _id: new mongoose.Types.ObjectId(id),
-        task: new mongoose.Types.ObjectId(taskId)
+        task: task._id
     });
 
-    if(!updateComment) return next(createError('Comment not found!', 404)); 
-
-    if(updateComment.comment_by.toString() !== staffId) return next(createError('Unauthorized action!', 403)); 
+    if (!updateComment) return next(createError("Comment not found!", 404));
+    if (!idsEqual(updateComment.comment_by, staffId)) return next(createError("Unauthorized action!", 403));
 
     const { comment } = req.body;
-    updateComment.comment = comment; 
+    updateComment.comment = comment;
     await updateComment.save();
 
     return res.status(200).json({
@@ -85,19 +114,20 @@ export const updateTaskComment = asyncHandler(async (req, res, next) => {
 });
 
 export const deleteTaskComment = asyncHandler(async (req, res, next) => {
-    const { id: staffId } = req.user; 
-    const { taskId, id } = req.params;
-    if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
-    if(!mongoose.Types.ObjectId.isValid(id)) return next(createError('Invalid comment id!', 400)); 
+    const task = await getAccessibleTask(req, next);
+    if (!task) return;
 
-    const comment = await TaskComment.findOne({ 
-        task: new mongoose.Types.ObjectId(taskId),
+    const { id: staffId } = req.user;
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return next(createError("Invalid comment id!", 400));
+
+    const comment = await TaskComment.findOne({
+        task: task._id,
         _id: new mongoose.Types.ObjectId(id)
     });
 
-    if(!comment) return next(createError('Comment not found!', 404)); 
-
-    if(comment.comment_by.toString() !== staffId) return next(createError('Unauthorized action!', 403));
+    if (!comment) return next(createError("Comment not found!", 404));
+    if (!idsEqual(comment.comment_by, staffId)) return next(createError("Unauthorized action!", 403));
 
     await comment.deleteOne();
 

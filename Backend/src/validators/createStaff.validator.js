@@ -26,8 +26,8 @@ const createStaffValidation = [
         .withMessage("Username is required!")
         .isLength({ min: 5, max: 15 })
         .withMessage("Username must be 5 to 15 characters long.")
-        .matches(/^[a-zA-Z0-9]+$/)
-        .withMessage("Username can contain only letters and numbers."),
+        .matches(/^[a-zA-Z0-9_]+$/)
+        .withMessage("Username can contain only letters, numbers, and underscores."),
 
     body("email")
         .trim()
@@ -43,15 +43,17 @@ const createStaffValidation = [
         .trim()
         .notEmpty()
         .withMessage("Password is required")
-        .isLength({ min: 6, max: 15 })
-        .withMessage("Password must be 6 to 15 characters long."),
+        .isLength({ min: 8, max: 72 })
+        .withMessage("Password must be 8 to 72 characters long."),
 
     body("phone_number")
         .trim()
         .notEmpty()
         .withMessage("Phone Number is required")
         .isLength({ min: 10, max: 10 })
-        .withMessage("Mobile number must be 10 to 10 digit long."),
+        .withMessage("Mobile number must be 10 to 10 digit long.")
+        .matches(/^\d{10}$/)
+        .withMessage("Mobile number must contain only digits."),
 
     body("gender")
         .optional()

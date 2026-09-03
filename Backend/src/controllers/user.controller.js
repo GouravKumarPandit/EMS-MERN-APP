@@ -1,11 +1,12 @@
-import mongoose, { mongo, Types } from "mongoose";
+import mongoose from "mongoose";
 import { User } from "../models/user.model.js";
 import asyncHandler from "../utils/asyncHandler.js"
 import createError from "../utils/createError.js";
 import bcrypt from "bcrypt";
 import { Task } from "../models/task.model.js";
+import { escapeRegex, parsePagination } from "../utils/helper.js";
 
-export const dashboard = asyncHandler(async (req, res, next) => {
+export const dashboard = asyncHandler(async (req, res) => {
     const { role, id: staffId } = req.user;
 
     const taskCount = await Task.aggregate([
@@ -33,27 +34,25 @@ export const dashboard = asyncHandler(async (req, res, next) => {
         }
     });
 
-    const recentTasks = await Task.find({ 
+    const recentTasks = await Task.find({
             assigned_staff: new mongoose.Types.ObjectId(staffId),
             status: {
                 $ne: "completed"
             }
         })
         .sort({ due_date: 1 })
-        .limit(5)
+        .limit(20)
         .populate("assigned_staff", "first_name last_name")
         .lean();
 
     let staffTaskStats = [];
-    if(role === "admin"){
+    if (role === "admin") {
         staffTaskStats = await User.aggregate([
-            // If you have a role field and only want staff
-            // {
-            //     $match: {
-            //         role: "staff"
-            //     }
-            // },
-
+            {
+                $match: {
+                    role: "staff"
+                }
+            },
             {
                 $lookup: {
                     from: "tasks",
@@ -62,16 +61,12 @@ export const dashboard = asyncHandler(async (req, res, next) => {
                     as: "tasks"
                 }
             },
-
             {
                 $project: {
-                    _id: 0,
-                    staff_id: "$_id",
                     first_name: 1,
                     last_name: 1,
                     username: 1,
                     email: 1,
-
                     pending: {
                         $size: {
                             $filter: {
@@ -83,7 +78,6 @@ export const dashboard = asyncHandler(async (req, res, next) => {
                             }
                         }
                     },
-
                     accepted: {
                         $size: {
                             $filter: {
@@ -95,7 +89,6 @@ export const dashboard = asyncHandler(async (req, res, next) => {
                             }
                         }
                     },
-
                     completed: {
                         $size: {
                             $filter: {
@@ -107,7 +100,6 @@ export const dashboard = asyncHandler(async (req, res, next) => {
                             }
                         }
                     },
-
                     failed: {
                         $size: {
                             $filter: {
@@ -136,21 +128,18 @@ export const dashboard = asyncHandler(async (req, res, next) => {
     });
 });
 
-export const getAllStaff = asyncHandler(async (req, res, next) => {
+export const getAllStaff = asyncHandler(async (req, res) => {
     const { search, role, gender } = req.query;
-    let { page = 1, limit = 10 } = req.query;
+    const { page, limit, skip } = parsePagination(req.query);
 
-    page = parseInt(page);
-    limit = parseInt(limit);
-
-    const skip = (page - 1) * limit;
     const query = {};
-    if(search){
+    if (search) {
+        const safeSearch = escapeRegex(search);
         query.$or = [
-            { first_name: { $regex: search, $options: "i" } },
-            { last_name: { $regex: search, $options: "i" } },
-            { email: { $regex: search, $options: "i" } },
-            { username: { $regex: search, $options: "i" } }
+            { first_name: { $regex: safeSearch, $options: "i" } },
+            { last_name: { $regex: safeSearch, $options: "i" } },
+            { email: { $regex: safeSearch, $options: "i" } },
+            { username: { $regex: safeSearch, $options: "i" } }
         ];
     }
 
@@ -163,8 +152,7 @@ export const getAllStaff = asyncHandler(async (req, res, next) => {
     }
 
     const [staffs, totalStaff] = await Promise.all([
-        User.find(query).skip(skip).limit(limit).lean(),
-
+        User.find(query).select("-password").skip(skip).limit(limit).lean(),
         User.countDocuments(query),
     ]);
     const totalPages = Math.ceil(totalStaff / limit);
@@ -192,13 +180,13 @@ export const createStaff = asyncHandler(async (req, res, next) => {
             { email },
             { username }
         ]
-    }).lean();
+    }).select("_id").lean();
 
-    if(emailOrUsernameExists){
+    if (emailOrUsernameExists) {
         return next(createError("Email or Username already exists!", 409));
     }
 
-    const staff = new User({first_name, last_name, username, email, dialcode, phone_number, password, gender, dob, role});
+    const staff = new User({ first_name, last_name, username, email, dialcode, phone_number, password, gender, dob, role });
     await staff.save();
 
     return res.status(201).json({
@@ -206,15 +194,14 @@ export const createStaff = asyncHandler(async (req, res, next) => {
         message: "Staff created successfully!",
         data: staff
     });
-
 });
 
 export const getStaffById = asyncHandler(async (req, res, next) => {
     const staffId = req.params.id;
-    if(!mongoose.Types.ObjectId.isValid(staffId)) return next(createError('Invalid staff id', 400));
+    if (!mongoose.Types.ObjectId.isValid(staffId)) return next(createError("Invalid staff id", 400));
 
     const staff = await User.findById(staffId).select("-password").lean();
-    if(!staff) return next(createError('Staff not found', 404));
+    if (!staff) return next(createError("Staff not found", 404));
 
     const taskCount = await Task.aggregate([
         {
@@ -253,46 +240,47 @@ export const getStaffById = asyncHandler(async (req, res, next) => {
 
 export const updateStaff = asyncHandler(async (req, res, next) => {
     const staffId = req.params.id;
-    if(!mongoose.Types.ObjectId.isValid(staffId)) return next(createError("Invalid staff id!", 400));
-    
-    const staffExists = await User.findById(staffId).lean();
-    if(!staffExists) return next(createError("Staff not found!", 404));
+    if (!mongoose.Types.ObjectId.isValid(staffId)) return next(createError("Invalid staff id!", 400));
+
+    const staffExists = await User.findById(staffId).select("_id").lean();
+    if (!staffExists) return next(createError("Staff not found!", 404));
 
     const { first_name, last_name, email, dialcode, phone_number, gender, dob, role } = req.body;
 
     const emailExists = await User.findOne({
         email: email,
         _id: { $ne: staffId }
-    }).lean();
-    if(emailExists) return next(createError("Email already exists!", 409));
-    
+    }).select("_id").lean();
+    if (emailExists) return next(createError("Email already exists!", 409));
 
     const staff = await User.findByIdAndUpdate(
-        staffId, 
+        staffId,
         { first_name, last_name, email, dialcode, phone_number, gender, dob, role },
-        { 
+        {
             new: true,
-            runValidators: true 
+            runValidators: true
         }
-    );
+    ).select("-password");
 
     return res.status(200).json({
         success: true,
         message: "Staff updated successfully!",
         data: staff
     });
-
 });
 
 export const deleteStaff = asyncHandler(async (req, res, next) => {
-    const staffId = req.params.id; 
-    if(!mongoose.Types.ObjectId.isValid(staffId)) return next(createError("Invalid staff id!", 400));
+    const staffId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(staffId)) return next(createError("Invalid staff id!", 400));
 
     const staff = await User.findById(staffId);
-    if(!staff) return next(createError("Staff not found!", 404));
+    if (!staff) return next(createError("Staff not found!", 404));
 
-    //Uninitialize all the task of the deleted staff. 
-    const tasks = await Task.updateMany(
+    if (staff._id.toString() === req.user.id.toString()) {
+        return next(createError("You cannot delete your own account!", 400));
+    }
+
+    await Task.updateMany(
         {
             assigned_staff: staff._id
         },
@@ -312,23 +300,23 @@ export const deleteStaff = asyncHandler(async (req, res, next) => {
 });
 
 export const changePassword = asyncHandler(async (req, res, next) => {
-    const staffId = req.params.id; 
-    if(!mongoose.Types.ObjectId.isValid(staffId)) return next(createError("Invalid staff id!", 400));
+    const staffId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(staffId)) return next(createError("Invalid staff id!", 400));
 
-    if(req.user.id.toString() !== staffId) return next(createError("Unauthorized action!", 403));
-    
+    if (req.user.id.toString() !== staffId) return next(createError("Unauthorized action!", 403));
+
     const staff = await User.findById(staffId);
-    if(!staff) return next(createError("Staff not found!", 404));
+    if (!staff) return next(createError("Staff not found!", 404));
 
     const { currentPassword, newPassword, confirmPassword } = req.body;
 
     const isMatch = await bcrypt.compare(currentPassword, staff.password);
-    if(!isMatch) return next(createError("Current password is incorrect!!", 400));
+    if (!isMatch) return next(createError("Current password is incorrect!", 400));
 
     const isSamePassword = await bcrypt.compare(newPassword, staff.password);
-    if (isSamePassword)  return next(createError("New password must be different from your current password!", 400));
+    if (isSamePassword) return next(createError("New password must be different from your current password!", 400));
 
-    if(newPassword.trim() !== confirmPassword.trim()) return next(createError("You new password and confirm password not matching!", 400));
+    if (newPassword.trim() !== confirmPassword.trim()) return next(createError("Your new password and confirm password do not match!", 400));
 
     staff.password = newPassword;
     await staff.save();
@@ -339,7 +327,7 @@ export const changePassword = asyncHandler(async (req, res, next) => {
     });
 });
 
-export const getFilterAllStaff = asyncHandler(async (req, res, next) => {
+export const getFilterAllStaff = asyncHandler(async (req, res) => {
     const staffs = await User.find().select("first_name last_name").lean();
 
     return res.status(200).json({

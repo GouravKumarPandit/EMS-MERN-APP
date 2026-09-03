@@ -8,8 +8,10 @@ import DeleteTaskModel from "../../components/Tasks/DeleteTaskModel";
 import CardHeader from "../../components/Layout/CardHeader";
 import { getFilterAllStaff } from "../../api/staff";
 import { toast } from "react-toastify";
+import { useAuth } from "../../context/AuthContext";
 
 const AllTasks = () => {
+    const { isAdmin } = useAuth();
     const [staffs, setStaffs] = useState([]);
     const [modal, setModal] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -24,24 +26,27 @@ const AllTasks = () => {
     };
 
     useEffect(() => {
+        if (!isAdmin) return;
+
         const loadStaff = async () => {
             try {
                 const response = await getFilterAllStaff();
                 setStaffs(response.data.data);
             } catch (error) {
-                toast.error(error.response.data.message);
+                toast.error(error.response?.data?.message);
             }
         }
 
         loadStaff();
-    }, [])
+    }, [isAdmin])
 
 	return (
 		<div className="min-h-screen bg-black text-white p-4 md:p-6">
             <CardHeader 
                 cardHeading="All Tasks" 
                 headingDescription="Manage and monitor all employee tasks." 
-                buttonText="+ Create Task" 
+                buttonText="+ Create Task"
+                showButton={isAdmin}
                 onClick={() => openModal("create")}
             />
 			

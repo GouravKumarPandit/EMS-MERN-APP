@@ -152,21 +152,23 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 									errorMessage={editFormErrorData.task_description}
 								/>
 
-								<Select
-									label="Assign Staff"
-									name="assigned_staff"
-									options={
-										staffs.map((staff) => ({
-											label: `${staff.first_name} ${staff.last_name} ${
-												staff._id === user._id ? "(Me)" : ""
-											}`,
-											value: staff._id
-										}))
-									}
-									value={editFormData.assigned_staff}
-									onChange={inputHandler}
-									errorMessage={editFormErrorData.assigned_staff}
-								/>
+								{user?.role === "admin" ? (
+									<Select
+										label="Assign Staff"
+										name="assigned_staff"
+										options={
+											staffs.map((staff) => ({
+												label: `${staff.first_name} ${staff.last_name} ${
+													staff._id === user._id ? "(Me)" : ""
+												}`,
+												value: staff._id
+											}))
+										}
+										value={editFormData.assigned_staff}
+										onChange={inputHandler}
+										errorMessage={editFormErrorData.assigned_staff}
+									/>
+								) : null}
 
 								<Select
 									label="Status"
@@ -219,6 +221,10 @@ function EditTaskModel({ modal, selectedTask, staffs, closeModal }) {
 										{
 											label: "High",
 											value: "high"
+										},
+										{
+											label: "Urgent",
+											value: "urgent"
 										}
 									]}
 									value={editFormData.priority}

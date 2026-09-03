@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
             minlength: 5,
             maxlength: 15,
             trim: true,
+            lowercase: true,
             unique: true,
             match: /^[a-zA-Z0-9_]+$/
         },
@@ -44,10 +45,9 @@ const userSchema = new mongoose.Schema(
             default: 91
         },
         phone_number: {
-            type: Number,
+            type: String,
             required: true,
-            minlength: 10,
-            maxlength: 10
+            match: [/^\d{10}$/, "Phone number must be 10 digits"]
         },
         gender: {
             type: String,

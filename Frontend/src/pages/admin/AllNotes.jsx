@@ -10,6 +10,7 @@ import Input from "../../components/Ui/Input";
 import NoNotes from "../../components/Notes/NoNotes";
 import { noteColors } from "../../data/colors"
 import DeleteNoteModal from "../../components/Notes/DeleteNoteModal";
+import useDebounce from "../../utils/useDebounce";
 
 export default function AllNotes() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function AllNotes() {
     const [modalMode, setModalMode] = useState("create");
     const [selectedNote, setSelectedNote] = useState(null);
     const [search, setSearch] = useState("");
+    const debouncedSearch = useDebounce(search);
     const [formData, setFormData] = useState({
         notes: "",
         notes_description: "",
@@ -79,7 +81,7 @@ export default function AllNotes() {
     useEffect(() => {
         const fetchAllNotes = async () => {
             try {
-                const response = await getAllNotes(search);
+                const response = await getAllNotes(debouncedSearch);
                 if(response.data.success) setNotes(response.data.data);
             } catch (error) {
                 toast.error(error?.response?.data.message);
@@ -87,7 +89,7 @@ export default function AllNotes() {
         }
 
         fetchAllNotes();
-    }, [search, isModalOpen, isDeleteModalOpen])
+    }, [debouncedSearch, isModalOpen, isDeleteModalOpen])
 
     return (
         <div className="min-h-screen bg-black text-white p-4 md:p-6">
@@ -123,7 +125,7 @@ export default function AllNotes() {
                 {notes.length ? notes.map((note) => {
                     const color = noteColors[note.color];
                     return (
-                        <NoteCard note={note} color={color} openEditModal={openEditModal} openDeleteModal={openDeleteModal} />
+                        <NoteCard key={note._id} note={note} color={color} openEditModal={openEditModal} openDeleteModal={openDeleteModal} />
                     );
                 }) : 
                     <NoNotes 

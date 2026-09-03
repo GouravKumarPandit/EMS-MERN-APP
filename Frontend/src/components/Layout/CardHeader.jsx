@@ -1,6 +1,6 @@
 import Button from '../Ui/Button';
 
-function CardHeader({ cardHeading, headingDescription, buttonText, ...props }) {
+function CardHeader({ cardHeading, headingDescription, buttonText, showButton = true, ...props }) {
     return (
         <div className="mb-8 flex items-center justify-between">
             <div>
@@ -13,12 +13,14 @@ function CardHeader({ cardHeading, headingDescription, buttonText, ...props }) {
                 </p>
             </div>
 
-            <Button
-                {...props}
-                buttonClass="w-full md:w-auto px-5 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 transition font-semibold"
-            >
-                {buttonText}
-            </Button>
+            {showButton && buttonText ? (
+                <Button
+                    {...props}
+                    buttonClass="w-full md:w-auto px-5 py-2.5 rounded-lg bg-violet-600 hover:bg-violet-700 transition font-semibold"
+                >
+                    {buttonText}
+                </Button>
+            ) : null}
         </div>
     )
 }

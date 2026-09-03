@@ -154,7 +154,8 @@ function CreateTaskModel({ modal, staffs, closeModal }) {
                                     options={[
                                         { label: "Low", value: "low" },
                                         { label: "Medium", value: "medium" },
-                                        { label: "High", value: "high" }
+                                        { label: "High", value: "high" },
+                                        { label: "Urgent", value: "urgent" }
                                     ]}
                                     value={createFormData.priority}
                                     onChange={inputHandler}

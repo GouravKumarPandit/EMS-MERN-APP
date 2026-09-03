@@ -13,6 +13,7 @@ import Login from './pages/public/Login';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import AdminRoute from './components/Auth/AdminRoute';
 import AllNotes from './pages/admin/AllNotes';
+import LegalPage from './pages/admin/LegalPage';
 
 function App() {
 
@@ -31,6 +32,8 @@ function App() {
 
                         <Route path="/change-password" element={<ChangePassword />} />
                         <Route path="/profile" element={<Profile />} />
+                        <Route path="/privacy" element={<LegalPage type="privacy" />} />
+                        <Route path="/terms" element={<LegalPage type="terms" />} />
 
                         {/* Admin Only */}
                         <Route element={<AdminRoute />}>

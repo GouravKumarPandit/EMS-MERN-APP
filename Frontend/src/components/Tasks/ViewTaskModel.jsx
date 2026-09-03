@@ -11,20 +11,26 @@ import TaskHistory from "./TaskHistory";
 import Status from "../Ui/Status";
 import Priority from "../Ui/Priority";
 import { useEffect, useState } from "react";
-import { getTaskById } from "../../api/task";
+import { getTaskActivities } from "../../api/task";
 
 function ViewTaskModel({ modal, selectedTask, closeModal }) {
 	const [taskActivity, setTaskActivity] = useState([]);
 	useEffect(() => {
 		const fetchTaskActivity = async (taskId) => {
-			const response = await getTaskById(taskId);
-			setTaskActivity(response.data.data);
+			try {
+				const response = await getTaskActivities(taskId);
+				setTaskActivity(response.data.data || []);
+			} catch (error) {
+				setTaskActivity([]);
+			}
 		}
 
-		if(selectedTask){
-			fetchTaskActivity(selectedTask?._id);
+		if (modal === "view" && selectedTask?._id) {
+			fetchTaskActivity(selectedTask._id);
+		} else {
+			setTaskActivity([]);
 		}
-	}, [selectedTask])
+	}, [modal, selectedTask])
 
     return (
         <>
@@ -129,8 +135,8 @@ function ViewTaskModel({ modal, selectedTask, closeModal }) {
 							</div>
 
 							{
-								taskActivity?.activities?.length > 0 ? 
-									<TaskHistory activities={taskActivity?.activities} /> : 
+								taskActivity?.length > 0 ? 
+									<TaskHistory activities={taskActivity} /> : 
 									<NoData message="No task activity found" />
 							}
 

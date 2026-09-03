@@ -6,6 +6,21 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-})
+});
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const status = error.response?.status;
+        const url = error.config?.url || "";
+        const isAuthRequest = url.includes("/api/auth/login") || url.includes("/api/auth/me");
+
+        if (status === 401 && !isAuthRequest && window.location.pathname !== "/login") {
+            window.location.href = "/login";
+        }
+
+        return Promise.reject(error);
+    }
+);
 
 export default api;

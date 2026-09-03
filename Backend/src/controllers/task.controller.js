@@ -3,32 +3,30 @@ import { Task } from "../models/task.model.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import createError from "../utils/createError.js";
 import { TaskActivity } from "../models/taskActivity.model.js";
-import { getUserFullNameById } from "../utils/helper.js";
+import { canAccessTask, escapeRegex, getUserFullNameById, parsePagination } from "../utils/helper.js";
 import { TaskComment } from "../models/taskComment.model.js";
 
-export const getAllTask = asyncHandler(async (req, res, next) => {
+export const getAllTask = asyncHandler(async (req, res) => {
     const { role, id: staffId } = req.user;
     const { search, status, priority, staff } = req.query;
-    let { page = 1, limit = 10 } = req.query;
-
-    page = parseInt(page);
-    limit = parseInt(limit);
-
-    const skip = (page - 1) * limit;
+    const { page, limit, skip } = parsePagination(req.query);
 
     const query = {};
-    if(search){
+    if (search) {
+        const safeSearch = escapeRegex(search);
         query.$or = [
-            { task: { $regex: search, $options: "i" } },
-            { task_description: { $regex: search, $options: "i" } },
-            { task_id: { $regex: search, $options: "i" } },
+            { task: { $regex: safeSearch, $options: "i" } },
+            { task_description: { $regex: safeSearch, $options: "i" } },
+            { task_id: { $regex: safeSearch, $options: "i" } },
         ]
     }
 
-    if(status) query.status = status;
-    if(priority) query.priority = priority;
-    if(staff) query.assigned_staff = new mongoose.Types.ObjectId(staff);
-    if(role !== "admin") query.assigned_staff = new mongoose.Types.ObjectId(staffId);
+    if (status) query.status = status;
+    if (priority) query.priority = priority;
+    if (staff && mongoose.Types.ObjectId.isValid(staff)) {
+        query.assigned_staff = new mongoose.Types.ObjectId(staff);
+    }
+    if (role !== "admin") query.assigned_staff = new mongoose.Types.ObjectId(staffId);
 
     const [tasks, totalTasks] = await Promise.all([
         Task.find(query)
@@ -57,16 +55,18 @@ export const getAllTask = asyncHandler(async (req, res, next) => {
     });
 });
 
-export const createTask = asyncHandler(async (req, res, next) => {
-    const { task, task_description, priority, status, status_description, due_date, assigned_staff } = req.body; 
+export const createTask = asyncHandler(async (req, res) => {
+    const { task, task_description, priority, status, status_description, due_date, assigned_staff } = req.body;
     const task_id = Date.now();
 
     const createTask = new Task({
-        task, task_id, task_description, 
-        priority: priority ? priority : "low", 
-        status: status ? status : "pending", 
-        status_description, 
-        due_date: due_date ? due_date : "", 
+        task,
+        task_id,
+        task_description,
+        priority: priority ? priority : "low",
+        status: status ? status : "pending",
+        status_description,
+        due_date: due_date ? due_date : null,
         assigned_staff: assigned_staff ? assigned_staff : null
     });
     await createTask.save();
@@ -76,12 +76,12 @@ export const createTask = asyncHandler(async (req, res, next) => {
         {
             task: createTask._id,
             task_type: "created",
-            task_activity: `Task created.`,
+            task_activity: "Task created.",
             updated_by: req.user.id,
             updated_by_name: `${createdBy}`
         }
     ];
-    if(assigned_staff){
+    if (assigned_staff) {
         const assignedStaff = await getUserFullNameById(assigned_staff);
         activities.push({
             task: createTask._id,
@@ -92,7 +92,7 @@ export const createTask = asyncHandler(async (req, res, next) => {
         });
     }
 
-    const taskActivities = await TaskActivity.insertMany(activities);
+    await TaskActivity.insertMany(activities);
 
     return res.status(201).json({
         success: true,
@@ -103,44 +103,73 @@ export const createTask = asyncHandler(async (req, res, next) => {
 
 export const getTaskById = asyncHandler(async (req, res, next) => {
     const taskId = req.params.id;
-    if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
+    if (!mongoose.Types.ObjectId.isValid(taskId)) return next(createError("Invalid task id!", 400));
 
     const task = await Task.findById(taskId).populate("assigned_staff", "first_name last_name email username").lean();
 
-    if(!task) return next(createError('Task not found!', 404)); 
-
-    const taskActivity = await TaskActivity.find({ task: taskId }).populate("updated_by", "first_name last_name").lean();
+    if (!task) return next(createError("Task not found!", 404));
+    if (!canAccessTask(req.user, task)) return next(createError("Unauthorized action!", 403));
 
     return res.status(200).json({
         success: true,
         message: "Task found!",
-        data: {
-            task,
-            activities: taskActivity
+        data: task
+    });
+});
+
+export const getTaskActivities = asyncHandler(async (req, res, next) => {
+    const taskId = req.params.id;
+    if (!mongoose.Types.ObjectId.isValid(taskId)) return next(createError("Invalid task id!", 400));
+
+    const task = await Task.findById(taskId).select("_id assigned_staff").lean();
+    if (!task) return next(createError("Task not found!", 404));
+    if (!canAccessTask(req.user, task)) return next(createError("Unauthorized action!", 403));
+
+    const allowedTypes = [
+        "created",
+        "updated",
+        "status_changed",
+        "priority_changed",
+        "due_date_changed",
+        "assigned",
+        "deleted"
+    ];
+
+    const query = { task: taskId };
+    const { type } = req.query;
+    if (type) {
+        if (!allowedTypes.includes(type)) {
+            return next(createError("Invalid activity type!", 400));
         }
+        query.task_type = type;
+    }
+
+    const activities = await TaskActivity.find(query)
+        .populate("updated_by", "first_name last_name")
+        .sort({ createdAt: -1 })
+        .lean();
+
+    return res.status(200).json({
+        success: true,
+        data: activities
     });
 });
 
 export const updateTask = asyncHandler(async (req, res, next) => {
     const taskId = req.params.id;
-    if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
+    if (!mongoose.Types.ObjectId.isValid(taskId)) return next(createError("Invalid task id!", 400));
 
-    const { role, id: staffId } = req.user;
-    const { task, task_description, priority, status, status_description, due_date, assigned_staff } = req.body; 
+    const { role } = req.user;
+    const { task, task_description, priority, status, status_description, due_date, assigned_staff } = req.body;
     const task_id = Date.now();
-    
-    const updateTask = await Task.findById(taskId);
-    if(!updateTask) return next(createError("Task not found!", 404));
 
-    if(role !== "admin" && staffId.toString() !== updateTask?.assigned_staff.toString()) return next(createError('Unauthorized action!', 403)); 
+    const updateTask = await Task.findById(taskId);
+    if (!updateTask) return next(createError("Task not found!", 404));
+    if (!canAccessTask(req.user, updateTask)) return next(createError("Unauthorized action!", 403));
+
     if (role !== "admin") {
-        if (assigned_staff && assigned_staff.toString() !== updateTask?.assigned_staff.toString()) {
-            return next(
-                createError(
-                    "Staff cannot reassign tasks!",
-                    403
-                )
-            );
+        if (assigned_staff && assigned_staff.toString() !== updateTask?.assigned_staff?.toString()) {
+            return next(createError("Staff cannot reassign tasks!", 403));
         }
     }
 
@@ -148,11 +177,11 @@ export const updateTask = asyncHandler(async (req, res, next) => {
     const activities = [{
         task: updateTask._id,
         task_type: "updated",
-        task_activity: `Task updated.`,
+        task_activity: "Task updated.",
         updated_by: req.user.id,
         updated_by_name: `${loggedInUser}`
     }];
-    if(assigned_staff && updateTask?.assigned_staff?.toString() !== assigned_staff.toString()){
+    if (assigned_staff && updateTask?.assigned_staff?.toString() !== assigned_staff.toString()) {
         const assignedStaff = await getUserFullNameById(assigned_staff);
         activities.push({
             task: updateTask._id,
@@ -164,7 +193,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             updated_by_name: `${loggedInUser}`
         });
     }
-    if(updateTask?.priority !== priority){
+    if (updateTask?.priority !== priority) {
         activities.push({
             task: updateTask._id,
             task_type: "priority_changed",
@@ -175,7 +204,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             updated_by_name: `${loggedInUser}`
         });
     }
-    if(updateTask?.status !== status){
+    if (updateTask?.status !== status) {
         activities.push({
             task: updateTask._id,
             task_type: "status_changed",
@@ -204,7 +233,7 @@ export const updateTask = asyncHandler(async (req, res, next) => {
             updated_by_name: `${loggedInUser}`
         });
     }
-    
+
     updateTask.task = task;
     updateTask.task_id = updateTask.task_id ? updateTask.task_id : task_id;
     updateTask.task_description = task_description;
@@ -212,10 +241,12 @@ export const updateTask = asyncHandler(async (req, res, next) => {
     updateTask.status = status;
     updateTask.status_description = status_description ? status_description : null;
     updateTask.due_date = due_date ? due_date : null;
-    updateTask.assigned_staff = assigned_staff ? assigned_staff : null;
+    if (role === "admin") {
+        updateTask.assigned_staff = assigned_staff ? assigned_staff : null;
+    }
     await updateTask.save();
-    
-    const taskActivities = await TaskActivity.insertMany(activities);
+
+    await TaskActivity.insertMany(activities);
 
     return res.status(200).json({
         success: true,
@@ -226,19 +257,17 @@ export const updateTask = asyncHandler(async (req, res, next) => {
 
 export const changeStatus = asyncHandler(async (req, res, next) => {
     const taskId = req.params.id;
-    if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
+    if (!mongoose.Types.ObjectId.isValid(taskId)) return next(createError("Invalid task id!", 400));
 
-    const { role, id: staffId } = req.user;
-    const { status, status_description } = req.body; 
+    const { status, status_description } = req.body;
 
     const task = await Task.findById(taskId);
-    if(!task) return next(createError("Task not found!", 404));
-
-    if(role !== "admin" && staffId.toString() !== task.assigned_staff.toString()) return next(createError('Unauthorized action!', 403)); 
+    if (!task) return next(createError("Task not found!", 404));
+    if (!canAccessTask(req.user, task)) return next(createError("Unauthorized action!", 403));
 
     const activities = [];
     const loggedInUser = await getUserFullNameById(req.user.id);
-    if(task.status !== status){
+    if (task.status !== status) {
         activities.push({
             task: task._id,
             task_type: "status_changed",
@@ -254,7 +283,9 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
     task.status_description = status_description;
     await task.save();
 
-    const taskActivities = await TaskActivity.insertMany(activities);
+    if (activities.length) {
+        await TaskActivity.insertMany(activities);
+    }
 
     return res.status(200).json({
         success: true,
@@ -265,25 +296,22 @@ export const changeStatus = asyncHandler(async (req, res, next) => {
 
 export const deleteTask = asyncHandler(async (req, res, next) => {
     const taskId = req.params.id;
-    if(!mongoose.Types.ObjectId.isValid(taskId)) return next(createError('Invalid task id!', 400)); 
-
-    const { role, id: staffId } = req.user;
+    if (!mongoose.Types.ObjectId.isValid(taskId)) return next(createError("Invalid task id!", 400));
 
     const task = await Task.findById(taskId);
-    if(!task) return next(createError("Task not found!", 404));
-
-    if(role !== "admin" && staffId.toString() !== task.assigned_staff) return next(createError('Unauthorized action!', 403)); 
+    if (!task) return next(createError("Task not found!", 404));
+    if (!canAccessTask(req.user, task)) return next(createError("Unauthorized action!", 403));
 
     const loggedInUser = await getUserFullNameById(req.user.id);
-    const taskActivities = await TaskActivity.insertOne({
+    await TaskActivity.create({
         task: task._id,
         task_type: "deleted",
-        task_activity: `Task deleted.`,
+        task_activity: "Task deleted.",
         updated_by: req.user.id,
         updated_by_name: `${loggedInUser}`
     });
 
-    const result = await TaskComment.deleteMany({ 
+    await TaskComment.deleteMany({
         task: new mongoose.Types.ObjectId(taskId)
     });
 

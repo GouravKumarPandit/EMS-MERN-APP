@@ -50,19 +50,22 @@ function TaskFilters({ filters, filterInputHandler, staffs }) {
                     options={[
                         { label: "Low", value: "low" },
                         { label: "Medium", value: "medium" },
-                        { label: "High", value: "high" }
+                        { label: "High", value: "high" },
+                        { label: "Urgent", value: "urgent" }
                     ]}
                 />
 
-                <Select
-                    label="Assign Staff"
-                    name="staff"
-                    options={
-                        staffs.map((staff) => ({ label: `${staff.first_name} ${staff.last_name} ${staff._id === user._id ? "(Me)" : ""}`, value: staff._id }))
-                    }
-                    value={filters.staff}
-                    onChange={filterInputHandler}
-                />
+                {user?.role === "admin" ? (
+                    <Select
+                        label="Assign Staff"
+                        name="staff"
+                        options={
+                            staffs.map((staff) => ({ label: `${staff.first_name} ${staff.last_name} ${staff._id === user._id ? "(Me)" : ""}`, value: staff._id }))
+                        }
+                        value={filters.staff}
+                        onChange={filterInputHandler}
+                    />
+                ) : null}
             </div>
         </div>
     )

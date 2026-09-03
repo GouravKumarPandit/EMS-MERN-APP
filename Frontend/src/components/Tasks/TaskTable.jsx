@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { getAllTask } from "../../api/task";
 import { toast } from "react-toastify";
 import IconButton from "../Ui/IconButton";
+import useDebounce from "../../utils/useDebounce";
 
 function TaskTable({ modal, openModal, staffs }) {
     const [tasks, setTasks] = useState([]);
@@ -29,8 +30,9 @@ function TaskTable({ modal, openModal, staffs }) {
         currentPage: 1,
         totalPages: 1,
         totalRecords: 0,
-        limit: 3
+        limit: 10
     });
+    const debouncedSearch = useDebounce(filters.search);
 
     const filterInputHandler = (event) => {
         const { name, value } = event.target;
@@ -51,7 +53,7 @@ function TaskTable({ modal, openModal, staffs }) {
         const loadTasks = async () => {
             try {
                 const response = await getAllTask(
-                    filters.search, 
+                    debouncedSearch, 
                     filters.status, 
                     filters.priority, 
                     filters.staff, 
@@ -71,7 +73,7 @@ function TaskTable({ modal, openModal, staffs }) {
         }
 
         loadTasks();
-    }, [modal, filters.search, filters.status, filters.priority, filters.staff,  pagination.currentPage, pagination.limit]);
+    }, [modal, debouncedSearch, filters.status, filters.priority, filters.staff,  pagination.currentPage, pagination.limit]);
 
     return (
         <>

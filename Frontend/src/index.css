@@ -5,6 +5,11 @@ body{
     background: #000;
 }
 
+#taskList {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
 #taskList::-webkit-scrollbar{
     display: none;
 }

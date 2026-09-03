@@ -34,7 +34,9 @@ const updateStaffValidation = [
         .notEmpty()
         .withMessage("Phone number is required.")
         .isLength({ min: 10, max: 10 })
-        .withMessage("Mobile number must be exactly 10 digits long."),
+        .withMessage("Mobile number must be exactly 10 digits long.")
+        .matches(/^\d{10}$/)
+        .withMessage("Mobile number must contain only digits."),
 
     body("gender")
         .optional()

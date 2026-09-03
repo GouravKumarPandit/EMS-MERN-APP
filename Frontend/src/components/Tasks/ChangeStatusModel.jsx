@@ -9,7 +9,7 @@ import Button from "../Ui/Button";
 import { useEffect, useState } from "react";
 import NoData from "../Ui/NoData";
 import { toast } from "react-toastify";
-import { changeStatus, getTaskById } from "../../api/task";
+import { changeStatus, getTaskActivities } from "../../api/task";
 import Status from "../Ui/Status";
 import TaskHistory from "./TaskHistory";
 
@@ -76,15 +76,21 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
         }
 
         const fetchTaskActivity = async (taskId) => {
-            const response = await getTaskById(taskId);
-            setTaskActivity(response.data.data);
+            try {
+                const response = await getTaskActivities(taskId, "status_changed");
+                setTaskActivity(response.data.data || []);
+            } catch (error) {
+                setTaskActivity([]);
+            }
         }
 
-        if(modal){
+        if (modal === "status" && selectedTask?._id) {
             fetchEditData();
-            fetchTaskActivity(selectedTask?._id);
+            fetchTaskActivity(selectedTask._id);
+        } else {
+            setTaskActivity([]);
         }
-    }, [selectedTask])
+    }, [modal, selectedTask])
 
     return (
         <>
@@ -169,9 +175,9 @@ function ChangeStatusModel({ modal, selectedTask, closeModal }) {
                                 </div>
                             </form>
                             {
-                                taskActivity?.activities?.length > 0 ? 
-                                    <TaskHistory activities={taskActivity?.activities} /> : 
-                                    <NoData message="No task activity found" />
+                                taskActivity?.length > 0 ? 
+                                    <TaskHistory activities={taskActivity} title="Status History" /> : 
+                                    <NoData message="No status activity found" />
                             }
                         </div>
                     </div>

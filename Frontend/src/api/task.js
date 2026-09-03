@@ -21,6 +21,14 @@ export const getTaskById = (id) => {
     return api.get(`/api/tasks/${id}`);
 }
 
+export const getTaskActivities = (id, type = "") => {
+    return api.get(`/api/tasks/${id}/activities`, {
+        params: {
+            type
+        }
+    });
+}
+
 export const updateTask = (id, formData) => {
     return api.put(`/api/tasks/${id}`, formData);
 }

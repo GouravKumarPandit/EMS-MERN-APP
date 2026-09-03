@@ -17,8 +17,8 @@ const createTaskValidation = [
     body("priority")
         .optional({ values: "falsy" })
         .trim()
-        .isIn(["high", "medium", "low"])
-        .withMessage("Priority must be either 'high' or 'medium' or 'low'."),
+        .isIn(["high", "medium", "low", "urgent"])
+        .withMessage("Priority must be either 'high', 'medium', 'low', or 'urgent'."),
 
     body("status")
         .optional({ values: "falsy" })
@@ -33,12 +33,14 @@ const createTaskValidation = [
     body("due_date")
         .optional({ values: "falsy" })
         .trim()
-        .isDate()
-        .withMessage("Due date must be date"),
+        .isISO8601({ strict: true })
+        .withMessage("Due date must be a valid date"),
 
     body("assigned_staff")
-        .optional()
-        .trim(),
+        .optional({ values: "falsy" })
+        .trim()
+        .isMongoId()
+        .withMessage("Assigned staff must be a valid id."),
 ];
 
 export default createTaskValidation; 

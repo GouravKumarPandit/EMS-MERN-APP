@@ -1,18 +1,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { loginApi, logoutApi, profileApi } from "../api/auth";
+import { loginApi, logoutApi } from "../api/auth";
 import api from "../api/apiConfigure";
 
 const AuthContext = createContext(null);
 
+const sanitizeUser = (data) => {
+    if (!data) return null;
+    const { password, ...safeUser } = data;
+    return safeUser;
+};
+
 export function AuthProvider({ children }){
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(null);
     const [authLoading, setAuthLoading] = useState(true);
 
     const login = async (formData) => {
         const response = await loginApi(formData);
 
         if(response.data.success) {
-            setUser(response.data.data);
+            setUser(sanitizeUser(response.data.data));
         }
 
         return response.data;
@@ -21,9 +27,10 @@ export function AuthProvider({ children }){
     const logout = async () => {
         try {
             await logoutApi();
-            setUser(null);
         } catch (error) {
             console.error(error);
+        } finally {
+            setUser(null);
         }
     }
 
@@ -36,7 +43,7 @@ export function AuthProvider({ children }){
             try {
                 const response = await getCurrentUser();
                 if (response.data.success) {
-                    setUser(response.data.data);
+                    setUser(sanitizeUser(response.data.data));
                 } else {
                     setUser(null);
                 }

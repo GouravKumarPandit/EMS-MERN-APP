@@ -24,9 +24,11 @@ function TaskSummaryCard({ task }) {
     };
 
     return (
-        <div className="min-w-[300px] max-w-[300px] flex-shrink-0 rounded-xl border border-neutral-800 bg-[#151515] p-4 transition hover:border-violet-500/50">
-            <div className="mb-4 flex items-center justify-between text-xs">
-                <span className={`rounded-md border px-3 py-1 text-xs capitalize ${task?.priority === "high"
+        <div className="flex h-full min-h-[220px] w-full flex-col rounded-xl border border-neutral-800 bg-[#151515] p-4 transition hover:border-violet-500/50">
+            <div className="mb-4 flex items-center justify-between gap-2 text-xs">
+                <span className={`shrink-0 rounded-md border px-3 py-1 text-xs capitalize ${task?.priority === "urgent"
+                    ? "border-fuchsia-500/20 bg-fuchsia-500/10 text-fuchsia-400"
+                    : task?.priority === "high"
                     ? "border-red-500/20 bg-red-500/10 text-red-400"
                     : task?.priority === "medium"
                         ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
@@ -36,30 +38,30 @@ function TaskSummaryCard({ task }) {
                     }`}>
                     {task?.priority ? task?.priority : "None"}
                 </span>
-                <span className="text-neutral-400">
+                <span className="truncate text-neutral-400">
                     {
                         task?.due_date ? formatDateTime(task?.due_date) : formatDateTime(task?.createdAt)
                     }
                 </span>
             </div>
 
-            <h3 className="font-semibold text-white">
+            <h3 className="line-clamp-2 min-h-12 font-semibold text-white">
                 { task?.task }
             </h3>
 
-            <p className="mt-2 line-clamp-2 text-sm leading-5 text-neutral-400">
-                { task?.task_description }
+            <p className="mt-2 line-clamp-2 min-h-10 text-sm leading-5 text-neutral-400">
+                { task?.task_description || "--" }
             </p>
 
-            <div className="mt-5 flex items-center justify-between border-t border-neutral-800 pt-3">
-                <span className="text-xs text-neutral-400">
+            <div className="mt-auto flex items-center justify-between gap-2 border-t border-neutral-800 pt-3">
+                <span className="truncate text-xs text-neutral-400">
                     Task #{ task?.task_id }
                 </span>
 
                 <Button 
                     onClick={() => openModal("view", task)} 
                     title="View"
-                    buttonClass="text-xs font-medium text-violet-500 hover:text-white"
+                    buttonClass="shrink-0 px-3 py-1.5 text-xs font-medium"
                 >
                     View
                 </Button>

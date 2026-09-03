@@ -5,7 +5,17 @@ import app from "./app.js";
 import connectDB from "./config/db.js";
 import mongoose from "mongoose";
 
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000;
+
+if (!process.env.JWT_SECRET) {
+    console.error("JWT_SECRET is required in environment variables.");
+    process.exit(1);
+}
+
+if (!process.env.MONGO_URI) {
+    console.error("MONGO_URI is required in environment variables.");
+    process.exit(1);
+}
 
 ["SIGINT", "SIGTERM", "SIGQUIT"].forEach(signal => {
     process.on(signal, async () => {
@@ -27,6 +37,7 @@ const connectServer = async () => {
         });
     } catch (error) {
         console.error("Failed to start server:", error.message);
+        process.exit(1);
     }
 }
 

@@ -15,7 +15,7 @@ const loginValidation = [
         .notEmpty()
         .withMessage("Password is required!")
         .isLength({ min: 6 })
-        .withMessage("Username must be min 6 characters long."),
+        .withMessage("Password must be at least 6 characters long."),
 ];
 
 export default loginValidation;

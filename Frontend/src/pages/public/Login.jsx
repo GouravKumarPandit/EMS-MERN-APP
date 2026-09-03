@@ -21,7 +21,7 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [usernameError, setUsernameError] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const { login } = useAuth();
+    const { login, user, authLoading } = useAuth();
     const navigate = useNavigate();
 
     const inputHandler = (event) => {
@@ -50,13 +50,22 @@ function Login() {
             toast.success(response?.message);
             navigate("/dashboard");
         } catch (error) {
-            if (error.response?.data?.message === "Username not found!") setUsernameError(error.response?.data?.message);
-            else if (error.response?.data?.message === "Invalid username or password!") setPasswordError(error.response?.data?.message);
-            else toast.error(error.message);
+            const message = error.response?.data?.message || error.message || "Something went wrong";
+            if (error.response?.status === 429) {
+                toast.error(message);
+            } else {
+                setPasswordError(message);
+            }
         } finally {
             setLoading(false);
         }
     }
+
+    useEffect(() => {
+        if (!authLoading && user) {
+            navigate("/dashboard", { replace: true });
+        }
+    }, [authLoading, user, navigate]);
 
     useEffect(() => {
         const timer = setTimeout(() => {

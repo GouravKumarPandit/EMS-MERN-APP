@@ -33,6 +33,7 @@ function ChangePasswordForm() {
         event.preventDefault();
 
         try {
+            setSubmitLoader(true);
             const response = await changePassword(user._id, formData);
             if(response.data.success){
                 toast.success(response?.data?.message);
@@ -168,7 +169,7 @@ function ChangePasswordForm() {
                     </p>
 
                     <ul className="text-xs text-gray-500 space-y-1">
-                        <li>• At least 6 characters</li>
+                        <li>• At least 8 characters</li>
                         <li>• Use a combination of letters and numbers</li>
                         <li>• Avoid using easily guessable passwords</li>
                     </ul>
