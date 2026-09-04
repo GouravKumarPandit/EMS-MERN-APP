@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import TaskSummaryCard from "./TaskSummaryCard";
 
-function TaskCarousel({ tasks = [] }) {
+function TaskCarousel({ tasks = [], overdue = false }) {
     const scrollerRef = useRef(null);
     const [canPrev, setCanPrev] = useState(false);
     const [canNext, setCanNext] = useState(false);
@@ -73,7 +73,7 @@ function TaskCarousel({ tasks = [] }) {
                         data-task-card
                         className="w-full shrink-0 snap-start sm:w-[calc((100%-1rem)/2)] lg:w-[calc((100%-2rem)/3)]"
                     >
-                        <TaskSummaryCard task={task} />
+                        <TaskSummaryCard task={task} overdue={overdue} />
                     </div>
                 ))}
             </div>

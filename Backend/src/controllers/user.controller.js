@@ -116,6 +116,15 @@ export const dashboard = asyncHandler(async (req, res) => {
         ]);
     }
 
+    const currentDate = new Date();
+    const overdueTask = await Task.find({
+        assigned_staff: new mongoose.Types.ObjectId(staffId),
+        due_date: { $lt: currentDate }
+    })
+    .sort({ due_date: 1 })
+    .populate("assigned_staff", "first_name last_name")
+    .lean();
+
     return res.status(200).json({
         success: true,
         data: {
@@ -123,7 +132,8 @@ export const dashboard = asyncHandler(async (req, res) => {
                 taskCount: taskStats,
                 recentTasks
             },
-            staffTaskCount: staffTaskStats
+            staffTaskCount: staffTaskStats,
+            overdueTask
         }
     });
 });

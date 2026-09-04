@@ -3,8 +3,9 @@ import { formatDateTime } from '../../utils/date'
 import ViewTaskModel from '../Tasks/ViewTaskModel';
 import { useState } from 'react';
 import { getTaskById } from '../../api/task';
+import Priority from '../Ui/Priority';
 
-function TaskSummaryCard({ task }) {
+function TaskSummaryCard({ task, overdue = false}) {
     const [modal, setModal] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const openModal = (type) => {
@@ -26,19 +27,15 @@ function TaskSummaryCard({ task }) {
     return (
         <div className="flex h-full min-h-[220px] w-full flex-col rounded-xl border border-app-line bg-app-raised p-4 transition hover:border-violet-500/50">
             <div className="mb-4 flex items-center justify-between gap-2 text-xs">
-                <span className={`shrink-0 rounded-md border px-3 py-1 text-xs capitalize ${task?.priority === "urgent"
-                    ? "border-fuchsia-500/20 bg-fuchsia-500/10 text-fuchsia-400"
-                    : task?.priority === "high"
-                    ? "border-red-500/20 bg-red-500/10 text-red-400"
-                    : task?.priority === "medium"
-                        ? "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"
-                        : task?.priority === "low"
-                            ? "border-green-500/20 bg-green-500/10 text-green-400"
-                            : "border-red-500/20 bg-red-500/10 text-red-400"
-                    }`}>
-                    {task?.priority ? task?.priority : "None"}
-                </span>
-                <span className="truncate text-app-muted">
+                <Priority priority={task?.priority} />
+                <span className="flex flex-col truncate text-app-muted">
+                    {
+                        overdue ? 
+                        <span className="animate-pulse pb-2">
+                            ⚠️ Overdue
+                        </span> :
+                        <></>
+                    }
                     {
                         task?.due_date ? formatDateTime(task?.due_date) : formatDateTime(task?.createdAt)
                     }

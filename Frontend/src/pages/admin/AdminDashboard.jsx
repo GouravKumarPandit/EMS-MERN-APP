@@ -12,6 +12,7 @@ import { useAuth } from "../../context/AuthContext";
 function AdminDashboard() {
     const [loginStaffTaskData, setLoginStaffTaskData] = useState({});
     const [allStaffTaskCount, setAllStaffTaskCount] = useState([]);
+    const [staffOverdueTask, setStaffOverdueTask] = useState([]);
     const navigate = useNavigate();
     const { isAdmin } = useAuth();
 
@@ -24,9 +25,10 @@ function AdminDashboard() {
             try {
                 const response = await dashboard();
                 if(response.data.success) {
-                    const { loggedInStaffTask, staffTaskCount } = response.data.data;
+                    const { loggedInStaffTask, staffTaskCount, overdueTask } = response.data.data;
                     setLoginStaffTaskData(loggedInStaffTask);
                     setAllStaffTaskCount(staffTaskCount || []);
+                    setStaffOverdueTask(overdueTask);
                 }
 
             } catch (error) {
@@ -46,7 +48,7 @@ function AdminDashboard() {
             <div className="min-h-screen min-w-0 bg-app-bg text-app-text p-6 space-y-6">
                 <div>
                     <h2 className="text-lg font-semibold text-app-text">
-                        Task Status
+                        My Task Status
                     </h2>
                 </div>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -82,6 +84,35 @@ function AdminDashboard() {
                         }
                     </div>
                 </div>
+
+                {/* Overdue Task  */}
+                {
+                    (staffOverdueTask?.length > 0) ? (
+                        <div className="mt-8 min-w-0">
+                            <div className="mb-4 flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-lg font-semibold text-app-text">
+                                        Overdue Tasks
+                                    </h2>
+
+                                    <p className="mt-1 text-sm text-app-muted">
+                                        All overdue tasks
+                                    </p>
+                                </div>
+
+                                <Button onClick={handleViewAll}>
+                                    View All
+                                </Button>
+                            </div>
+
+                            <div className="w-full min-w-0">
+                                <TaskCarousel tasks={staffOverdueTask} overdue={true} />
+                            </div>
+                        </div>
+                    ) : ""
+                }
+
+                {/* Staff Task Stats */}
                 {
                     isAdmin ? (
                         allStaffTaskCount.length > 0
